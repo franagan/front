@@ -1,0 +1,208 @@
+{
+    "navigation": {
+        "home": "Home",
+        "blog": "Blog",
+        "calculators": "Calculators",
+        "about": "About Me",
+        "contact": "Contact",
+        "login": "Login",
+        "register": "Sign Up",
+        "logout": "Logout",
+        "dashboard": "Dashboard"
+    },
+    "home": {
+        "hero": {
+            "title": "Your path to",
+            "titleHighlight": "Financial Independence",
+            "subtitle": "Learn how to achieve FIRE (Financial Independence, Retire Early) and live the life you truly want. Practical financial education to reach your freedom.",
+            "cta": "Calculate my FIRE",
+            "ctaSecondary": "Explore the Blog"
+        },
+        "stats": {
+            "users": "Active users",
+            "articles": "Published articles",
+            "tools": "Free tools"
+        },
+        "features": {
+            "title": "Everything you need to achieve your FIRE",
+            "calculator": {
+                "title": "FIRE Calculator",
+                "description": "Calculate exactly how much you need to save to achieve your financial independence"
+            },
+            "blog": {
+                "title": "Educational blog",
+                "description": "Detailed articles about investing, saving and proven FIRE strategies"
+            },
+            "tools": {
+                "title": "Free tools",
+                "description": "Calculators, trackers and resources to manage your personal finances"
+            }
+        },
+        "testimonials": {
+            "title": "What our users say"
+        },
+        "cta": {
+            "title": "Ready to start your FIRE?",
+            "subtitle": "Join thousands of people already on their way to financial independence",
+            "button": "Start now"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Login",
+            "subtitle": "Access your financial dashboard",
+            "email": "Email",
+            "password": "Password",
+            "rememberMe": "Remember me",
+            "forgotPassword": "Forgot your password?",
+            "submit": "Login",
+            "noAccount": "Don't have an account?",
+            "signUp": "Sign up here",
+            "errors": {
+                "invalidCredentials": "Invalid email or password",
+                "emailRequired": "Email is required",
+                "passwordRequired": "Password is required"
+            }
+        },
+        "register": {
+            "title": "Create Account",
+            "subtitle": "Start your journey to financial independence",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "email": "Email",
+            "password": "Password",
+            "confirmPassword": "Confirm Password",
+            "submit": "Create Account",
+            "hasAccount": "Already have an account?",
+            "signIn": "Sign in here",
+            "errors": {
+                "firstNameRequired": "First name is required",
+                "lastNameRequired": "Last name is required",
+                "emailRequired": "Email is required",
+                "emailInvalid": "Invalid email",
+                "passwordRequired": "Password is required",
+                "passwordMin": "Password must be at least 8 characters",
+                "passwordsNotMatch": "Passwords don't match"
+            }
+        },
+        "common": {
+            "loading": "Loading..."
+        }
+    },
+    "mainboard": {
+        "welcome": "Welcome",
+        "dashboard": "Dashboard",
+        "financialSummary": "Financial Summary",
+        "netWorth": "Net Worth",
+        "investments": "Investments",
+        "totalSavings": "Total Savings",
+        "monthlyCashFlow": "Monthly Cash Flow",
+        "thisMonth": "this month",
+        "totalReturn": "total return",
+        "savingsRate": "savings rate",
+        "income": "Income",
+        "expenses": "Expenses",
+        "portfolio": {
+            "title": "Investment Portfolio",
+            "totalValue": "Total Value",
+            "totalReturn": "Total Return",
+            "monthlyReturn": "Monthly Return",
+            "dailyReturn": "Daily Return",
+            "positions": "Positions",
+            "viewFull": "View Full Portfolio",
+            "addInvestment": "Add Investment"
+        },
+        "budget": {
+            "title": "Monthly Budget",
+            "manage": "Manage Budget",
+            "categories": {
+                "housing": "Housing",
+                "food": "Food",
+                "transport": "Transport",
+                "leisure": "Leisure",
+                "other": "Other"
+            }
+        },
+        "goals": {
+            "title": "Savings Goals",
+            "add": "Add Goal",
+            "emergencyFund": "Emergency Fund",
+            "travel": "Japan Trip",
+            "realEstate": "Real Estate Investment"
+        },
+        "quickActions": {
+            "title": "Quick Actions",
+            "addExpense": {
+                "title": "Add Expense",
+                "description": "Add a new expense to your budget"
+            },
+            "analyzeStock": {
+                "title": "Analyze Stock",
+                "description": "Use BolScan to analyze companies"
+            },
+            "fireCalculator": {
+                "title": "FIRE Calculator",
+                "description": "Calculate your path to financial freedom"
+            }
+        }
+    },
+    "blog": {
+        "title": "FIRE Blog",
+        "subtitle": "Learn everything about financial independence, investing and digital nomadism",
+        "readMore": "Read more",
+        "minRead": "min read",
+        "categories": {
+            "all": "All",
+            "fundamentals": "Fundamentals",
+            "strategy": "Strategy",
+            "investing": "Investing",
+            "lifestyle": "Lifestyle"
+        },
+        "featured": "Featured",
+        "latest": "Latest articles"
+    },
+    "calculators": {
+        "title": "Financial Calculators",
+        "subtitle": "Free tools to plan your financial independence",
+        "fire": {
+            "title": "FIRE Calculator",
+            "description": "Calculate how much you need for financial independence"
+        },
+        "compound": {
+            "title": "Compound Interest",
+            "description": "Project your investment growth"
+        },
+        "retirement": {
+            "title": "Early Retirement",
+            "description": "Plan your early retirement"
+        }
+    },
+    "about": {
+        "title": "About Me",
+        "subtitle": "My journey to financial independence"
+    },
+    "contact": {
+        "title": "Contact",
+        "subtitle": "Have any questions? I'm here to help",
+        "form": {
+            "name": "Full name",
+            "email": "Email",
+            "subject": "Subject",
+            "message": "Message",
+            "submit": "Send message",
+            "sending": "Sending..."
+        }
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success",
+        "back": "Back",
+        "next": "Next",
+        "previous": "Previous",
+        "search": "Search",
+        "filter": "Filter",
+        "sort": "Sort",
+        "language": "Language"
+    }
+}

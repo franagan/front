@@ -1,0 +1,208 @@
+{
+    "navigation": {
+        "home": "Inicio",
+        "blog": "Blog",
+        "calculators": "Calculadoras",
+        "about": "Sobre Mí",
+        "contact": "Contacto",
+        "login": "Iniciar Sesión",
+        "register": "Registrarse",
+        "logout": "Cerrar Sesión",
+        "dashboard": "Panel de Control"
+    },
+    "home": {
+        "hero": {
+            "title": "Tu camino hacia la",
+            "titleHighlight": "Independencia Financiera",
+            "subtitle": "Aprende a conseguir el FIRE (Financial Independence, Retire Early) y vive la vida que realmente quieres. Educación financiera práctica para alcanzar tu libertad.",
+            "cta": "Calcular mi FIRE",
+            "ctaSecondary": "Explorar el Blog"
+        },
+        "stats": {
+            "users": "Usuarios activos",
+            "articles": "Artículos publicados",
+            "tools": "Herramientas gratuitas"
+        },
+        "features": {
+            "title": "Todo lo que necesitas para conseguir tu FIRE",
+            "calculator": {
+                "title": "Calculadora FIRE",
+                "description": "Calcula exactamente cuánto necesitas ahorrar para conseguir tu independencia financiera"
+            },
+            "blog": {
+                "title": "Blog educativo",
+                "description": "Artículos detallados sobre inversión, ahorro y estrategias FIRE probadas"
+            },
+            "tools": {
+                "title": "Herramientas gratuitas",
+                "description": "Calculadoras, trackers y recursos para gestionar tus finanzas personales"
+            }
+        },
+        "testimonials": {
+            "title": "Lo que dicen nuestros usuarios"
+        },
+        "cta": {
+            "title": "¿Listo para empezar tu FIRE?",
+            "subtitle": "Únete a miles de personas que ya están en camino hacia su independencia financiera",
+            "button": "Comenzar ahora"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Iniciar Sesión",
+            "subtitle": "Accede a tu panel de control financiero",
+            "email": "Email",
+            "password": "Contraseña",
+            "rememberMe": "Recordarme",
+            "forgotPassword": "¿Olvidaste tu contraseña?",
+            "submit": "Iniciar Sesión",
+            "noAccount": "¿No tienes cuenta?",
+            "signUp": "Regístrate aquí",
+            "errors": {
+                "invalidCredentials": "Email o contraseña incorrectos",
+                "emailRequired": "El email es obligatorio",
+                "passwordRequired": "La contraseña es obligatoria"
+            }
+        },
+        "register": {
+            "title": "Crear Cuenta",
+            "subtitle": "Comienza tu camino hacia la independencia financiera",
+            "firstName": "Nombre",
+            "lastName": "Apellidos",
+            "email": "Email",
+            "password": "Contraseña",
+            "confirmPassword": "Confirmar Contraseña",
+            "submit": "Crear Cuenta",
+            "hasAccount": "¿Ya tienes cuenta?",
+            "signIn": "Inicia sesión aquí",
+            "errors": {
+                "firstNameRequired": "El nombre es obligatorio",
+                "lastNameRequired": "Los apellidos son obligatorios",
+                "emailRequired": "El email es obligatorio",
+                "emailInvalid": "Email inválido",
+                "passwordRequired": "La contraseña es obligatoria",
+                "passwordMin": "La contraseña debe tener al menos 8 caracteres",
+                "passwordsNotMatch": "Las contraseñas no coinciden"
+            }
+        },
+        "common": {
+            "loading": "Cargando..."
+        }
+    },
+    "mainboard": {
+        "welcome": "Bienvenido",
+        "dashboard": "Panel de Control",
+        "financialSummary": "Resumen Financiero",
+        "netWorth": "Patrimonio Neto",
+        "investments": "Inversiones",
+        "totalSavings": "Ahorro Total",
+        "monthlyCashFlow": "Flujo de Caja Mensual",
+        "thisMonth": "este mes",
+        "totalReturn": "rentabilidad total",
+        "savingsRate": "tasa de ahorro",
+        "income": "Ingresos",
+        "expenses": "Gastos",
+        "portfolio": {
+            "title": "Cartera de Inversiones",
+            "totalValue": "Valor Total",
+            "totalReturn": "Rentabilidad Total",
+            "monthlyReturn": "Rentabilidad Mensual",
+            "dailyReturn": "Rentabilidad Diaria",
+            "positions": "Posiciones",
+            "viewFull": "Ver Cartera Completa",
+            "addInvestment": "Añadir Inversión"
+        },
+        "budget": {
+            "title": "Presupuesto Mensual",
+            "manage": "Gestionar Presupuesto",
+            "categories": {
+                "housing": "Vivienda",
+                "food": "Alimentación",
+                "transport": "Transporte",
+                "leisure": "Ocio",
+                "other": "Otros"
+            }
+        },
+        "goals": {
+            "title": "Objetivos de Ahorro",
+            "add": "Añadir Objetivo",
+            "emergencyFund": "Fondo de Emergencia",
+            "travel": "Viaje a Japón",
+            "realEstate": "Inversión Inmobiliaria"
+        },
+        "quickActions": {
+            "title": "Acciones Rápidas",
+            "addExpense": {
+                "title": "Registrar Gasto",
+                "description": "Añade un nuevo gasto a tu presupuesto"
+            },
+            "analyzeStock": {
+                "title": "Analizar Acción",
+                "description": "Usa BolScan para analizar empresas"
+            },
+            "fireCalculator": {
+                "title": "Calculadora FIRE",
+                "description": "Calcula tu camino a la libertad financiera"
+            }
+        }
+    },
+    "blog": {
+        "title": "Blog FIRE",
+        "subtitle": "Aprende todo sobre independencia financiera, inversión y nomadismo digital",
+        "readMore": "Leer más",
+        "minRead": "min de lectura",
+        "categories": {
+            "all": "Todos",
+            "fundamentals": "Fundamentos",
+            "strategy": "Estrategia",
+            "investing": "Inversión",
+            "lifestyle": "Estilo de Vida"
+        },
+        "featured": "Destacado",
+        "latest": "Últimos artículos"
+    },
+    "calculators": {
+        "title": "Calculadoras Financieras",
+        "subtitle": "Herramientas gratuitas para planificar tu independencia financiera",
+        "fire": {
+            "title": "Calculadora FIRE",
+            "description": "Calcula cuánto necesitas para tu independencia financiera"
+        },
+        "compound": {
+            "title": "Interés Compuesto",
+            "description": "Proyecta el crecimiento de tus inversiones"
+        },
+        "retirement": {
+            "title": "Jubilación Anticipada",
+            "description": "Planifica tu retiro temprano"
+        }
+    },
+    "about": {
+        "title": "Sobre Mí",
+        "subtitle": "Mi historia hacia la independencia financiera"
+    },
+    "contact": {
+        "title": "Contacto",
+        "subtitle": "¿Tienes alguna pregunta? Estoy aquí para ayudarte",
+        "form": {
+            "name": "Nombre completo",
+            "email": "Email",
+            "subject": "Asunto",
+            "message": "Mensaje",
+            "submit": "Enviar mensaje",
+            "sending": "Enviando..."
+        }
+    },
+    "common": {
+        "loading": "Cargando...",
+        "error": "Error",
+        "success": "Éxito",
+        "back": "Volver",
+        "next": "Siguiente",
+        "previous": "Anterior",
+        "search": "Buscar",
+        "filter": "Filtrar",
+        "sort": "Ordenar",
+        "language": "Idioma"
+    }
+}
