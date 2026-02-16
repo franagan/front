@@ -11,32 +11,32 @@ import {
     ChevronUp,
     ChevronDown,
     Search,
-    Filter,
-    Download,
-    Eye,
-    Edit,
-    Trash2,
     TrendingUp,
     TrendingDown,
     Minus,
     ArrowUpDown,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    Download
 } from "lucide-react"
 
 // Types para la tabla
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface TableColumn<T = any> {
     key: string
     header: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accessor: keyof T | ((row: T) => any)
     sortable?: boolean
     filterable?: boolean
     width?: string | number
     align?: "left" | "center" | "right"
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     render?: (value: any, row: T) => React.ReactNode
     type?: "text" | "number" | "currency" | "percentage" | "date" | "badge" | "actions"
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface TableAction<T = any> {
     label: string
     icon?: React.ReactNode
@@ -45,6 +45,7 @@ export interface TableAction<T = any> {
     show?: (row: T) => boolean
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface FinancialTableProps<T = any> {
     data: T[]
     columns: TableColumn<T>[]
@@ -85,18 +86,18 @@ const formatDate = (value: string | Date): string => {
 const ColoredValue: React.FC<{ value: number; type: "currency" | "percentage" }> = ({ value, type }) => {
     const isPositive = value > 0
     const isNegative = value < 0
-    
-    const colorClass = isPositive 
-        ? "text-green-600" 
-        : isNegative 
-        ? "text-red-600" 
-        : "text-gray-600"
-    
-    const icon = isPositive 
+
+    const colorClass = isPositive
+        ? "text-green-600"
+        : isNegative
+            ? "text-red-600"
+            : "text-gray-600"
+
+    const icon = isPositive
         ? <TrendingUp className="h-3 w-3" />
-        : isNegative 
-        ? <TrendingDown className="h-3 w-3" />
-        : <Minus className="h-3 w-3" />
+        : isNegative
+            ? <TrendingDown className="h-3 w-3" />
+            : <Minus className="h-3 w-3" />
 
     return (
         <div className={`flex items-center space-x-1 ${colorClass}`}>
@@ -122,11 +123,11 @@ const useSorting = <T,>(data: T[], columns: TableColumn<T>[]) => {
         if (!column) return data
 
         return [...data].sort((a, b) => {
-            let aValue = typeof column.accessor === 'function' 
-                ? column.accessor(a) 
+            let aValue = typeof column.accessor === 'function'
+                ? column.accessor(a)
                 : a[column.accessor]
-            let bValue = typeof column.accessor === 'function' 
-                ? column.accessor(b) 
+            let bValue = typeof column.accessor === 'function'
+                ? column.accessor(b)
                 : b[column.accessor]
 
             // Convertir a números si es posible
@@ -168,11 +169,11 @@ const useFiltering = <T,>(data: T[], columns: TableColumn<T>[]) => {
             result = result.filter(row => {
                 return columns.some(column => {
                     if (!column.filterable) return false
-                    
-                    const value = typeof column.accessor === 'function' 
-                        ? column.accessor(row) 
+
+                    const value = typeof column.accessor === 'function'
+                        ? column.accessor(row)
                         : row[column.accessor]
-                    
+
                     return String(value).toLowerCase().includes(searchTerm.toLowerCase())
                 })
             })
@@ -184,11 +185,11 @@ const useFiltering = <T,>(data: T[], columns: TableColumn<T>[]) => {
                 result = result.filter(row => {
                     const column = columns.find(col => col.key === key)
                     if (!column) return true
-                    
-                    const value = typeof column.accessor === 'function' 
-                        ? column.accessor(row) 
+
+                    const value = typeof column.accessor === 'function'
+                        ? column.accessor(row)
                         : row[column.accessor]
-                    
+
                     return String(value).toLowerCase().includes(filterValue.toLowerCase())
                 })
             }
@@ -222,13 +223,14 @@ const usePagination = <T,>(data: T[], pageSize: number = 10) => {
 }
 
 // Componente principal de tabla
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function FinancialTable<T extends Record<string, any>>({
     data,
     columns,
     title,
     subtitle,
     searchable = true,
-    filterable = false,
+    // filterable = false,
     paginated = true,
     pageSize = 10,
     actions,
@@ -240,7 +242,7 @@ export function FinancialTable<T extends Record<string, any>>({
     const { sortedData, sortConfig, handleSort } = useSorting(data, columns)
     const { filteredData, searchTerm, setSearchTerm } = useFiltering(sortedData, columns)
     const { paginatedData, currentPage, totalPages, goToPage, totalItems } = usePagination(
-        filteredData, 
+        filteredData,
         paginated ? pageSize : filteredData.length
     )
 
@@ -248,8 +250,8 @@ export function FinancialTable<T extends Record<string, any>>({
 
     // Renderizar celda según el tipo
     const renderCell = (column: TableColumn<T>, row: T) => {
-        const value = typeof column.accessor === 'function' 
-            ? column.accessor(row) 
+        const value = typeof column.accessor === 'function'
+            ? column.accessor(row)
             : row[column.accessor]
 
         if (column.render) {
@@ -324,7 +326,7 @@ export function FinancialTable<T extends Record<string, any>>({
                             {title && <CardTitle>{title}</CardTitle>}
                             {subtitle && <p className="text-sm text-gray-600">{subtitle}</p>}
                         </div>
-                        
+
                         {searchable && (
                             <div className="flex items-center space-x-2">
                                 <div className="relative">
@@ -342,7 +344,7 @@ export function FinancialTable<T extends Record<string, any>>({
                             </div>
                         )}
                     </div>
-                    
+
                     {totalItems > 0 && (
                         <div className="text-sm text-gray-500">
                             Mostrando {finalData.length} de {totalItems} resultados
@@ -438,7 +440,7 @@ export function FinancialTable<T extends Record<string, any>>({
                                     >
                                         <ChevronLeft className="h-4 w-4" />
                                     </Button>
-                                    
+
                                     {/* Números de página */}
                                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                                         const page = i + 1
@@ -454,7 +456,7 @@ export function FinancialTable<T extends Record<string, any>>({
                                             </Button>
                                         )
                                     })}
-                                    
+
                                     <Button
                                         variant="outline"
                                         size="sm"
@@ -474,6 +476,7 @@ export function FinancialTable<T extends Record<string, any>>({
 }
 
 // Tabla simple sin wrapper Card
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function SimpleTable<T extends Record<string, any>>({
     data,
     columns,
@@ -523,8 +526,8 @@ export function SimpleTable<T extends Record<string, any>>({
                                         column.align === "right" && "text-right"
                                     )}
                                 >
-                                    {typeof column.accessor === 'function' 
-                                        ? column.accessor(row) 
+                                    {typeof column.accessor === 'function'
+                                        ? column.accessor(row)
                                         : row[column.accessor]}
                                 </td>
                             ))}

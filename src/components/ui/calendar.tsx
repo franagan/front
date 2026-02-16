@@ -12,7 +12,6 @@ import {
     ChevronRight,
     Calendar as CalendarIcon,
     CalendarDays,
-    Clock,
     DollarSign,
     TrendingUp,
     Building2,
@@ -60,10 +59,10 @@ const formatDate = (date: Date, locale: string = 'es-ES'): string => {
 }
 
 const formatDateShort = (date: Date): string => {
-    return date.toLocaleDateString('es-ES', { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric' 
+    return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
     })
 }
 
@@ -77,8 +76,8 @@ const isSameDay = (date1: Date, date2: Date): boolean => {
 }
 
 const isSameMonth = (date1: Date, date2: Date): boolean => {
-    return date1.getFullYear() === date2.getFullYear() && 
-           date1.getMonth() === date2.getMonth()
+    return date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth() === date2.getMonth()
 }
 
 const getDaysInMonth = (year: number, month: number): number => {
@@ -96,7 +95,7 @@ const addMonths = (date: Date, months: number): Date => {
 }
 
 // Rangos predefinidos comunes en finanzas
-export const getFinancialRanges = (): Array<{label: string, value: DateRange}> => {
+export const getFinancialRanges = (): Array<{ label: string, value: DateRange }> => {
     const today = new Date()
     const ranges = [
         {
@@ -157,17 +156,17 @@ export function Calendar({
     className
 }: CalendarProps) {
     const [currentMonth, setCurrentMonth] = useState(new Date())
-    
+
     const monthNames = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ]
-    
+
     const dayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
-    
+
     const year = currentMonth.getFullYear()
     const month = currentMonth.getMonth()
-    
+
     // Generar días del calendario
     const calendarDays = useMemo(() => {
         const daysInMonth = getDaysInMonth(year, month)
@@ -177,12 +176,12 @@ export function Calendar({
             isCurrentMonth: boolean
             events: FinancialEvent[]
         }> = []
-        
+
         // Días del mes anterior
         const prevMonth = month === 0 ? 11 : month - 1
         const prevYear = month === 0 ? year - 1 : year
         const daysInPrevMonth = getDaysInMonth(prevYear, prevMonth)
-        
+
         for (let i = firstDay - 1; i >= 0; i--) {
             const date = new Date(prevYear, prevMonth, daysInPrevMonth - i)
             days.push({
@@ -191,7 +190,7 @@ export function Calendar({
                 events: events.filter(e => isSameDay(e.date, date))
             })
         }
-        
+
         // Días del mes actual
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, month, day)
@@ -201,12 +200,12 @@ export function Calendar({
                 events: events.filter(e => isSameDay(e.date, date))
             })
         }
-        
+
         // Días del siguiente mes
         const remainingDays = 42 - days.length
         const nextMonth = month === 11 ? 0 : month + 1
         const nextYear = month === 11 ? year + 1 : year
-        
+
         for (let day = 1; day <= remainingDays; day++) {
             const date = new Date(nextYear, nextMonth, day)
             days.push({
@@ -215,42 +214,42 @@ export function Calendar({
                 events: events.filter(e => isSameDay(e.date, date))
             })
         }
-        
+
         return days
     }, [year, month, events])
-    
+
     const isDateSelected = (date: Date): boolean => {
         if (!selected) return false
-        
+
         if (mode === "single") {
             return selected instanceof Date && isSameDay(date, selected)
         }
-        
+
         if (mode === "multiple" && Array.isArray(selected)) {
             return selected.some(d => isSameDay(date, d))
         }
-        
+
         if (mode === "range" && Array.isArray(selected) && selected.length === 2) {
             const [start, end] = selected
             return date >= start && date <= end
         }
-        
+
         return false
     }
-    
+
     const isDateDisabled = (date: Date): boolean => {
         return disabled ? disabled(date) : false
     }
-    
+
     const handleDateClick = (date: Date) => {
         if (isDateDisabled(date)) return
-        
+
         if (mode === "single") {
             onSelect?.(date)
         } else if (mode === "multiple") {
             const currentSelected = Array.isArray(selected) ? selected : []
             const isAlreadySelected = currentSelected.some(d => isSameDay(date, d))
-            
+
             if (isAlreadySelected) {
                 onSelect?.(currentSelected.filter(d => !isSameDay(date, d)))
             } else {
@@ -258,7 +257,7 @@ export function Calendar({
             }
         } else if (mode === "range") {
             const currentSelected = Array.isArray(selected) ? selected : []
-            
+
             if (currentSelected.length === 0 || currentSelected.length === 2) {
                 onSelect?.([date])
             } else if (currentSelected.length === 1) {
@@ -271,15 +270,15 @@ export function Calendar({
             }
         }
     }
-    
+
     const handlePrevMonth = () => {
         setCurrentMonth(addMonths(currentMonth, -1))
     }
-    
+
     const handleNextMonth = () => {
         setCurrentMonth(addMonths(currentMonth, 1))
     }
-    
+
     return (
         <div className={cn("calendar", className)}>
             {/* Header */}
@@ -287,16 +286,16 @@ export function Calendar({
                 <Button variant="outline" size="sm" onClick={handlePrevMonth}>
                     <ChevronLeft className="h-4 w-4" />
                 </Button>
-                
+
                 <h3 className="text-lg font-semibold">
                     {monthNames[month]} {year}
                 </h3>
-                
+
                 <Button variant="outline" size="sm" onClick={handleNextMonth}>
                     <ChevronRight className="h-4 w-4" />
                 </Button>
             </div>
-            
+
             {/* Días de la semana */}
             <div className="grid grid-cols-7 gap-1 mb-2">
                 {showWeekNumbers && <div className="text-xs text-gray-500 text-center p-2">#</div>}
@@ -306,7 +305,7 @@ export function Calendar({
                     </div>
                 ))}
             </div>
-            
+
             {/* Días del calendario */}
             <div className="grid grid-cols-7 gap-1">
                 {calendarDays.map((dayData, index) => {
@@ -315,7 +314,7 @@ export function Calendar({
                     const disabled = isDateDisabled(date)
                     const today = isToday(date)
                     const hasEvents = showEvents && dayEvents.length > 0
-                    
+
                     return (
                         <div
                             key={index}
@@ -331,7 +330,7 @@ export function Calendar({
                             onClick={() => handleDateClick(date)}
                         >
                             <span>{date.getDate()}</span>
-                            
+
                             {/* Indicadores de eventos */}
                             {hasEvents && (
                                 <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex space-x-1">
@@ -354,7 +353,7 @@ export function Calendar({
                     )
                 })}
             </div>
-            
+
             {/* Eventos del día seleccionado */}
             {showEvents && selected && mode === "single" && (
                 <div className="mt-4 space-y-2">
@@ -366,14 +365,14 @@ export function Calendar({
                                 {event.type === "earnings" && <TrendingUp className="h-3 w-3 text-blue-600" />}
                                 {event.type === "ex-date" && <CalendarDays className="h-3 w-3 text-yellow-600" />}
                                 {event.type === "meeting" && <Building2 className="h-3 w-3 text-purple-600" />}
-                                
+
                                 <div className="flex-1">
                                     <div className="font-medium">{event.title}</div>
                                     {event.description && (
                                         <div className="text-gray-600 text-xs">{event.description}</div>
                                     )}
                                 </div>
-                                
+
                                 {event.amount && (
                                     <Badge variant="secondary">
                                         €{event.amount.toFixed(2)}
@@ -402,7 +401,7 @@ export function DatePicker({
     className?: string
 }) {
     const [isOpen, setIsOpen] = useState(false)
-    
+
     return (
         <div className={cn("relative", className)}>
             <div className="flex">
@@ -424,7 +423,7 @@ export function DatePicker({
                     <CalendarIcon className="h-4 w-4" />
                 </Button>
             </div>
-            
+
             {isOpen && (
                 <div className="absolute top-full left-0 z-50 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4">
                     <Calendar
@@ -459,12 +458,12 @@ export function DateRangePicker({
 }) {
     const [isOpen, setIsOpen] = useState(false)
     const presets = getFinancialRanges()
-    
+
     const formatRange = (range: DateRange): string => {
         if (!range.start || !range.end) return ""
         return `${formatDateShort(range.start)} - ${formatDateShort(range.end)}`
     }
-    
+
     return (
         <div className={cn("relative", className)}>
             <div className="flex">
@@ -496,7 +495,7 @@ export function DateRangePicker({
                     </Button>
                 )}
             </div>
-            
+
             {isOpen && (
                 <div className="absolute top-full left-0 z-50 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
                     <div className="flex">
@@ -522,7 +521,7 @@ export function DateRangePicker({
                                 </div>
                             </div>
                         )}
-                        
+
                         {/* Calendar */}
                         <div className="p-4">
                             <Calendar
@@ -546,7 +545,7 @@ export function DateRangePicker({
 // FinancialCalendar con eventos
 export function FinancialCalendar({
     events,
-    onEventClick,
+    // onEventClick,
     onDateSelect,
     className
 }: {
@@ -556,7 +555,7 @@ export function FinancialCalendar({
     className?: string
 }) {
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-    
+
     return (
         <Card className={className}>
             <CardHeader>
@@ -576,7 +575,7 @@ export function FinancialCalendar({
                     events={events}
                     showEvents={true}
                 />
-                
+
                 {/* Leyenda de eventos */}
                 <div className="mt-4 flex flex-wrap gap-2">
                     <div className="flex items-center gap-1 text-xs">

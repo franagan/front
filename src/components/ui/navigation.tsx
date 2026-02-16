@@ -20,6 +20,9 @@ import {
 import AuthModal from "@/components/auth/AuthModal"
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
+import ReactCountryFlag from "react-country-flag"
+
+
 
 interface NavigationProps {
     className?: string
@@ -148,7 +151,11 @@ const Navigation = ({ className }: NavigationProps) => {
                                 disabled={isPending}
                                 className="border-border text-foreground hover:bg-accent min-w-[3rem] hover:bg-yellow-600"
                             >
-                                {locale === 'es' ? 'ES' : 'EN'}
+                                <ReactCountryFlag
+                                    countryCode={locale === 'es' ? 'ES' : 'GB'}
+                                    svg
+                                    style={{ width: '2em', height: '2em' }}
+                                />
                             </Button>
                         </div>
 
@@ -160,7 +167,11 @@ const Navigation = ({ className }: NavigationProps) => {
                                 onClick={onLanguageChange}
                                 disabled={isPending}
                             >
-                                {locale === 'es' ? 'ES' : 'EN'}
+                                <ReactCountryFlag
+                                    countryCode={locale === 'es' ? 'ES' : 'GB'}
+                                    svg
+                                    style={{ width: '2em', height: '2em' }}
+                                />
                             </Button>
 
                             <Button

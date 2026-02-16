@@ -10,12 +10,15 @@ interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isHydrated: boolean;
   error: string | null;
   
   login: (data: LoginRequest) => Promise<void>;
+  googleLogin: (token: string) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
   clearError: () => void;
+  setHydrated: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -25,6 +28,7 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isAuthenticated: false,
       isLoading: false,
+      isHydrated: false,
       error: null,
 
       login: async (data: LoginRequest) => {
@@ -43,9 +47,41 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true, 
             isLoading: false 
           });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           set({ 
             error: error.response?.data?.message || 'Error al iniciar sesión', 
+            isLoading: false 
+          });
+          throw error;
+        }
+      },
+
+      googleLogin: async (token: string) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await authService.loginWithGoogle(token);
+          console.log('Google Login Full Response:', response);
+          console.log('Google Login Response Data:', response.data);
+          
+          if (!response.data || !response.data.data) {
+             console.error('Invalid response structure:', response);
+             throw new Error(`Invalid server response: ${JSON.stringify(response.data)}`);
+          }
+
+          const { token: authToken, email, firstName, lastName, role } = response.data.data;
+          
+          set({ 
+            user: { id: email, email, firstName, lastName, role }, 
+            token: authToken, 
+            isAuthenticated: true, 
+            isLoading: false 
+          });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          const errorMessage = error.response?.data?.message || error.message || 'Error al iniciar sesión con Google';
+          set({ 
+            error: errorMessage, 
             isLoading: false 
           });
           throw error;
@@ -64,6 +100,7 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true, 
             isLoading: false 
           });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           set({ 
             error: error.response?.data?.message || 'Error al registrarse', 
@@ -79,6 +116,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       clearError: () => set({ error: null }),
+      setHydrated: () => set({ isHydrated: true }),
     }),
     {
       name: 'auth-storage',
@@ -94,6 +132,9 @@ export const useAuthStore = create<AuthState>()(
           state.user = null;
           state.token = null;
           state.isAuthenticated = false;
+        }
+        if (state) {
+            state.isHydrated = true;
         }
       },
     }

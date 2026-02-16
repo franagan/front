@@ -11,7 +11,10 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { TrendingUp, Loader2 } from "lucide-react"
 
+import { useTranslations } from "next-intl"
+
 export default function RegisterPage() {
+    const t = useTranslations('auth')
     const router = useRouter()
     const { register, isLoading, error } = useAuthStore()
     const [formData, setFormData] = useState({
@@ -37,17 +40,17 @@ export default function RegisterPage() {
         e.preventDefault()
 
         if (!formData.acceptTerms) {
-            setValidationError('Debes aceptar los términos y condiciones')
+            setValidationError(t('register.errors.termsRequired'))
             return
         }
 
         if (formData.password !== formData.confirmPassword) {
-            setValidationError('Las contraseñas no coinciden')
+            setValidationError(t('register.errors.passwordsNotMatch'))
             return
         }
 
         if (formData.password.length < 8) {
-            setValidationError('La contraseña debe tener al menos 8 caracteres')
+            setValidationError(t('register.errors.passwordMin'))
             return
         }
 
@@ -60,17 +63,17 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
             <Card className="w-full max-w-md">
                 <CardHeader className="space-y-1 text-center">
                     <div className="flex justify-center mb-4">
-                        <div className="h-12 w-12 bg-black border-2 border-yellow-500 rounded-full flex items-center justify-center">
+                        <div className="h-12 w-12 bg-primary border-2 border-yellow-500 rounded-full flex items-center justify-center">
                             <TrendingUp className="h-6 w-6 text-yellow-500" />
                         </div>
                     </div>
-                    <CardTitle className="text-2xl font-bold">Crear Cuenta</CardTitle>
+                    <CardTitle className="text-2xl font-bold">{t('register.title')}</CardTitle>
                     <CardDescription>
-                        Únete a Inversión Libre y comienza tu camino FIRE
+                        {t('register.subtitle')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -81,7 +84,7 @@ export default function RegisterPage() {
                             </Alert>
                         )}
                         <div className="space-y-2">
-                            <Label htmlFor="firstName">Nombre</Label>
+                            <Label htmlFor="firstName">{t('register.firstName')}</Label>
                             <Input
                                 id="firstName"
                                 name="firstName"
@@ -94,7 +97,7 @@ export default function RegisterPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="lastName">Apellidos</Label>
+                            <Label htmlFor="lastName">{t('register.lastName')}</Label>
                             <Input
                                 id="lastName"
                                 name="lastName"
@@ -107,7 +110,7 @@ export default function RegisterPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="email">{t('register.email')}</Label>
                             <Input
                                 id="email"
                                 name="email"
@@ -120,7 +123,7 @@ export default function RegisterPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">Contraseña (mínimo 8 caracteres)</Label>
+                            <Label htmlFor="password">{t('register.password')} (min 8 chars)</Label>
                             <Input
                                 id="password"
                                 name="password"
@@ -132,7 +135,7 @@ export default function RegisterPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
+                            <Label htmlFor="confirmPassword">{t('register.confirmPassword')}</Label>
                             <Input
                                 id="confirmPassword"
                                 name="confirmPassword"
@@ -151,16 +154,16 @@ export default function RegisterPage() {
                                 checked={formData.acceptTerms}
                                 onChange={handleChange}
                                 disabled={isLoading}
-                                className="mt-1 h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500"
+                                className="mt-1 h-4 w-4 rounded border-border text-yellow-600 focus:ring-yellow-500 bg-background"
                             />
                             <Label htmlFor="acceptTerms" className="text-sm font-normal cursor-pointer">
-                                Acepto los{' '}
+                                {t('register.terms.accept')}{' '}
                                 <a href="/terms" target="_blank" className="text-yellow-600 hover:text-yellow-700 underline">
-                                    términos y condiciones
+                                    {t('register.terms.termsAndConditions')}
                                 </a>
-                                {' '}y la{' '}
+                                {' '}{t('register.terms.and')}{' '}
                                 <a href="/privacy" target="_blank" className="text-yellow-600 hover:text-yellow-700 underline">
-                                    política de privacidad
+                                    {t('register.terms.privacyPolicy')}
                                 </a>
                             </Label>
                         </div>
@@ -172,23 +175,23 @@ export default function RegisterPage() {
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Creando cuenta...
+                                    {t('common.creatingAccount')}
                                 </>
                             ) : (
-                                'Registrarse'
+                                t('register.submit')
                             )}
                         </Button>
                     </form>
                 </CardContent>
-                <CardFooter className="flex flex-col space-y-4 text-center text-sm text-gray-500">
+                <CardFooter className="flex flex-col space-y-4 text-center text-sm text-muted-foreground">
                     <p>
-                        ¿Ya tienes una cuenta?{' '}
+                        {t('register.hasAccount')}{' '}
                         <Link href="/auth/login" className="text-yellow-600 hover:text-yellow-700 font-medium">
-                            Inicia Sesión
+                            {t('register.signIn')}
                         </Link>
                     </p>
-                    <Link href="/" className="text-gray-500 hover:text-gray-700">
-                        Volver al inicio
+                    <Link href="/" className="text-muted-foreground hover:text-foreground">
+                        {t('common.backToHome')}
                     </Link>
                 </CardFooter>
             </Card>

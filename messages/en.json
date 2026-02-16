@@ -13,38 +13,119 @@
     "home": {
         "hero": {
             "title": "Your path to",
+            "badge": "🔥 FIRE Method + Digital Nomadism",
             "titleHighlight": "Financial Independence",
             "subtitle": "Learn how to achieve FIRE (Financial Independence, Retire Early) and live the life you truly want. Practical financial education to reach your freedom.",
             "cta": "Calculate my FIRE",
-            "ctaSecondary": "Explore the Blog"
+            "ctaSecondary": "Explore the Blog",
+            "benefits": {
+                "free": "Free forever",
+                "proven": "Proven methods",
+                "community": "Global community"
+            },
+            "preview": {
+                "badge": "Preview",
+                "title": "Your FIRE Progress",
+                "status": "On track",
+                "label": "of target",
+                "current": "Current Net Worth",
+                "target": "FIRE Goal",
+                "remaining": "Time Remaining",
+                "needed": "Required Savings"
+            }
         },
         "stats": {
             "users": "Active users",
-            "articles": "Published articles",
-            "tools": "Free tools"
+            "countries": "Visited countries",
+            "performance": "Annual return"
         },
         "features": {
             "title": "Everything you need to achieve your FIRE",
+            "subtitle": "The most complete platform to achieve your financial independence",
             "calculator": {
                 "title": "FIRE Calculator",
-                "description": "Calculate exactly how much you need to save to achieve your financial independence"
+                "description": "Calculate exactly how much you need to save to achieve your financial independence",
+                "configTitle": "Configure your Situation",
+                "labels": {
+                    "currentAge": "Current Age",
+                    "targetAge": "Target FIRE Age",
+                    "currentSavings": "Current Savings (€)",
+                    "monthlyIncome": "Monthly Income (€)",
+                    "monthlyExpenses": "Monthly Expenses (€)",
+                    "expectedReturn": "Expected Annual Return (%)"
+                },
+                "monthlySavings": "Monthly Savings",
+                "feedback": {
+                    "good": "Perfect for FIRE!",
+                    "bad": "You need to reduce expenses or increase income"
+                },
+                "progressTitle": "Your FIRE Progress",
+                "progressLabel": "of FIRE goal",
+                "results": {
+                    "projected": "Projected Net Worth",
+                    "target": "FIRE Goal",
+                    "years": "Years to FIRE",
+                    "passive": "Passive Income"
+                },
+                "success": {
+                    "title": "Congratulations!",
+                    "subtitle": "You can now achieve your FIRE"
+                },
+                "chartTitle": "Net Worth Evolution"
             },
             "blog": {
                 "title": "Educational blog",
                 "description": "Detailed articles about investing, saving and proven FIRE strategies"
             },
-            "tools": {
-                "title": "Free tools",
-                "description": "Calculators, trackers and resources to manage your personal finances"
+            "nomad": {
+                "title": "Digital Nomadism",
+                "description": "Discover how to live and work from anywhere in the world.",
+                "button": "Travel"
+            },
+            "community": {
+                "title": "Community",
+                "description": "Join thousands of people on their way to financial freedom.",
+                "button": "Connect"
+            },
+            "youtube": {
+                "title": "YouTube Channel",
+                "description": "Weekly content about FIRE, investing, and digital nomadism.",
+                "button": "Subscribe"
+            },
+            "proven": {
+                "title": "Proven Methods",
+                "description": "Strategies that work in the real world, based on experience.",
+                "button": "Learn"
             }
         },
         "testimonials": {
-            "title": "What our users say"
+            "title": "What our users say",
+            "subtitle": "Real people who have achieved their FIRE following the method",
+            "items": {
+                "maria": {
+                    "role": "Developer → Nomad",
+                    "quote": "I achieved my FIRE in 8 years saving 60% of my income. Now I work from Bali 4 hours a day."
+                },
+                "javier": {
+                    "role": "Consultant → Entrepreneur",
+                    "quote": "The FIRE method allowed me to quit my job and start my own startup. Freedom is priceless!"
+                },
+                "laura": {
+                    "role": "Couple → FIRE Family",
+                    "quote": "With two kids we achieved our family FIRE. Now we travel through Europe in a campervan."
+                }
+            }
         },
         "cta": {
             "title": "Ready to start your FIRE?",
             "subtitle": "Join thousands of people already on their way to financial independence",
-            "button": "Start now"
+            "button": "Start now",
+            "youtube": "Follow on YouTube",
+            "benefits": {
+                "noRegister": "No registration required",
+                "free": "100% Free",
+                "fast": "Results in 2 minutes"
+            }
         }
     },
     "auth": {
@@ -82,28 +163,48 @@
                 "emailInvalid": "Invalid email",
                 "passwordRequired": "Password is required",
                 "passwordMin": "Password must be at least 8 characters",
-                "passwordsNotMatch": "Passwords don't match"
+                "passwordsNotMatch": "Passwords don't match",
+                "termsRequired": "You must accept the terms and conditions"
+            },
+            "terms": {
+                "accept": "I accept the",
+                "termsAndConditions": "terms and conditions",
+                "and": "and the",
+                "privacyPolicy": "privacy policy"
             }
         },
         "common": {
-            "loading": "Loading..."
+            "loading": "Loading...",
+            "loggingIn": "Logging in...",
+            "creatingAccount": "Creating account...",
+            "backToHome": "Back to home"
         }
     },
     "mainboard": {
-        "welcome": "Welcome",
-        "dashboard": "Dashboard",
+        "welcome": "Welcome back,",
         "financialSummary": "Financial Summary",
         "netWorth": "Net Worth",
-        "investments": "Investments",
+        "thisMonth": "this month",
+        "totalReturn": "Total Return",
         "totalSavings": "Total Savings",
         "monthlyCashFlow": "Monthly Cash Flow",
-        "thisMonth": "this month",
-        "totalReturn": "total return",
-        "savingsRate": "savings rate",
-        "income": "Income",
-        "expenses": "Expenses",
+        "income": {
+            "title": "Income",
+            "label": "Income",
+            "empty": "No income recorded"
+        },
+        "expenses": {
+            "title": "Expenses",
+            "label": "Expenses",
+            "empty": "No expenses recorded"
+        },
+        "investments": {
+            "title": "Investments",
+            "label": "Investments",
+            "empty": "No investments recorded"
+        },
         "portfolio": {
-            "title": "Investment Portfolio",
+            "title": "Investment Details",
             "totalValue": "Total Value",
             "totalReturn": "Total Return",
             "monthlyReturn": "Monthly Return",
@@ -113,53 +214,57 @@
             "addInvestment": "Add Investment"
         },
         "budget": {
-            "title": "Monthly Budget",
-            "manage": "Manage Budget",
-            "categories": {
-                "housing": "Housing",
-                "food": "Food",
-                "transport": "Transport",
-                "leisure": "Leisure",
-                "other": "Other"
-            }
+            "title": "Budgets",
+            "empty": "No budgets defined. Create your first one!",
+            "manage": "Manage Budgets"
         },
         "goals": {
             "title": "Savings Goals",
-            "add": "Add Goal",
-            "emergencyFund": "Emergency Fund",
-            "travel": "Japan Trip",
-            "realEstate": "Real Estate Investment"
-        },
-        "quickActions": {
-            "title": "Quick Actions",
-            "addExpense": {
-                "title": "Add Expense",
-                "description": "Add a new expense to your budget"
-            },
-            "analyzeStock": {
-                "title": "Analyze Stock",
-                "description": "Use BolScan to analyze companies"
-            },
-            "fireCalculator": {
-                "title": "FIRE Calculator",
-                "description": "Calculate your path to financial freedom"
-            }
+            "empty": "No goals defined. Create your first one!",
+            "viewAll": "View All Goals"
         }
     },
     "blog": {
-        "title": "FIRE Blog",
-        "subtitle": "Learn everything about financial independence, investing and digital nomadism",
-        "readMore": "Read more",
-        "minRead": "min read",
+        "title": "Blog",
+        "hero": {
+            "badge": "📚 FIRE Knowledge Center",
+            "title": "Learn about",
+            "highlight": "Financial Independence",
+            "description": "Articles, guides, and proven strategies to reach your FIRE. All the knowledge you need to achieve financial freedom."
+        },
+        "stats": {
+            "articles": "Articles published",
+            "views": "Total reads",
+            "minutes": "Content minutes"
+        },
+        "searchPlaceholder": "Search articles, tags or topics...",
         "categories": {
             "all": "All",
             "fundamentals": "Fundamentals",
             "strategy": "Strategy",
             "investing": "Investing",
-            "lifestyle": "Lifestyle"
+            "lifestyle": "Lifestyle",
+            "savings": "Savings"
         },
-        "featured": "Featured",
-        "latest": "Latest articles"
+        "featured": {
+            "title": "Featured Articles",
+            "badge": "Featured"
+        },
+        "readMore": "Read more",
+        "read": "Read",
+        "allArticles": "All Articles",
+        "articlesOf": "Articles of",
+        "noResults": {
+            "title": "No articles found",
+            "description": "Try other search terms or category."
+        },
+        "newsletter": {
+            "title": "Want to receive new articles?",
+            "description": "Join our newsletter and receive exclusive content about FIRE, investing, and digital nomadism directly in your email.",
+            "placeholder": "your@email.com",
+            "button": "Subscribe Free",
+            "spam": "No spam. You can unsubscribe at any time."
+        }
     },
     "calculators": {
         "title": "Financial Calculators",
@@ -203,6 +308,178 @@
         "search": "Search",
         "filter": "Filter",
         "sort": "Sort",
-        "language": "Language"
+        "language": "Language",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "close": "Close",
+        "monthly": "Monthly",
+        "annually": "Annually"
+    },
+    "portfolio": {
+        "title": "Investment Portfolio",
+        "subtitle": "Manage and analyze your investments",
+        "totalValue": "Total Value",
+        "totalReturn": "Total Return",
+        "addPosition": "Add Position",
+        "positions": "Positions",
+        "asset": "Asset",
+        "quantity": "Quantity",
+        "buyPrice": "Buy Price",
+        "currentPrice": "Current Price",
+        "return": "Return",
+        "value": "Value",
+        "allocation": "Allocation",
+        "performance": "Performance",
+        "noPositions": "You have no positions in your portfolio",
+        "addFirst": "Add your first investment"
+    },
+    "budget": {
+        "title": "Budget Management",
+        "subtitle": "Control your monthly expenses",
+        "totalBudget": "Total Budget",
+        "totalSpent": "Total Spent",
+        "remaining": "Remaining",
+        "categories": "Categories",
+        "addExpense": "Add Expense",
+        "editCategory": "Edit Category",
+        "categoryName": "Category Name",
+        "budgetAmount": "Budgeted Amount",
+        "spentAmount": "Spent Amount",
+        "percentage": "Percentage",
+        "overBudget": "Over Budget",
+        "underBudget": "Under Budget",
+        "history": "Expense History"
+    },
+    "goals": {
+        "title": "Savings Goals",
+        "subtitle": "Plan and achieve your financial goals",
+        "addGoal": "Add Goal",
+        "editGoal": "Edit Goal",
+        "goalName": "Goal Name",
+        "targetAmount": "Target Amount",
+        "currentAmount": "Current Amount",
+        "deadline": "Deadline",
+        "progress": "Progress",
+        "completed": "Completed",
+        "inProgress": "In Progress",
+        "notStarted": "Not Started",
+        "monthlyContribution": "Suggested Monthly Contribution",
+        "timeRemaining": "Time Remaining",
+        "onTrack": "On Track",
+        "behindSchedule": "Behind Schedule",
+        "noGoals": "You have no savings goals",
+        "createFirst": "Create your first goal"
+    },
+    "expenses": {
+        "title": "Add Expense",
+        "subtitle": "Add a new expense to your budget",
+        "amount": "Amount",
+        "category": "Category",
+        "description": "Description",
+        "date": "Date",
+        "addExpense": "Add Expense",
+        "recentExpenses": "Recent Expenses",
+        "noExpenses": "No expenses recorded",
+        "success": "Expense recorded successfully",
+        "selectCategory": "Select a category",
+        "enterAmount": "Enter amount",
+        "enterDescription": "Enter description",
+        "today": "Today",
+        "yesterday": "Yesterday",
+        "thisWeek": "This Week",
+        "thisMonth": "This Month"
+    },
+    "bolscan": {
+        "title": "Stock Analysis",
+        "subtitle": "Analyze companies before investing",
+        "searchStock": "Search stock or company",
+        "search": "Search",
+        "companyInfo": "Company Information",
+        "fundamentals": "Fundamentals",
+        "financials": "Financials",
+        "ratios": "Ratios",
+        "performance": "Performance",
+        "recommendation": "Recommendation",
+        "marketCap": "Market Cap",
+        "peRatio": "P/E Ratio",
+        "dividendYield": "Dividend Yield",
+        "eps": "EPS (Earnings Per Share)",
+        "revenue": "Revenue",
+        "netIncome": "Net Income",
+        "debtToEquity": "Debt to Equity",
+        "roe": "ROE",
+        "roa": "ROA",
+        "buy": "Buy",
+        "hold": "Hold",
+        "sell": "Sell",
+        "noResults": "No results found",
+        "enterSymbol": "Enter a symbol to start"
+    },
+    "fireCalculator": {
+        "title": "FIRE Calculator",
+        "subtitle": "Calculate your path to financial independence",
+        "currentAge": "Current Age",
+        "retirementAge": "Desired Retirement Age",
+        "currentSavings": "Current Savings",
+        "monthlyIncome": "Monthly Income",
+        "monthlyExpenses": "Monthly Expenses",
+        "monthlySavings": "Monthly Savings",
+        "expectedReturn": "Expected Return (%)",
+        "inflationRate": "Inflation Rate (%)",
+        "withdrawalRate": "Withdrawal Rate (%)",
+        "calculate": "Calculate",
+        "results": "Results",
+        "fireNumber": "Your FIRE Number",
+        "yearsToFire": "Years to FIRE",
+        "fireAge": "FIRE Age",
+        "monthlyRequired": "Monthly Savings Required",
+        "savingsRate": "Savings Rate",
+        "timeline": "Timeline",
+        "scenarios": "FIRE Scenarios",
+        "leanFire": "Lean FIRE",
+        "regularFire": "Regular FIRE",
+        "fatFire": "Fat FIRE",
+        "projections": "Projections",
+        "assumptions": "Assumptions",
+        "tips": "Tips to Achieve FIRE"
+    },
+    "footer": {
+        "rights": "© 2024 Inversión Libre. All rights reserved.",
+        "description": "Your path to financial independence and digital nomadism.",
+        "brand": "Inversión Libre",
+        "youtube": "YouTube",
+        "popular": "Popular Articles",
+        "categories": "Categories",
+        "tools": {
+            "title": "Tools",
+            "fireCalculator": "FIRE Calculator",
+            "compoundInterest": "Compound Interest Calculator",
+            "expensePlanner": "Expense Planner",
+            "progressTracker": "Progress Tracker"
+        },
+        "education": {
+            "title": "Education",
+            "beginnersGuide": "FIRE Guide for Beginners",
+            "investingStrategies": "Investment Strategies",
+            "digitalNomadism": "Digital Nomadism",
+            "successStories": "Success Stories"
+        },
+        "support": {
+            "title": "Support",
+            "contact": "Contact",
+            "faq": "FAQ",
+            "community": "Community",
+            "privacyPolicy": "Privacy Policy"
+        }
+    },
+    "income": {
+        "title": "Income Sources",
+        "add": "Add",
+        "noIncomes": "You have no income sources registered. Add your first one!",
+        "monthly": "Monthly",
+        "annual": "Annual"
     }
 }

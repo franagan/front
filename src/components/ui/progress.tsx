@@ -5,21 +5,12 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import {
     Target,
-    TrendingUp,
-    DollarSign,
-    Clock,
     Loader2,
     CheckCircle,
     AlertCircle,
-    BarChart3,
-    Activity,
-    Zap,
-    Shield,
     ArrowUp,
     ArrowDown,
-    Minus,
-    Calendar,
-    PiggyBank
+    Minus
 } from "lucide-react"
 
 // Variantes del Progress
@@ -28,19 +19,19 @@ const progressVariants = cva(
     {
         variants: {
             variant: {
-                default: "bg-gray-200",
-                success: "bg-green-100",
-                warning: "bg-yellow-100",
-                destructive: "bg-red-100",
-                info: "bg-blue-100",
+                default: "bg-secondary",
+                success: "bg-green-100 dark:bg-green-900/30",
+                warning: "bg-yellow-100 dark:bg-yellow-900/30",
+                destructive: "bg-red-100 dark:bg-red-900/30",
+                info: "bg-blue-100 dark:bg-blue-900/30",
                 // Variantes específicas para finanzas
-                fire: "bg-gradient-to-r from-orange-100 to-red-100",
-                investment: "bg-gradient-to-r from-blue-100 to-green-100",
-                savings: "bg-gradient-to-r from-green-100 to-emerald-100"
+                fire: "bg-orange-100/30 dark:bg-orange-900/20",
+                investment: "bg-blue-100/30 dark:bg-blue-900/20",
+                savings: "bg-green-100/30 dark:bg-green-900/20"
             },
             size: {
                 sm: "h-2",
-                default: "h-3", 
+                default: "h-3",
                 lg: "h-4",
                 xl: "h-6"
             }
@@ -57,9 +48,9 @@ const progressBarVariants = cva(
     {
         variants: {
             variant: {
-                default: "bg-gray-600",
+                default: "bg-foreground",
                 success: "bg-green-600",
-                warning: "bg-yellow-600", 
+                warning: "bg-yellow-600",
                 destructive: "bg-red-600",
                 info: "bg-blue-600",
                 fire: "bg-gradient-to-r from-orange-500 to-red-500",
@@ -76,7 +67,7 @@ const progressBarVariants = cva(
 // Props del Progress base
 export interface ProgressProps
     extends React.HTMLAttributes<HTMLDivElement>,
-        VariantProps<typeof progressVariants> {
+    VariantProps<typeof progressVariants> {
     value?: number
     max?: number
     showValue?: boolean
@@ -97,14 +88,14 @@ export function Progress({
     ...props
 }: ProgressProps) {
     const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
-    
+
     return (
         <div className="space-y-2">
             {(label || showValue) && (
                 <div className="flex justify-between text-sm">
-                    {label && <span className="font-medium text-gray-700">{label}</span>}
+                    {label && <span className="font-medium text-foreground">{label}</span>}
                     {showValue && (
-                        <span className="text-gray-600">
+                        <span className="text-muted-foreground">
                             {percentage.toFixed(1)}%
                         </span>
                     )}
@@ -148,7 +139,7 @@ export function CircularProgress({
     const circumference = radius * 2 * Math.PI
     const strokeDasharray = circumference
     const strokeDashoffset = circumference - (percentage / 100) * circumference
-    
+
     const getColor = () => {
         switch (variant) {
             case "success": return "#10b981"
@@ -160,7 +151,7 @@ export function CircularProgress({
             default: return "#6b7280"
         }
     }
-    
+
     return (
         <div className={cn("relative inline-flex items-center justify-center", className)}>
             <svg width={size} height={size} className="transform -rotate-90">
@@ -172,7 +163,7 @@ export function CircularProgress({
                     stroke="currentColor"
                     strokeWidth={strokeWidth}
                     fill="none"
-                    className="text-gray-200"
+                    className="text-muted/20"
                 />
                 {/* Progress circle */}
                 <circle
@@ -196,7 +187,7 @@ export function CircularProgress({
                         </span>
                     )}
                     {label && (
-                        <span className="text-xs text-gray-600 text-center">{label}</span>
+                        <span className="text-xs text-muted-foreground text-center">{label}</span>
                     )}
                 </div>
             )}
@@ -223,7 +214,7 @@ export function FireProgress({
     const percentage = (current / target) * 100
     const remaining = target - current
     const monthsToGoal = monthlyContribution ? Math.ceil(remaining / monthlyContribution) : null
-    
+
     return (
         <div className={cn("space-y-4 p-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-lg border border-orange-200", className)}>
             <div className="flex items-center justify-between">
@@ -238,15 +229,15 @@ export function FireProgress({
                     <div className="text-sm text-gray-600">completado</div>
                 </div>
             </div>
-            
-            <Progress 
-                variant="fire" 
-                value={current} 
-                max={target} 
+
+            <Progress
+                variant="fire"
+                value={current}
+                max={target}
                 size="lg"
                 animate
             />
-            
+
             <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                     <div className="font-medium text-gray-900">Actual</div>
@@ -296,13 +287,13 @@ export function StepProgress({
         if (index === currentStep) return variant === "investment" ? "text-green-600 bg-green-200" : "text-blue-600 bg-blue-200"
         return "text-gray-400 bg-gray-100"
     }
-    
+
     const getLineColor = (index: number) => {
-        return index < currentStep ? 
-            (variant === "investment" ? "bg-green-500" : "bg-blue-500") : 
+        return index < currentStep ?
+            (variant === "investment" ? "bg-green-500" : "bg-blue-500") :
             "bg-gray-200"
     }
-    
+
     return (
         <div className={cn("space-y-4", className)}>
             <div className="flex items-center justify-between">
@@ -353,10 +344,10 @@ export function LoadingSpinner({
 }) {
     const sizeClasses = {
         sm: "h-4 w-4",
-        default: "h-6 w-6", 
+        default: "h-6 w-6",
         lg: "h-8 w-8"
     }
-    
+
     const colorClasses = {
         default: "text-gray-600",
         success: "text-green-600",
@@ -364,7 +355,7 @@ export function LoadingSpinner({
         destructive: "text-red-600",
         investment: "text-blue-600"
     }
-    
+
     return (
         <div className={cn("flex items-center gap-3", className)}>
             <Loader2 className={cn(
@@ -418,9 +409,9 @@ export function FinancialDataProgress({
                 }
         }
     }
-    
+
     const config = getStatusConfig()
-    
+
     return (
         <div className={cn(
             "p-4 rounded-lg border",
@@ -441,9 +432,9 @@ export function FinancialDataProgress({
                     )}
                 </div>
             </div>
-            
+
             {status === "loading" && (
-                <Progress 
+                <Progress
                     variant="info"
                     value={progress}
                     showValue
@@ -479,7 +470,7 @@ export function MultiMetricProgress({
             default: return null
         }
     }
-    
+
     return (
         <div className={cn("space-y-4 p-6 bg-white rounded-lg border border-gray-200", className)}>
             {title && (

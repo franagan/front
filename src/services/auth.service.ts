@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { LoginRequest, RegisterRequest, User, AuthResponse, ApiResponse } from '@/types/auth.types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -27,6 +27,10 @@ api.interceptors.request.use((config) => {
 const authService = {
     login: (data: LoginRequest) => {
         return api.post<ApiResponse<AuthResponse>>('/auth/login', data);
+    },
+
+    loginWithGoogle: (token: string) => {
+        return api.post<ApiResponse<AuthResponse>>('/auth/google', { token });
     },
 
     register: (data: RegisterRequest) => {

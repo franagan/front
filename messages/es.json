@@ -13,38 +13,119 @@
     "home": {
         "hero": {
             "title": "Tu camino hacia la",
+            "badge": "🔥 Método FIRE + Nomadismo Digital",
             "titleHighlight": "Independencia Financiera",
             "subtitle": "Aprende a conseguir el FIRE (Financial Independence, Retire Early) y vive la vida que realmente quieres. Educación financiera práctica para alcanzar tu libertad.",
             "cta": "Calcular mi FIRE",
-            "ctaSecondary": "Explorar el Blog"
+            "ctaSecondary": "Explorar el Blog",
+            "benefits": {
+                "free": "Gratis para siempre",
+                "proven": "Métodos probados",
+                "community": "Comunidad global"
+            },
+            "preview": {
+                "badge": "Vista Previa",
+                "title": "Tu Progreso FIRE",
+                "status": "En camino",
+                "label": "del objetivo",
+                "current": "Patrimonio actual",
+                "target": "Objetivo FIRE",
+                "remaining": "Tiempo restante",
+                "needed": "Ahorro necesario"
+            }
         },
         "stats": {
             "users": "Usuarios activos",
-            "articles": "Artículos publicados",
-            "tools": "Herramientas gratuitas"
+            "countries": "Países visitados",
+            "performance": "Rendimiento anual"
         },
         "features": {
             "title": "Todo lo que necesitas para conseguir tu FIRE",
+            "subtitle": "La plataforma más completa para conseguir tu independencia financiera",
             "calculator": {
                 "title": "Calculadora FIRE",
-                "description": "Calcula exactamente cuánto necesitas ahorrar para conseguir tu independencia financiera"
+                "description": "Calcula exactamente cuánto necesitas ahorrar para conseguir tu independencia financiera",
+                "configTitle": "Configura tu Situación",
+                "labels": {
+                    "currentAge": "Edad Actual",
+                    "targetAge": "Edad Objetivo FIRE",
+                    "currentSavings": "Ahorros Actuales (€)",
+                    "monthlyIncome": "Ingresos Mensuales (€)",
+                    "monthlyExpenses": "Gastos Mensuales (€)",
+                    "expectedReturn": "Rendimiento Esperado Anual (%)"
+                },
+                "monthlySavings": "Ahorro Mensual",
+                "feedback": {
+                    "good": "Perfecto para FIRE!",
+                    "bad": "Necesitas reducir gastos o aumentar ingresos"
+                },
+                "progressTitle": "Tu Progreso FIRE",
+                "progressLabel": "del objetivo FIRE",
+                "results": {
+                    "projected": "Patrimonio Proyectado",
+                    "target": "Objetivo FIRE",
+                    "years": "Años hasta FIRE",
+                    "passive": "Ingresos Pasivos"
+                },
+                "success": {
+                    "title": "¡Felicidades!",
+                    "subtitle": "Ya puedes conseguir tu FIRE"
+                },
+                "chartTitle": "Evolución Patrimonio"
             },
             "blog": {
                 "title": "Blog educativo",
                 "description": "Artículos detallados sobre inversión, ahorro y estrategias FIRE probadas"
             },
-            "tools": {
-                "title": "Herramientas gratuitas",
-                "description": "Calculadoras, trackers y recursos para gestionar tus finanzas personales"
+            "nomad": {
+                "title": "Nomadismo Digital",
+                "description": "Descubre cómo vivir y trabajar desde cualquier lugar del mundo.",
+                "button": "Viajar"
+            },
+            "community": {
+                "title": "Comunidad",
+                "description": "Únete a miles de personas en su camino hacia la libertad financiera.",
+                "button": "Conectar"
+            },
+            "youtube": {
+                "title": "Canal YouTube",
+                "description": "Contenido semanal sobre FIRE, inversiones y nomadismo digital.",
+                "button": "Suscribirse"
+            },
+            "proven": {
+                "title": "Métodos Probados",
+                "description": "Estrategias que funcionan en el mundo real, basadas en experiencia.",
+                "button": "Conocer"
             }
         },
         "testimonials": {
-            "title": "Lo que dicen nuestros usuarios"
+            "title": "Lo que dicen nuestros usuarios",
+            "subtitle": "Personas reales que han conseguido su FIRE siguiendo el método",
+            "items": {
+                "maria": {
+                    "role": "Desarrolladora → Nómada",
+                    "quote": "Conseguí mi FIRE en 8 años ahorrando el 60% de mis ingresos. Ahora trabajo desde Bali 4 horas al día."
+                },
+                "javier": {
+                    "role": "Consultor → Emprendedor",
+                    "quote": "El método FIRE me permitió dejar mi trabajo y montar mi propia startup. ¡La libertad no tiene precio!"
+                },
+                "laura": {
+                    "role": "Pareja → Familia FIRE",
+                    "quote": "Con dos niños conseguimos nuestro FIRE familiar. Ahora viajamos por Europa en autocaravana."
+                }
+            }
         },
         "cta": {
             "title": "¿Listo para empezar tu FIRE?",
             "subtitle": "Únete a miles de personas que ya están en camino hacia su independencia financiera",
-            "button": "Comenzar ahora"
+            "button": "Comenzar ahora",
+            "youtube": "Seguir en YouTube",
+            "benefits": {
+                "noRegister": "Sin registro requerido",
+                "free": "100% Gratis",
+                "fast": "Resultados en 2 minutos"
+            }
         }
     },
     "auth": {
@@ -62,7 +143,8 @@
                 "invalidCredentials": "Email o contraseña incorrectos",
                 "emailRequired": "El email es obligatorio",
                 "passwordRequired": "La contraseña es obligatoria"
-            }
+            },
+            "or": "O"
         },
         "register": {
             "title": "Crear Cuenta",
@@ -82,28 +164,49 @@
                 "emailInvalid": "Email inválido",
                 "passwordRequired": "La contraseña es obligatoria",
                 "passwordMin": "La contraseña debe tener al menos 8 caracteres",
-                "passwordsNotMatch": "Las contraseñas no coinciden"
+                "passwordsNotMatch": "Las contraseñas no coinciden",
+                "termsRequired": "Debes aceptar los términos y condiciones"
+            },
+            "terms": {
+                "accept": "Acepto los",
+                "termsAndConditions": "términos y condiciones",
+                "and": "y la",
+                "privacyPolicy": "política de privacidad"
             }
         },
         "common": {
-            "loading": "Cargando..."
+            "continueWithGoogle": "Continuar con Google",
+            "loading": "Cargando...",
+            "loggingIn": "Iniciando sesión...",
+            "creatingAccount": "Creando cuenta...",
+            "backToHome": "Volver al inicio"
         }
     },
     "mainboard": {
-        "welcome": "Bienvenido",
-        "dashboard": "Panel de Control",
+        "welcome": "Bienvenido de nuevo,",
         "financialSummary": "Resumen Financiero",
         "netWorth": "Patrimonio Neto",
-        "investments": "Inversiones",
+        "thisMonth": "este mes",
+        "totalReturn": "Rentabilidad Total",
         "totalSavings": "Ahorro Total",
         "monthlyCashFlow": "Flujo de Caja Mensual",
-        "thisMonth": "este mes",
-        "totalReturn": "rentabilidad total",
-        "savingsRate": "tasa de ahorro",
-        "income": "Ingresos",
-        "expenses": "Gastos",
+        "income": {
+            "title": "Ingresos",
+            "label": "Ingresos",
+            "empty": "No hay ingresos registrados"
+        },
+        "expenses": {
+            "title": "Gastos",
+            "label": "Gastos",
+            "empty": "No hay gastos registrados"
+        },
+        "investments": {
+            "title": "Inversiones",
+            "label": "Inversiones",
+            "empty": "No hay inversiones registradas"
+        },
         "portfolio": {
-            "title": "Cartera de Inversiones",
+            "title": "Detalle de Inversiones",
             "totalValue": "Valor Total",
             "totalReturn": "Rentabilidad Total",
             "monthlyReturn": "Rentabilidad Mensual",
@@ -113,53 +216,57 @@
             "addInvestment": "Añadir Inversión"
         },
         "budget": {
-            "title": "Presupuesto Mensual",
-            "manage": "Gestionar Presupuesto",
-            "categories": {
-                "housing": "Vivienda",
-                "food": "Alimentación",
-                "transport": "Transporte",
-                "leisure": "Ocio",
-                "other": "Otros"
-            }
+            "title": "Presupuestos",
+            "empty": "No hay presupuestos definidos. ¡Crea el primero!",
+            "manage": "Gestionar Presupuestos"
         },
         "goals": {
             "title": "Objetivos de Ahorro",
-            "add": "Añadir Objetivo",
-            "emergencyFund": "Fondo de Emergencia",
-            "travel": "Viaje a Japón",
-            "realEstate": "Inversión Inmobiliaria"
-        },
-        "quickActions": {
-            "title": "Acciones Rápidas",
-            "addExpense": {
-                "title": "Registrar Gasto",
-                "description": "Añade un nuevo gasto a tu presupuesto"
-            },
-            "analyzeStock": {
-                "title": "Analizar Acción",
-                "description": "Usa BolScan para analizar empresas"
-            },
-            "fireCalculator": {
-                "title": "Calculadora FIRE",
-                "description": "Calcula tu camino a la libertad financiera"
-            }
+            "empty": "No hay objetivos definidos. ¡Crea el primero!",
+            "viewAll": "Ver Todos los Objetivos"
         }
     },
     "blog": {
-        "title": "Blog FIRE",
-        "subtitle": "Aprende todo sobre independencia financiera, inversión y nomadismo digital",
-        "readMore": "Leer más",
-        "minRead": "min de lectura",
+        "title": "Blog",
+        "hero": {
+            "badge": "📚 Centro de Conocimiento FIRE",
+            "title": "Aprende sobre",
+            "highlight": "Independencia Financiera",
+            "description": "Artículos, guías y estrategias probadas para conseguir tu FIRE. Todo el conocimiento que necesitas para alcanzar la libertad financiera."
+        },
+        "stats": {
+            "articles": "Artículos publicados",
+            "views": "Lecturas totales",
+            "minutes": "Min de contenido"
+        },
+        "searchPlaceholder": "Buscar artículos, tags o temas...",
         "categories": {
             "all": "Todos",
             "fundamentals": "Fundamentos",
             "strategy": "Estrategia",
             "investing": "Inversión",
-            "lifestyle": "Estilo de Vida"
+            "lifestyle": "Estilo de Vida",
+            "savings": "Ahorro"
         },
-        "featured": "Destacado",
-        "latest": "Últimos artículos"
+        "featured": {
+            "title": "Artículos Destacados",
+            "badge": "Destacado"
+        },
+        "readMore": "Leer más",
+        "read": "Leer",
+        "allArticles": "Todos los Artículos",
+        "articlesOf": "Artículos de",
+        "noResults": {
+            "title": "No se encontraron artículos",
+            "description": "Intenta con otros términos de búsqueda o categoría."
+        },
+        "newsletter": {
+            "title": "¿Quieres recibir los nuevos artículos?",
+            "description": "Únete a nuestra newsletter y recibe contenido exclusivo sobre FIRE, inversiones y nomadismo digital directamente en tu email.",
+            "placeholder": "tu@email.com",
+            "button": "Suscribirse Gratis",
+            "spam": "Sin spam. Puedes cancelar en cualquier momento."
+        }
     },
     "calculators": {
         "title": "Calculadoras Financieras",
@@ -203,6 +310,178 @@
         "search": "Buscar",
         "filter": "Filtrar",
         "sort": "Ordenar",
-        "language": "Idioma"
+        "language": "Idioma",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "add": "Añadir",
+        "close": "Cerrar",
+        "monthly": "Mensual",
+        "annually": "Anual"
+    },
+    "portfolio": {
+        "title": "Cartera de Inversiones",
+        "subtitle": "Gestiona y analiza tus inversiones",
+        "totalValue": "Valor Total",
+        "totalReturn": "Rentabilidad Total",
+        "addPosition": "Añadir Posición",
+        "positions": "Posiciones",
+        "asset": "Activo",
+        "quantity": "Cantidad",
+        "buyPrice": "Precio Compra",
+        "currentPrice": "Precio Actual",
+        "return": "Rentabilidad",
+        "value": "Valor",
+        "allocation": "Distribución",
+        "performance": "Rendimiento",
+        "noPositions": "No tienes posiciones en tu cartera",
+        "addFirst": "Añade tu primera inversión"
+    },
+    "budget": {
+        "title": "Gestión de Presupuesto",
+        "subtitle": "Controla tus gastos mensuales",
+        "totalBudget": "Presupuesto Total",
+        "totalSpent": "Total Gastado",
+        "remaining": "Restante",
+        "categories": "Categorías",
+        "addExpense": "Añadir Gasto",
+        "editCategory": "Editar Categoría",
+        "categoryName": "Nombre de Categoría",
+        "budgetAmount": "Cantidad Presupuestada",
+        "spentAmount": "Cantidad Gastada",
+        "percentage": "Porcentaje",
+        "overBudget": "Sobre Presupuesto",
+        "underBudget": "Bajo Presupuesto",
+        "history": "Historial de Gastos"
+    },
+    "goals": {
+        "title": "Objetivos de Ahorro",
+        "subtitle": "Planifica y alcanza tus metas financieras",
+        "addGoal": "Añadir Objetivo",
+        "editGoal": "Editar Objetivo",
+        "goalName": "Nombre del Objetivo",
+        "targetAmount": "Cantidad Objetivo",
+        "currentAmount": "Cantidad Actual",
+        "deadline": "Fecha Límite",
+        "progress": "Progreso",
+        "completed": "Completado",
+        "inProgress": "En Progreso",
+        "notStarted": "No Iniciado",
+        "monthlyContribution": "Contribución Mensual Sugerida",
+        "timeRemaining": "Tiempo Restante",
+        "onTrack": "En Camino",
+        "behindSchedule": "Retrasado",
+        "noGoals": "No tienes objetivos de ahorro",
+        "createFirst": "Crea tu primer objetivo"
+    },
+    "expenses": {
+        "title": "Registrar Gasto",
+        "subtitle": "Añade un nuevo gasto a tu presupuesto",
+        "amount": "Cantidad",
+        "category": "Categoría",
+        "description": "Descripción",
+        "date": "Fecha",
+        "addExpense": "Añadir Gasto",
+        "recentExpenses": "Gastos Recientes",
+        "noExpenses": "No hay gastos registrados",
+        "success": "Gasto registrado correctamente",
+        "selectCategory": "Selecciona una categoría",
+        "enterAmount": "Ingresa la cantidad",
+        "enterDescription": "Ingresa una descripción",
+        "today": "Hoy",
+        "yesterday": "Ayer",
+        "thisWeek": "Esta Semana",
+        "thisMonth": "Este Mes"
+    },
+    "bolscan": {
+        "title": "Análisis de Acciones",
+        "subtitle": "Analiza empresas antes de invertir",
+        "searchStock": "Buscar acción o empresa",
+        "search": "Buscar",
+        "companyInfo": "Información de la Empresa",
+        "fundamentals": "Fundamentales",
+        "financials": "Finanzas",
+        "ratios": "Ratios",
+        "performance": "Rendimiento",
+        "recommendation": "Recomendación",
+        "marketCap": "Capitalización de Mercado",
+        "peRatio": "Ratio P/E",
+        "dividendYield": "Rentabilidad por Dividendo",
+        "eps": "BPA (Beneficio por Acción)",
+        "revenue": "Ingresos",
+        "netIncome": "Beneficio Neto",
+        "debtToEquity": "Deuda/Patrimonio",
+        "roe": "ROE",
+        "roa": "ROA",
+        "buy": "Comprar",
+        "hold": "Mantener",
+        "sell": "Vender",
+        "noResults": "No se encontraron resultados",
+        "enterSymbol": "Ingresa un símbolo para comenzar"
+    },
+    "fireCalculator": {
+        "title": "Calculadora FIRE",
+        "subtitle": "Calcula tu camino hacia la independencia financiera",
+        "currentAge": "Edad Actual",
+        "retirementAge": "Edad de Retiro Deseada",
+        "currentSavings": "Ahorros Actuales",
+        "monthlyIncome": "Ingresos Mensuales",
+        "monthlyExpenses": "Gastos Mensuales",
+        "monthlySavings": "Ahorro Mensual",
+        "expectedReturn": "Rentabilidad Esperada (%)",
+        "inflationRate": "Tasa de Inflación (%)",
+        "withdrawalRate": "Tasa de Retiro (%)",
+        "calculate": "Calcular",
+        "results": "Resultados",
+        "fireNumber": "Tu Número FIRE",
+        "yearsToFire": "Años hasta FIRE",
+        "fireAge": "Edad FIRE",
+        "monthlyRequired": "Ahorro Mensual Requerido",
+        "savingsRate": "Tasa de Ahorro",
+        "timeline": "Línea de Tiempo",
+        "scenarios": "Escenarios FIRE",
+        "leanFire": "Lean FIRE",
+        "regularFire": "FIRE Regular",
+        "fatFire": "Fat FIRE",
+        "projections": "Proyecciones",
+        "assumptions": "Supuestos",
+        "tips": "Consejos para Alcanzar FIRE"
+    },
+    "footer": {
+        "rights": "© 2024 Inversión Libre. Todos los derechos reservados.",
+        "description": "Tu camino hacia la independencia financiera y el nomadismo digital.",
+        "brand": "Inversión Libre",
+        "youtube": "YouTube",
+        "popular": "Artículos Populares",
+        "categories": "Categorías",
+        "tools": {
+            "title": "Herramientas",
+            "fireCalculator": "Calculadora FIRE",
+            "compoundInterest": "Calculadora Interés Compuesto",
+            "expensePlanner": "Planificador de Gastos",
+            "progressTracker": "Tracker de Progreso"
+        },
+        "education": {
+            "title": "Educación",
+            "beginnersGuide": "Guía FIRE para Principiantes",
+            "investingStrategies": "Estrategias de Inversión",
+            "digitalNomadism": "Nomadismo Digital",
+            "successStories": "Casos de Éxito"
+        },
+        "support": {
+            "title": "Soporte",
+            "contact": "Contacto",
+            "faq": "FAQ",
+            "community": "Comunidad",
+            "privacyPolicy": "Política de Privacidad"
+        }
+    },
+    "income": {
+        "title": "Fuentes de Ingresos",
+        "add": "Añadir",
+        "noIncomes": "No tienes fuentes de ingresos registradas. ¡Añade la primera!",
+        "monthly": "Mensual",
+        "annual": "Anual"
     }
 }

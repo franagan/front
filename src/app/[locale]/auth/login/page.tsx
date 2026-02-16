@@ -11,7 +11,10 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { TrendingUp, Loader2 } from "lucide-react"
 
+import { useTranslations } from "next-intl"
+
 export default function LoginPage() {
+    const t = useTranslations('auth')
     const router = useRouter()
     const { login, isLoading, error } = useAuthStore()
     const [formData, setFormData] = useState({
@@ -38,17 +41,17 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
             <Card className="w-full max-w-md">
                 <CardHeader className="space-y-1 text-center">
                     <div className="flex justify-center mb-4">
-                        <div className="h-12 w-12 bg-black border-2 border-yellow-500 rounded-full flex items-center justify-center">
+                        <div className="h-12 w-12 bg-primary border-2 border-yellow-500 rounded-full flex items-center justify-center">
                             <TrendingUp className="h-6 w-6 text-yellow-500" />
                         </div>
                     </div>
-                    <CardTitle className="text-2xl font-bold">Iniciar Sesión</CardTitle>
+                    <CardTitle className="text-2xl font-bold">{t('login.title')}</CardTitle>
                     <CardDescription>
-                        Ingresa tus credenciales para acceder a tu cuenta
+                        {t('login.subtitle')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -59,7 +62,7 @@ export default function LoginPage() {
                             </Alert>
                         )}
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="email">{t('login.email')}</Label>
                             <Input
                                 id="email"
                                 name="email"
@@ -72,7 +75,7 @@ export default function LoginPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">Contraseña</Label>
+                            <Label htmlFor="password">{t('login.password')}</Label>
                             <Input
                                 id="password"
                                 name="password"
@@ -91,23 +94,23 @@ export default function LoginPage() {
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Iniciando sesión...
+                                    {t('common.loggingIn')}
                                 </>
                             ) : (
-                                'Iniciar Sesión'
+                                t('login.submit')
                             )}
                         </Button>
                     </form>
                 </CardContent>
-                <CardFooter className="flex flex-col space-y-4 text-center text-sm text-gray-500">
+                <CardFooter className="flex flex-col space-y-4 text-center text-sm text-muted-foreground">
                     <p>
-                        ¿No tienes una cuenta?{' '}
+                        {t('login.noAccount')}{' '}
                         <Link href="/auth/register" className="text-yellow-600 hover:text-yellow-700 font-medium">
-                            Regístrate
+                            {t('login.signUp')}
                         </Link>
                     </p>
-                    <Link href="/" className="text-gray-500 hover:text-gray-700">
-                        Volver al inicio
+                    <Link href="/" className="text-muted-foreground hover:text-foreground">
+                        {t('common.backToHome')}
                     </Link>
                 </CardFooter>
             </Card>

@@ -7,14 +7,15 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import {
     Search,
     Calendar,
     Clock,
-    User,
-    TrendingUp,
-    Target,
-    DollarSign,
+    // User,
+    // TrendingUp,
+    // Target,
+    // DollarSign,
     BookOpen,
     Star,
     ArrowRight,
@@ -22,8 +23,8 @@ import {
     Tag,
     Eye,
     ThumbsUp,
-    Share2,
-    Bookmark
+    // Share2,
+    // Bookmark
 } from "lucide-react"
 
 // Datos de artículos de ejemplo
@@ -36,7 +37,7 @@ const articles = [
         author: 'Francisco Palero',
         publishDate: '2024-01-15',
         readTime: '8 min',
-        category: 'Fundamentos',
+        category: 'fundamentals',
         tags: ['FIRE', 'Principiantes', 'Libertad Financiera'],
         views: 12500,
         likes: 450,
@@ -51,7 +52,7 @@ const articles = [
         author: 'Francisco Palero',
         publishDate: '2024-01-10',
         readTime: '6 min',
-        category: 'Estrategia',
+        category: 'strategy',
         tags: ['Lean FIRE', 'Fat FIRE', 'Planificación'],
         views: 8900,
         likes: 320,
@@ -66,7 +67,7 @@ const articles = [
         author: 'Francisco Palero',
         publishDate: '2024-01-05',
         readTime: '10 min',
-        category: 'Fundamentos',
+        category: 'fundamentals',
         tags: ['Regla 4%', 'Matemáticas', 'Retiros'],
         views: 15200,
         likes: 680,
@@ -81,7 +82,7 @@ const articles = [
         author: 'Francisco Palero',
         publishDate: '2024-01-01',
         readTime: '12 min',
-        category: 'Práctica',
+        category: 'savings',
         tags: ['Primeros Pasos', 'Planificación', 'Presupuesto'],
         views: 9800,
         likes: 410,
@@ -96,7 +97,7 @@ const articles = [
         author: 'Francisco Palero',
         publishDate: '2023-12-28',
         readTime: '15 min',
-        category: 'Inversiones',
+        category: 'investing',
         tags: ['ETFs', 'Dividendos', 'Portfolio'],
         views: 11300,
         likes: 520,
@@ -111,7 +112,7 @@ const articles = [
         author: 'Francisco Palero',
         publishDate: '2023-12-20',
         readTime: '9 min',
-        category: 'Lifestyle',
+        category: 'lifestyle',
         tags: ['Nomadismo', 'Viajes', 'Libertad'],
         views: 7600,
         likes: 290,
@@ -120,11 +121,13 @@ const articles = [
     }
 ]
 
-const categories = ['Todos', 'Fundamentos', 'Estrategia', 'Práctica', 'Inversiones', 'Lifestyle']
+const categories = ['all', 'fundamentals', 'strategy', 'savings', 'investing', 'lifestyle']
 
 export default function BlogPage() {
+    const t = useTranslations('blog')
+    const tFooter = useTranslations('footer')
     const [searchTerm, setSearchTerm] = useState('')
-    const [selectedCategory, setSelectedCategory] = useState('Todos')
+    const [selectedCategory, setSelectedCategory] = useState('all')
 
     // Filtrar artículos
     const filteredArticles = articles.filter(article => {
@@ -132,7 +135,7 @@ export default function BlogPage() {
             article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
             article.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
 
-        const matchesCategory = selectedCategory === 'Todos' || article.category === selectedCategory
+        const matchesCategory = selectedCategory === 'all' || article.category === selectedCategory
 
         return matchesSearch && matchesCategory
     })
@@ -154,15 +157,14 @@ export default function BlogPage() {
                     <div className="max-w-4xl mx-auto space-y-8">
                         <div className="space-y-4">
                             <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold">
-                                📚 Centro de Conocimiento FIRE
+                                {t('hero.badge')}
                             </Badge>
                             <h1 className="text-5xl font-bold leading-tight">
-                                Aprende sobre
-                                <span className="bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent"> Independencia Financiera</span>
+                                {t('hero.title')}{' '}
+                                <span className="bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent"> {t('hero.highlight')}</span>
                             </h1>
                             <p className="text-xl text-muted-foreground leading-relaxed">
-                                Artículos, guías y estrategias probadas para conseguir tu FIRE.
-                                Todo el conocimiento que necesitas para alcanzar la libertad financiera.
+                                {t('hero.description')}
                             </p>
                         </div>
 
@@ -170,19 +172,19 @@ export default function BlogPage() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
                             <div className="text-center">
                                 <div className="text-3xl font-bold text-yellow-400">{articles.length}</div>
-                                <div className="text-sm text-muted-foreground">Artículos publicados</div>
+                                <div className="text-sm text-muted-foreground">{t('stats.articles')}</div>
                             </div>
                             <div className="text-center">
                                 <div className="text-3xl font-bold text-yellow-400">
                                     {Math.round(articles.reduce((sum, article) => sum + article.views, 0) / 1000)}K
                                 </div>
-                                <div className="text-sm text-muted-foreground">Lecturas totales</div>
+                                <div className="text-sm text-muted-foreground">{t('stats.views')}</div>
                             </div>
                             <div className="text-center">
                                 <div className="text-3xl font-bold text-yellow-400">
                                     {articles.reduce((sum, article) => sum + parseInt(article.readTime), 0)}
                                 </div>
-                                <div className="text-sm text-muted-foreground">Min de contenido</div>
+                                <div className="text-sm text-muted-foreground">{t('stats.minutes')}</div>
                             </div>
                         </div>
                     </div>
@@ -190,7 +192,7 @@ export default function BlogPage() {
             </section>
 
             {/* Filtros y Búsqueda */}
-            <section className="py-8 bg-muted/50 dark:bg-gray-800/50">
+            <section className="py-8 bg-muted/50 border-y border-border">
                 <div className="max-w-7xl mx-auto px-8">
                     <div className="flex flex-col lg:flex-row gap-6 items-center">
 
@@ -198,7 +200,7 @@ export default function BlogPage() {
                         <div className="flex-1 relative">
                             <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                             <Input
-                                placeholder="Buscar artículos, tags o temas..."
+                                placeholder={t('searchPlaceholder')}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="pl-10 bg-input border-border text-foreground placeholder-muted-foreground"
@@ -215,11 +217,11 @@ export default function BlogPage() {
                                     size="sm"
                                     onClick={() => setSelectedCategory(category)}
                                     className={selectedCategory === category
-                                        ? "bg-yellow-500 text-black hover:bg-yellow-600"
-                                        : "border-gray-600 text-gray-300 hover:bg-gray-700"
+                                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                        : "text-muted-foreground"
                                     }
                                 >
-                                    {category}
+                                    {t(`categories.${category}`)}
                                 </Button>
                             ))}
                         </div>
@@ -233,7 +235,7 @@ export default function BlogPage() {
                     <div className="max-w-7xl mx-auto px-8">
                         <div className="flex items-center gap-2 mb-8">
                             <Star className="h-6 w-6 text-yellow-400" />
-                            <h2 className="text-3xl font-bold">Artículos Destacados</h2>
+                            <h2 className="text-3xl font-bold">{t('featured.title')}</h2>
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -243,14 +245,14 @@ export default function BlogPage() {
                                         <div className="flex items-start justify-between">
                                             <div className="text-4xl">{article.image}</div>
                                             <Badge className="bg-yellow-900 text-yellow-300">
-                                                Destacado
+                                                {t('featured.badge')}
                                             </Badge>
                                         </div>
 
                                         <div className="space-y-2">
-                                            <div className="flex items-center gap-4 text-sm text-gray-400">
-                                                <Badge variant="outline" className="border-gray-600 text-gray-300">
-                                                    {article.category}
+                                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                                <Badge variant="outline" className="text-muted-foreground">
+                                                    {t(`categories.${article.category}`)}
                                                 </Badge>
                                                 <div className="flex items-center gap-1">
                                                     <Clock className="h-3 w-3" />
@@ -278,7 +280,7 @@ export default function BlogPage() {
                                             ))}
                                         </div>
 
-                                        <div className="flex items-center justify-between pt-4 border-t border-gray-700">
+                                        <div className="flex items-center justify-between pt-4 border-t border-border">
                                             <div className="flex items-center gap-4 text-xs text-gray-500">
                                                 <div className="flex items-center gap-1">
                                                     <Eye className="h-3 w-3" />
@@ -292,7 +294,7 @@ export default function BlogPage() {
 
                                             <Link href={`/blog/${article.id}`}>
                                                 <Button size="sm" className="bg-yellow-500 text-black hover:bg-yellow-600">
-                                                    Leer más
+                                                    {t('readMore')}
                                                     <ArrowRight className="h-3 w-3 ml-1" />
                                                 </Button>
                                             </Link>
@@ -306,12 +308,12 @@ export default function BlogPage() {
             )}
 
             {/* Todos los Artículos */}
-            <section className="py-16 bg-background/50 dark:bg-gray-900/50">
+            <section className="py-16 bg-muted/20">
                 <div className="max-w-7xl mx-auto px-8">
                     <div className="flex items-center gap-2 mb-8">
                         <BookOpen className="h-6 w-6 text-blue-400" />
                         <h2 className="text-3xl font-bold">
-                            {selectedCategory === 'Todos' ? 'Todos los Artículos' : `Artículos de ${selectedCategory}`}
+                            {selectedCategory === 'all' ? t('allArticles') : `${t('articlesOf')} ${t(`categories.${selectedCategory}`)}`}
                         </h2>
                         <span className="text-gray-400">({filteredArticles.length})</span>
                     </div>
@@ -325,9 +327,9 @@ export default function BlogPage() {
 
                                         <div className="flex-1 space-y-3">
                                             <div className="space-y-2">
-                                                <div className="flex items-center gap-4 text-sm text-gray-400">
-                                                    <Badge variant="outline" className="border-gray-600 text-gray-300">
-                                                        {article.category}
+                                                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                                    <Badge variant="outline" className="text-muted-foreground">
+                                                        {t(`categories.${article.category}`)}
                                                     </Badge>
                                                     <div className="flex items-center gap-1">
                                                         <Calendar className="h-3 w-3" />
@@ -362,7 +364,7 @@ export default function BlogPage() {
 
                                                 <Link href={`/blog/${article.id}`}>
                                                     <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-700">
-                                                        Leer
+                                                        {t('read')}
                                                         <ArrowRight className="h-3 w-3 ml-1" />
                                                     </Button>
                                                 </Link>
@@ -377,8 +379,8 @@ export default function BlogPage() {
                     {filteredArticles.length === 0 && (
                         <div className="text-center py-16">
                             <div className="text-4xl mb-4">🔍</div>
-                            <h3 className="text-xl font-semibold text-gray-300 mb-2">No se encontraron artículos</h3>
-                            <p className="text-gray-500">Intenta con otros términos de búsqueda o categoría.</p>
+                            <h3 className="text-xl font-semibold text-gray-300 mb-2">{t('noResults.title')}</h3>
+                            <p className="text-gray-500">{t('noResults.description')}</p>
                         </div>
                     )}
                 </div>
@@ -388,46 +390,45 @@ export default function BlogPage() {
             <section className="py-20 bg-gradient-to-r from-yellow-400 to-yellow-600">
                 <div className="max-w-4xl mx-auto px-8 text-center">
                     <h2 className="text-4xl font-bold text-black mb-6">
-                        ¿Quieres recibir los nuevos artículos?
+                        {t('newsletter.title')}
                     </h2>
                     <p className="text-xl text-black/80 mb-8">
-                        Únete a nuestra newsletter y recibe contenido exclusivo sobre FIRE,
-                        inversiones y nomadismo digital directamente en tu email.
+                        {t('newsletter.description')}
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                         <Input
-                            placeholder="tu@email.com"
+                            placeholder={t('newsletter.placeholder')}
                             className="bg-white border-white text-black placeholder-gray-500"
                         />
                         <Button className="bg-black text-yellow-400 hover:bg-gray-900 whitespace-nowrap">
-                            Suscribirse Gratis
+                            {t('newsletter.button')}
                         </Button>
                     </div>
 
                     <p className="text-sm text-black/60 mt-4">
-                        Sin spam. Puedes cancelar en cualquier momento.
+                        {t('newsletter.spam')}
                     </p>
                 </div>
             </section>
 
             {/* Footer */}
-            <footer className="bg-black py-16">
+            <footer className="bg-muted py-16 border-t border-border">
                 <div className="max-w-7xl mx-auto px-8">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
                                 <span className="text-2xl">🔥</span>
-                                <span className="text-xl font-bold text-white">Inversión Libre</span>
+                                <span className="text-xl font-bold text-foreground">{tFooter('brand')}</span>
                             </div>
-                            <p className="text-gray-400">
-                                Tu camino hacia la independencia financiera y el nomadismo digital.
+                            <p className="text-muted-foreground">
+                                {tFooter('description')}
                             </p>
                         </div>
 
                         <div>
-                            <h4 className="font-semibold text-white mb-4">Artículos Populares</h4>
-                            <ul className="space-y-2 text-gray-400">
+                            <h4 className="font-semibold text-foreground mb-4">{tFooter('popular')}</h4>
+                            <ul className="space-y-2 text-muted-foreground">
                                 <li><Link href="/blog/que-es-fire" className="hover:text-yellow-400 transition-colors">¿Qué es FIRE?</Link></li>
                                 <li><Link href="/blog/regla-4-por-ciento" className="hover:text-yellow-400 transition-colors">La Regla del 4%</Link></li>
                                 <li><Link href="/blog/tipos-de-fire" className="hover:text-yellow-400 transition-colors">Tipos de FIRE</Link></li>
@@ -436,28 +437,28 @@ export default function BlogPage() {
                         </div>
 
                         <div>
-                            <h4 className="font-semibold text-white mb-4">Categorías</h4>
-                            <ul className="space-y-2 text-gray-400">
-                                <li><Link href="/blog?categoria=fundamentos" className="hover:text-yellow-400 transition-colors">Fundamentos</Link></li>
-                                <li><Link href="/blog?categoria=estrategia" className="hover:text-yellow-400 transition-colors">Estrategia</Link></li>
-                                <li><Link href="/blog?categoria=inversiones" className="hover:text-yellow-400 transition-colors">Inversiones</Link></li>
-                                <li><Link href="/blog?categoria=lifestyle" className="hover:text-yellow-400 transition-colors">Lifestyle</Link></li>
+                            <h4 className="font-semibold text-foreground mb-4">{tFooter('categories')}</h4>
+                            <ul className="space-y-2 text-muted-foreground">
+                                <li><Link href="/blog?categoria=fundamentos" className="hover:text-yellow-400 transition-colors">{t('categories.fundamentals')}</Link></li>
+                                <li><Link href="/blog?categoria=estrategia" className="hover:text-yellow-400 transition-colors">{t('categories.strategy')}</Link></li>
+                                <li><Link href="/blog?categoria=inversiones" className="hover:text-yellow-400 transition-colors">{t('categories.investing')}</Link></li>
+                                <li><Link href="/blog?categoria=lifestyle" className="hover:text-yellow-400 transition-colors">{t('categories.lifestyle')}</Link></li>
                             </ul>
                         </div>
 
                         <div>
-                            <h4 className="font-semibold text-white mb-4">Recursos</h4>
-                            <ul className="space-y-2 text-gray-400">
-                                <li><Link href="/" className="hover:text-yellow-400 transition-colors">Calculadora FIRE</Link></li>
-                                <li><Link href="/contacto" className="hover:text-yellow-400 transition-colors">Contacto</Link></li>
-                                <li><Link href="/sobre-mi" className="hover:text-yellow-400 transition-colors">Sobre Mí</Link></li>
-                                <li><a href="https://www.youtube.com/@InversionLibre" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition-colors">YouTube</a></li>
+                            <h4 className="font-semibold text-foreground mb-4">{tFooter('tools.title')}</h4>
+                            <ul className="space-y-2 text-muted-foreground">
+                                <li><Link href="/" className="hover:text-yellow-400 transition-colors">{tFooter('tools.fireCalculator')}</Link></li>
+                                <li><Link href="/contacto" className="hover:text-yellow-400 transition-colors">{tFooter('support.contact')}</Link></li>
+                                <li><Link href="/sobre-mi" className="hover:text-yellow-400 transition-colors">{t('hero.title')}</Link></li>
+                                <li><a href="https://www.youtube.com/@InversionLibre" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition-colors">{tFooter('youtube')}</a></li>
                             </ul>
                         </div>
                     </div>
 
-                    <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-                        <p>&copy; 2024 Inversión Libre. Todos los derechos reservados.</p>
+                    <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground">
+                        <p>{tFooter('rights')}</p>
                     </div>
                 </div>
             </footer>

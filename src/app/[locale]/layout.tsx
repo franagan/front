@@ -6,7 +6,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
+import { AuthProvider } from "@/components/providers/AuthProvider";
+import PWAInstallPrompt from "@/components/pwa/PWAInstallPrompt";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -21,7 +23,24 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     title: "Inversión Libre - Tu camino hacia la independencia financiera",
     description: "Aprende a conseguir la libertad financiera con estrategias FIRE probadas y vive como nómada digital. Calculadoras, educación y comunidad.",
+    icons: {
+        icon: '/favicon.ico',
+        shortcut: '/favicon.ico',
+        apple: '/apple-touch-icon.png',
+    },
+    manifest: '/manifest.webmanifest',
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "default",
+        title: "Inversión Libre",
+    },
 };
+
+
+export const viewport: Viewport = {
+    themeColor: "#000000",
+};
+
 
 export default async function LocaleLayout({
     children,
@@ -43,7 +62,7 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`} suppressHydrationWarning>
                 <NextIntlClientProvider messages={messages}>
                     <ThemeProvider
                         attribute="class"
@@ -52,7 +71,10 @@ export default async function LocaleLayout({
                         disableTransitionOnChange
                     >
                         <ToastProvider>
-                            {children}
+                            <AuthProvider>
+                                <PWAInstallPrompt />
+                                {children}
+                            </AuthProvider>
                         </ToastProvider>
                     </ThemeProvider>
                 </NextIntlClientProvider>

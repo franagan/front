@@ -13,24 +13,16 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useToast, toast } from "@/components/ui/toast"
 import { useState } from "react"
 import {
-    Calculator,
+    CheckCircle,
     Target,
     TrendingUp,
-    DollarSign,
     PiggyBank,
     Clock,
-    BarChart3,
-    PieChart,
-    Calendar,
     Zap,
     Info,
-    Lightbulb,
-    CheckCircle,
     AlertTriangle,
-    RefreshCw,
     Download,
     Share2,
-    Bookmark,
     Bell
 } from "lucide-react"
 
@@ -119,11 +111,12 @@ export default function CalculadorasPage() {
         { name: 'Ahorro', value: Math.max(0, remainingSavings), color: '#8b5cf6' }
     ]
 
-    const exportResults = (type: string) => {
+
+    const exportResults = () => {
         addToast(toast.info("Función próximamente", "La exportación estará disponible pronto"))
     }
 
-    const shareResults = (type: string) => {
+    const shareResults = () => {
         addToast(toast.success("Enlace copiado", "URL copiada al portapapeles"))
     }
 
@@ -284,11 +277,11 @@ export default function CalculadorasPage() {
                                         </div>
 
                                         <div className="flex gap-2">
-                                            <Button onClick={() => shareResults('fire')} variant="outline" className="border-gray-600 text-foreground hover:bg-gray-700">
+                                            <Button onClick={() => shareResults()} variant="outline" className="border-gray-600 text-foreground hover:bg-gray-700">
                                                 <Share2 className="h-4 w-4 mr-2" />
                                                 Compartir
                                             </Button>
-                                            <Button onClick={() => exportResults('fire')} variant="outline" className="border-gray-600 text-foreground hover:bg-gray-700">
+                                            <Button onClick={() => exportResults()} variant="outline" className="border-gray-600 text-foreground hover:bg-gray-700">
                                                 <Download className="h-4 w-4 mr-2" />
                                                 Exportar
                                             </Button>
@@ -358,6 +351,7 @@ export default function CalculadorasPage() {
                                         </CardHeader>
                                         <CardContent>
                                             <LineFinancialChart
+                                                /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
                                                 data={fireEvolutionData as any}
                                                 height={250}
                                                 colors={["#10b981", "#ef4444"]}
@@ -435,7 +429,7 @@ export default function CalculadorasPage() {
                                             <div>
                                                 <div className="font-semibold text-blue-300 mb-1">💡 Tip del Interés Compuesto</div>
                                                 <div className="text-blue-200 text-sm">
-                                                    "El interés compuesto es la octava maravilla del mundo" - Einstein
+                                                    &quot;El interés compuesto es la octava maravilla del mundo&quot; - Einstein
                                                 </div>
                                             </div>
                                         </Alert>
@@ -493,6 +487,7 @@ export default function CalculadorasPage() {
                                         </CardHeader>
                                         <CardContent>
                                             <BarFinancialChart
+                                                /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
                                                 data={compoundEvolutionData as any}
                                                 height={250}
                                                 colors={["#3b82f6", "#10b981", "#8b5cf6"]}

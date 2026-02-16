@@ -1,44 +1,40 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Navigation } from "@/components/ui/navigation"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Progress, CircularProgress } from "@/components/ui/progress"
+import { CircularProgress } from "@/components/ui/progress"
 import { LineFinancialChart } from "@/components/ui/chart"
 import { useToast, toast } from "@/components/ui/toast"
 import {
     Target,
-    TrendingUp,
-    DollarSign,
-    Globe,
-    Users,
-    Youtube,
+    Map,
+    // ArrowUpRight,
     Calculator,
     BookOpen,
-    Zap,
-    Shield,
-    Clock,
-    ArrowRight,
-    CheckCircle,
-    Star,
-    Award,
-    Compass,
-    PiggyBank,
     Plane,
-    ChevronRight,
+    Users,
+    Youtube,
+    Shield,
+    CheckCircle,
+    Clock,
+    Zap,
+    Star,
     BarChart3,
-    Map,
-    Coffee,
-    Wallet
+    Globe,
+    PiggyBank,
+    ArrowRight
 } from "lucide-react"
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 export default function LandingPage() {
     const t = useTranslations('home');
+    const tFooter = useTranslations('footer');
     const { addToast } = useToast()
 
     // Estados para la calculadora FIRE
@@ -60,7 +56,7 @@ export default function LandingPage() {
     const fireProgress = Math.min((projectedAmount / requiredAmount) * 100, 100)
 
     // Datos para el gráfico de evolución
-    const chartData = []
+    const chartData: { name: string; patrimonio: number; objetivo: number }[] = []
     for (let year = 0; year <= yearsToFire; year++) {
         const amount = fireData.currentSavings * Math.pow(1 + fireData.expectedReturn / 100, year) +
             (monthlyDifference * 12 * (year > 0 ? (Math.pow(1 + fireData.expectedReturn / 100, year) - 1) / (fireData.expectedReturn / 100) : 0))
@@ -93,7 +89,7 @@ export default function LandingPage() {
                         <div className="space-y-8">
                             <div className="space-y-4">
                                 <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold">
-                                    🔥 Método FIRE + Nomadismo Digital
+                                    {t('hero.badge')}
                                 </Badge>
                                 <h1 className="text-5xl xl:text-6xl font-bold leading-tight">
                                     {t('hero.title')}
@@ -111,11 +107,11 @@ export default function LandingPage() {
                                 </div>
                                 <div className="text-center">
                                     <div className="text-3xl font-bold text-yellow-400">25</div>
-                                    <div className="text-sm text-muted-foreground">Países visitados</div>
+                                    <div className="text-sm text-muted-foreground">{t('stats.countries')}</div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-3xl font-bold text-yellow-400">15%</div>
-                                    <div className="text-sm text-muted-foreground">Rendimiento anual</div>
+                                    <div className="text-sm text-muted-foreground">{t('stats.performance')}</div>
                                 </div>
                             </div>
 
@@ -138,6 +134,7 @@ export default function LandingPage() {
                                     size="lg"
                                     className="border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black flex items-center gap-2"
                                     onClick={() => window.open('https://www.youtube.com/@InversionLibre', '_blank')}
+                                    aria-label="Visitar canal de YouTube de Inversión Libre"
                                 >
                                     <Youtube className="h-5 w-5" />
                                     {t('hero.ctaSecondary')}
@@ -147,15 +144,15 @@ export default function LandingPage() {
                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-1">
                                     <CheckCircle className="h-4 w-4 text-green-400" />
-                                    Gratis para siempre
+                                    {t('hero.benefits.free')}
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <Shield className="h-4 w-4 text-blue-400" />
-                                    Métodos probados
+                                    {t('hero.benefits.proven')}
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <Globe className="h-4 w-4 text-purple-400" />
-                                    Comunidad global
+                                    {t('hero.benefits.community')}
                                 </div>
                             </div>
                         </div>
@@ -164,13 +161,13 @@ export default function LandingPage() {
                         <div className="relative">
                             <div className="relative bg-gradient-to-br from-card to-muted rounded-2xl p-8 border border-border">
                                 <div className="absolute -top-4 -right-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-4 py-2 rounded-lg font-semibold text-sm">
-                                    Vista Previa
+                                    {t('hero.preview.badge')}
                                 </div>
 
                                 <div className="space-y-6">
                                     <div className="flex items-center justify-between">
-                                        <h3 className="text-xl font-semibold">Tu Progreso FIRE</h3>
-                                        <Badge className="bg-green-900 text-green-300">En camino</Badge>
+                                        <h3 className="text-xl font-semibold">{t('hero.preview.title')}</h3>
+                                        <Badge className="bg-green-900 text-green-300">{t('hero.preview.status')}</Badge>
                                     </div>
 
                                     <div className="flex justify-center">
@@ -178,7 +175,7 @@ export default function LandingPage() {
                                             value={75}
                                             size={160}
                                             variant="fire"
-                                            label="del objetivo"
+                                            label={t('hero.preview.label')}
                                             showValue
                                         />
                                     </div>
@@ -186,19 +183,19 @@ export default function LandingPage() {
                                     <div className="grid grid-cols-2 gap-4 text-sm">
                                         <div className="text-center">
                                             <div className="text-lg font-bold text-yellow-400">€350K</div>
-                                            <div className="text-muted-foreground">Patrimonio actual</div>
+                                            <div className="text-muted-foreground">{t('hero.preview.current')}</div>
                                         </div>
                                         <div className="text-center">
                                             <div className="text-lg font-bold text-foreground">€500K</div>
-                                            <div className="text-muted-foreground">Objetivo FIRE</div>
+                                            <div className="text-muted-foreground">{t('hero.preview.target')}</div>
                                         </div>
                                         <div className="text-center">
                                             <div className="text-lg font-bold text-green-400">8 años</div>
-                                            <div className="text-muted-foreground">Tiempo restante</div>
+                                            <div className="text-muted-foreground">{t('hero.preview.remaining')}</div>
                                         </div>
                                         <div className="text-center">
                                             <div className="text-lg font-bold text-blue-400">€2.100/mes</div>
-                                            <div className="text-muted-foreground">Ahorro necesario</div>
+                                            <div className="text-muted-foreground">{t('hero.preview.needed')}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -209,7 +206,7 @@ export default function LandingPage() {
             </section>
 
             {/* Calculadora FIRE Principal */}
-            <section id="fire-calculator" className="py-20 bg-muted dark:bg-gray-900">
+            <section id="fire-calculator" className="py-20 bg-muted">
                 <div className="max-w-7xl mx-auto px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold mb-4">
@@ -225,35 +222,35 @@ export default function LandingPage() {
                         {/* Panel de Entrada */}
                         <Card className="bg-card border-border">
                             <CardHeader>
-                                <CardTitle className="text-foreground flex items-center gap-2">
-                                    <Target className="h-5 w-5 text-yellow-400" />
-                                    Configura tu Situación
+                                <CardTitle className="flex items-center gap-2">
+                                    <Target className="h-5 w-5 text-yellow-500" />
+                                    {t('features.calculator.configTitle')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <Label className="text-foreground">Edad Actual</Label>
+                                        <Label>{t('features.calculator.labels.currentAge')}</Label>
                                         <Input
                                             type="number"
                                             value={fireData.currentAge}
                                             onChange={(e) => setFireData(prev => ({ ...prev, currentAge: parseInt(e.target.value) || 0 }))}
-                                            className="bg-input border-border text-foreground"
+                                            className="bg-background border-border text-foreground"
                                         />
                                     </div>
                                     <div>
-                                        <Label className="text-muted-foreground">Edad Objetivo FIRE</Label>
+                                        <Label>{t('features.calculator.labels.targetAge')}</Label>
                                         <Input
                                             type="number"
                                             value={fireData.targetAge}
                                             onChange={(e) => setFireData(prev => ({ ...prev, targetAge: parseInt(e.target.value) || 0 }))}
-                                            className="bg-input border-border text-foreground"
+                                            className="bg-background border-border text-foreground"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <Label className="text-muted-foreground">Ahorros Actuales (€)</Label>
+                                    <Label className="text-muted-foreground">{t('features.calculator.labels.currentSavings')}</Label>
                                     <Input
                                         type="number"
                                         value={fireData.currentSavings}
@@ -264,7 +261,7 @@ export default function LandingPage() {
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <Label className="text-muted-foreground">Ingresos Mensuales (€)</Label>
+                                        <Label className="text-muted-foreground">{t('features.calculator.labels.monthlyIncome')}</Label>
                                         <Input
                                             type="number"
                                             value={fireData.monthlyIncome}
@@ -273,7 +270,7 @@ export default function LandingPage() {
                                         />
                                     </div>
                                     <div>
-                                        <Label className="text-muted-foreground">Gastos Mensuales (€)</Label>
+                                        <Label className="text-muted-foreground">{t('features.calculator.labels.monthlyExpenses')}</Label>
                                         <Input
                                             type="number"
                                             value={fireData.monthlyExpenses}
@@ -284,7 +281,7 @@ export default function LandingPage() {
                                 </div>
 
                                 <div>
-                                    <Label className="text-muted-foreground">Rendimiento Esperado Anual (%)</Label>
+                                    <Label className="text-muted-foreground">{t('features.calculator.labels.expectedReturn')}</Label>
                                     <Input
                                         type="number"
                                         step="0.1"
@@ -297,13 +294,13 @@ export default function LandingPage() {
                                 <div className="p-4 bg-gradient-to-r from-yellow-400/10 to-yellow-600/10 rounded-lg border border-yellow-400/20">
                                     <div className="flex items-center gap-2 text-yellow-400 mb-2">
                                         <PiggyBank className="h-4 w-4" />
-                                        <span className="font-semibold">Ahorro Mensual</span>
+                                        <span className="font-semibold">{t('features.calculator.monthlySavings')}</span>
                                     </div>
-                                    <div className="text-2xl font-bold text-white">
+                                    <div className="text-2xl font-bold">
                                         €{monthlyDifference.toLocaleString()}
                                     </div>
                                     <div className="text-sm text-muted-foreground">
-                                        {monthlyDifference > 0 ? 'Perfecto para FIRE!' : 'Necesitas reducir gastos o aumentar ingresos'}
+                                        {monthlyDifference > 0 ? t('features.calculator.feedback.good') : t('features.calculator.feedback.bad')}
                                     </div>
                                 </div>
                             </CardContent>
@@ -315,8 +312,8 @@ export default function LandingPage() {
                             {/* Progreso FIRE */}
                             <Card className="bg-gradient-to-br from-yellow-400/10 to-yellow-600/10 border-yellow-400/20">
                                 <CardHeader>
-                                    <CardTitle className="text-white flex items-center gap-2">
-                                        🔥 Tu Progreso FIRE
+                                    <CardTitle className="flex items-center gap-2">
+                                        🔥 {t('features.calculator.progressTitle')}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
@@ -325,32 +322,32 @@ export default function LandingPage() {
                                             value={fireProgress}
                                             size={180}
                                             variant="fire"
-                                            label="del objetivo FIRE"
+                                            label={t('features.calculator.progressLabel')}
                                             showValue
                                         />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4 text-center">
                                         <div>
-                                            <div className="text-sm text-muted-foreground">Patrimonio Proyectado</div>
+                                            <div className="text-sm text-muted-foreground">{t('features.calculator.results.projected')}</div>
                                             <div className="text-xl font-bold text-yellow-400">
                                                 €{Math.round(projectedAmount).toLocaleString()}
                                             </div>
                                         </div>
                                         <div>
-                                            <div className="text-sm text-muted-foreground">Objetivo FIRE</div>
+                                            <div className="text-sm text-muted-foreground">{t('features.calculator.results.target')}</div>
                                             <div className="text-xl font-bold text-foreground">
                                                 €{Math.round(requiredAmount).toLocaleString()}
                                             </div>
                                         </div>
                                         <div>
-                                            <div className="text-sm text-muted-foreground">Años hasta FIRE</div>
+                                            <div className="text-sm text-muted-foreground">{t('features.calculator.results.years')}</div>
                                             <div className="text-xl font-bold text-green-400">
                                                 {yearsToFire} años
                                             </div>
                                         </div>
                                         <div>
-                                            <div className="text-sm text-muted-foreground">Ingresos Pasivos</div>
+                                            <div className="text-sm text-muted-foreground">{t('features.calculator.results.passive')}</div>
                                             <div className="text-xl font-bold text-blue-400">
                                                 €{Math.round(fireData.monthlyExpenses).toLocaleString()}/mes
                                             </div>
@@ -359,8 +356,8 @@ export default function LandingPage() {
 
                                     {fireProgress >= 100 && (
                                         <div className="mt-4 p-3 bg-green-900/50 border border-green-500 rounded-lg text-center">
-                                            <div className="text-green-400 font-semibold">🎉 ¡Felicidades!</div>
-                                            <div className="text-sm text-green-300">Ya puedes conseguir tu FIRE</div>
+                                            <div className="text-green-400 font-semibold">🎉 {t('features.calculator.success.title')}</div>
+                                            <div className="text-sm text-green-300">{t('features.calculator.success.subtitle')}</div>
                                         </div>
                                     )}
                                 </CardContent>
@@ -369,13 +366,14 @@ export default function LandingPage() {
                             {/* Gráfico de Evolución */}
                             <Card className="bg-card border-border">
                                 <CardHeader>
-                                    <CardTitle className="text-white flex items-center gap-2">
-                                        <BarChart3 className="h-5 w-5 text-blue-400" />
-                                        Evolución Patrimonio
+                                    <CardTitle className="flex items-center gap-2">
+                                        <BarChart3 className="h-5 w-5 text-blue-500" />
+                                        {t('features.calculator.chartTitle')}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <LineFinancialChart
+                                        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
                                         data={chartData as any}
                                         height={250}
                                         colors={["#fbbf24", "#ef4444"]}
@@ -389,14 +387,14 @@ export default function LandingPage() {
             </section>
 
             {/* Características Principales */}
-            <section className="py-20 bg-background dark:bg-gray-800">
+            <section className="py-20">
                 <div className="max-w-7xl mx-auto px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold mb-4">
                             {t('features.title')}
                         </h2>
                         <p className="text-xl text-muted-foreground">
-                            La plataforma más completa para conseguir tu independencia financiera
+                            {t('features.subtitle')}
                         </p>
                     </div>
 
@@ -437,12 +435,12 @@ export default function LandingPage() {
                                 <div className="bg-gradient-to-br from-blue-400 to-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                                     <Plane className="h-8 w-8 text-black" />
                                 </div>
-                                <h3 className="text-xl font-semibold text-foreground mb-4">Nomadismo Digital</h3>
+                                <h3 className="text-xl font-semibold text-foreground mb-4">{t('features.nomad.title')}</h3>
                                 <p className="text-muted-foreground mb-6">
-                                    Descubre cómo vivir y trabajar desde cualquier lugar del mundo.
+                                    {t('features.nomad.description')}
                                 </p>
                                 <Button variant="outline" className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black">
-                                    Viajar
+                                    {t('features.nomad.button')}
                                 </Button>
                             </CardContent>
                         </Card>
@@ -452,12 +450,12 @@ export default function LandingPage() {
                                 <div className="bg-gradient-to-br from-purple-400 to-purple-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                                     <Users className="h-8 w-8 text-black" />
                                 </div>
-                                <h3 className="text-xl font-semibold text-foreground mb-4">Comunidad</h3>
+                                <h3 className="text-xl font-semibold text-foreground mb-4">{t('features.community.title')}</h3>
                                 <p className="text-muted-foreground mb-6">
-                                    Únete a miles de personas en su camino hacia la libertad financiera.
+                                    {t('features.community.description')}
                                 </p>
                                 <Button variant="outline" className="border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-black">
-                                    Conectar
+                                    {t('features.community.button')}
                                 </Button>
                             </CardContent>
                         </Card>
@@ -467,16 +465,17 @@ export default function LandingPage() {
                                 <div className="bg-gradient-to-br from-red-400 to-red-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                                     <Youtube className="h-8 w-8 text-black" />
                                 </div>
-                                <h3 className="text-xl font-semibold text-foreground mb-4">Canal YouTube</h3>
+                                <h3 className="text-xl font-semibold text-foreground mb-4">{t('features.youtube.title')}</h3>
                                 <p className="text-muted-foreground mb-6">
-                                    Contenido semanal sobre FIRE, inversiones y nomadismo digital.
+                                    {t('features.youtube.description')}
                                 </p>
                                 <Button
                                     variant="outline"
                                     className="border-red-400 text-red-400 hover:bg-red-400 hover:text-black"
                                     onClick={() => window.open('https://www.youtube.com/@InversionLibre', '_blank')}
+                                    aria-label="Ver canal de YouTube"
                                 >
-                                    Suscribirse
+                                    {t('features.youtube.button')}
                                 </Button>
                             </CardContent>
                         </Card>
@@ -486,12 +485,12 @@ export default function LandingPage() {
                                 <div className="bg-gradient-to-br from-orange-400 to-orange-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                                     <Shield className="h-8 w-8 text-black" />
                                 </div>
-                                <h3 className="text-xl font-semibold text-foreground mb-4">Métodos Probados</h3>
+                                <h3 className="text-xl font-semibold text-foreground mb-4">{t('features.proven.title')}</h3>
                                 <p className="text-muted-foreground mb-6">
-                                    Estrategias que funcionan en el mundo real, basadas en experiencia.
+                                    {t('features.proven.description')}
                                 </p>
                                 <Button variant="outline" className="border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-black">
-                                    Conocer
+                                    {t('features.proven.button')}
                                 </Button>
                             </CardContent>
                         </Card>
@@ -500,14 +499,14 @@ export default function LandingPage() {
             </section>
 
             {/* Testimonios/Casos de Éxito */}
-            <section className="py-20 bg-muted dark:bg-gray-900">
+            <section className="py-20 bg-muted">
                 <div className="max-w-7xl mx-auto px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold mb-4">
                             {t('testimonials.title')}
                         </h2>
                         <p className="text-xl text-muted-foreground">
-                            Personas reales que han conseguido su FIRE siguiendo el método
+                            {t('testimonials.subtitle')}
                         </p>
                     </div>
 
@@ -520,13 +519,12 @@ export default function LandingPage() {
                                         <span className="text-black font-bold">M</span>
                                     </div>
                                     <div>
-                                        <div className="font-semibold text-foreground">María, 34 años</div>
-                                        <div className="text-sm text-muted-foreground">Desarrolladora → Nómada</div>
+                                        <div className="font-semibold text-foreground">María, 34</div>
+                                        <div className="text-sm text-muted-foreground">{t('testimonials.items.maria.role')}</div>
                                     </div>
                                 </div>
                                 <p className="text-muted-foreground mb-6 italic">
-                                    "Conseguí mi FIRE en 8 años ahorrando el 60% de mis ingresos.
-                                    Ahora trabajo desde Bali 4 horas al día."
+                                    &quot;{t('testimonials.items.maria.quote')}&quot;
                                 </p>
                                 <div className="flex items-center gap-4 text-sm">
                                     <div className="flex items-center gap-1">
@@ -541,20 +539,19 @@ export default function LandingPage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-gray-800 border-gray-700">
+                        <Card className="bg-card border-border">
                             <CardContent className="p-8">
                                 <div className="flex items-center gap-4 mb-6">
                                     <div className="bg-gradient-to-br from-green-400 to-green-600 w-12 h-12 rounded-full flex items-center justify-center">
                                         <span className="text-black font-bold">J</span>
                                     </div>
                                     <div>
-                                        <div className="font-semibold text-white">Javier, 29 años</div>
-                                        <div className="text-sm text-gray-400">Consultor → Emprendedor</div>
+                                        <div className="font-semibold text-foreground">Javier, 29</div>
+                                        <div className="text-sm text-muted-foreground">{t('testimonials.items.javier.role')}</div>
                                     </div>
                                 </div>
-                                <p className="text-gray-300 mb-6 italic">
-                                    "El método FIRE me permitió dejar mi trabajo y montar mi propia startup.
-                                    ¡La libertad no tiene precio!"
+                                <p className="text-muted-foreground mb-6 italic">
+                                    &quot;{t('testimonials.items.javier.quote')}&quot;
                                 </p>
                                 <div className="flex items-center gap-4 text-sm">
                                     <div className="flex items-center gap-1">
@@ -569,20 +566,19 @@ export default function LandingPage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-gray-800 border-gray-700">
+                        <Card className="bg-card border-border">
                             <CardContent className="p-8">
                                 <div className="flex items-center gap-4 mb-6">
                                     <div className="bg-gradient-to-br from-purple-400 to-purple-600 w-12 h-12 rounded-full flex items-center justify-center">
                                         <span className="text-black font-bold">L</span>
                                     </div>
                                     <div>
-                                        <div className="font-semibold text-white">Laura & Pablo</div>
-                                        <div className="text-sm text-gray-400">Pareja → Familia FIRE</div>
+                                        <div className="font-semibold text-foreground">Laura & Pablo</div>
+                                        <div className="text-sm text-muted-foreground">{t('testimonials.items.laura.role')}</div>
                                     </div>
                                 </div>
-                                <p className="text-gray-300 mb-6 italic">
-                                    "Con dos niños conseguimos nuestro FIRE familiar. Ahora viajamos
-                                    por Europa en autocaravana."
+                                <p className="text-muted-foreground mb-6 italic">
+                                    &quot;{t('testimonials.items.laura.quote')}&quot;
                                 </p>
                                 <div className="flex items-center gap-4 text-sm">
                                     <div className="flex items-center gap-1">
@@ -601,19 +597,19 @@ export default function LandingPage() {
             </section>
 
             {/* CTA Final */}
-            <section className="py-20 bg-gradient-to-r from-yellow-400 to-yellow-600">
+            <section className="py-20 bg-primary/10 border-y border-primary/20">
                 <div className="max-w-4xl mx-auto px-8 text-center">
-                    <h2 className="text-4xl font-bold text-black mb-6">
+                    <h2 className="text-4xl font-bold text-foreground mb-6">
                         {t('cta.title')}
                     </h2>
-                    <p className="text-xl text-black/80 mb-8">
+                    <p className="text-xl text-muted-foreground mb-8">
                         {t('cta.subtitle')}
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button
                             size="lg"
-                            className="bg-black text-yellow-400 hover:bg-gray-900 font-semibold"
+                            className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
                             onClick={() => document.getElementById('fire-calculator')?.scrollIntoView({ behavior: 'smooth' })}
                         >
                             <Calculator className="h-5 w-5 mr-2" />
@@ -623,26 +619,27 @@ export default function LandingPage() {
                         <Button
                             variant="outline"
                             size="lg"
-                            className="border-black text-yellow-400 hover:bg-black hover:text-red-400"
+                            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                             onClick={() => window.open('https://www.youtube.com/@InversionLibre', '_blank')}
+                            aria-label="Visitar canal de YouTube"
                         >
                             <Youtube className="h-5 w-5 mr-2" />
-                            Seguir en YouTube
+                            {t('cta.youtube')}
                         </Button>
                     </div>
 
-                    <div className="mt-8 flex items-center justify-center gap-8 text-black/60 text-sm">
+                    <div className="mt-8 flex items-center justify-center gap-8 text-muted-foreground text-sm">
                         <div className="flex items-center gap-1">
                             <CheckCircle className="h-4 w-4" />
-                            Sin registro requerido
+                            {t('cta.benefits.noRegister')}
                         </div>
                         <div className="flex items-center gap-1">
                             <Shield className="h-4 w-4" />
-                            100% Gratis
+                            {t('cta.benefits.free')}
                         </div>
                         <div className="flex items-center gap-1">
                             <Clock className="h-4 w-4" />
-                            Resultados en 2 minutos
+                            {t('cta.benefits.fast')}
                         </div>
                     </div>
                 </div>
@@ -656,10 +653,10 @@ export default function LandingPage() {
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
                                 <span className="text-2xl">🔥</span>
-                                <span className="text-xl font-bold text-foreground">Inversión Libre</span>
+                                <span className="text-xl font-bold text-foreground">{tFooter('brand')}</span>
                             </div>
                             <p className="text-muted-foreground">
-                                Tu camino hacia la independencia financiera y el nomadismo digital.
+                                {tFooter('description')}
                             </p>
                             <div className="flex items-center gap-4">
                                 <Button
@@ -667,46 +664,47 @@ export default function LandingPage() {
                                     size="sm"
                                     className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
                                     onClick={() => window.open('https://www.youtube.com/@InversionLibre', '_blank')}
+                                    aria-label="YouTube"
                                 >
                                     <Youtube className="h-4 w-4 mr-2" />
-                                    YouTube
+                                    {tFooter('youtube')}
                                 </Button>
                             </div>
                         </div>
 
                         <div>
-                            <h4 className="font-semibold text-foreground mb-4">Herramientas</h4>
+                            <h4 className="font-semibold text-foreground mb-4">{tFooter('tools.title')}</h4>
                             <ul className="space-y-2 text-muted-foreground">
-                                <li><a href="#" className="hover:text-yellow-400 transition-colors">Calculadora FIRE</a></li>
-                                <li><a href="#" className="hover:text-yellow-400 transition-colors">Calculadora Interés Compuesto</a></li>
-                                <li><a href="#" className="hover:text-yellow-400 transition-colors">Planificador de Gastos</a></li>
-                                <li><a href="#" className="hover:text-yellow-400 transition-colors">Tracker de Progreso</a></li>
+                                <li><a href="#" className="hover:text-yellow-400 transition-colors">{tFooter('tools.fireCalculator')}</a></li>
+                                <li><a href="#" className="hover:text-yellow-400 transition-colors">{tFooter('tools.compoundInterest')}</a></li>
+                                <li><a href="#" className="hover:text-yellow-400 transition-colors">{tFooter('tools.expensePlanner')}</a></li>
+                                <li><a href="#" className="hover:text-yellow-400 transition-colors">{tFooter('tools.progressTracker')}</a></li>
                             </ul>
                         </div>
 
                         <div>
-                            <h4 className="font-semibold text-white mb-4">Educación</h4>
-                            <ul className="space-y-2 text-gray-400">
-                                <li><a href="#" className="hover:text-yellow-400 transition-colors">Guía FIRE para Principiantes</a></li>
-                                <li><a href="#" className="hover:text-yellow-400 transition-colors">Estrategias de Inversión</a></li>
-                                <li><a href="#" className="hover:text-yellow-400 transition-colors">Nomadismo Digital</a></li>
-                                <li><a href="#" className="hover:text-yellow-400 transition-colors">Casos de Éxito</a></li>
+                            <h4 className="font-semibold text-foreground mb-4">{tFooter('education.title')}</h4>
+                            <ul className="space-y-2 text-muted-foreground">
+                                <li><a href="#" className="hover:text-yellow-400 transition-colors">{tFooter('education.beginnersGuide')}</a></li>
+                                <li><a href="#" className="hover:text-yellow-400 transition-colors">{tFooter('education.investingStrategies')}</a></li>
+                                <li><a href="#" className="hover:text-yellow-400 transition-colors">{tFooter('education.digitalNomadism')}</a></li>
+                                <li><a href="#" className="hover:text-yellow-400 transition-colors">{tFooter('education.successStories')}</a></li>
                             </ul>
                         </div>
 
                         <div>
-                            <h4 className="font-semibold text-white mb-4">Soporte</h4>
-                            <ul className="space-y-2 text-gray-400">
-                                <li><a href="/contacto" className="hover:text-yellow-400 transition-colors">Contacto</a></li>
-                                <li><a href="/contacto" className="hover:text-yellow-400 transition-colors">FAQ</a></li>
-                                <li><a href="#" className="hover:text-yellow-400 transition-colors">Comunidad</a></li>
-                                <li><a href="#" className="hover:text-yellow-400 transition-colors">Política de Privacidad</a></li>
+                            <h4 className="font-semibold text-foreground mb-4">{tFooter('support.title')}</h4>
+                            <ul className="space-y-2 text-muted-foreground">
+                                <li><Link href="/contacto" className="hover:text-yellow-400 transition-colors">{tFooter('support.contact')}</Link></li>
+                                <li><Link href="/contacto" className="hover:text-yellow-400 transition-colors">{tFooter('support.faq')}</Link></li>
+                                <li><a href="#" className="hover:text-yellow-400 transition-colors">{tFooter('support.community')}</a></li>
+                                <li><a href="#" className="hover:text-yellow-400 transition-colors">{tFooter('support.privacyPolicy')}</a></li>
                             </ul>
                         </div>
                     </div>
 
                     <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground">
-                        <p>&copy; 2024 Inversión Libre. Todos los derechos reservados. Hecho con ❤️ para la comunidad FIRE.</p>
+                        <p>{tFooter('rights')}</p>
                     </div>
                 </div>
             </footer>

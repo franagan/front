@@ -1,13 +1,14 @@
 'use client'
 
 import * as React from "react"
-import { useForm, FormProvider, useFormContext, ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form"
+import { useForm, FormProvider, useFormContext, FieldPath, FieldValues } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 
 // Types para mejor TypeScript
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type FormSchema = z.ZodType<any, any>
 
 interface FormProps<T extends FieldValues> {
@@ -30,6 +31,7 @@ function Form<T extends FieldValues>({
 }: FormProps<T>) {
     const form = useForm<T>({
         resolver: zodResolver(schema),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         defaultValues: defaultValues as any,
         mode
     })

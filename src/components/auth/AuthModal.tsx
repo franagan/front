@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "@/i18n/navigation"
 import { useAuthStore } from "../../stores/useAuthStore"
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,7 @@ import { Modal } from "@/components/ui/modal"
 import { TrendingUp, Loader2 } from "lucide-react"
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import GoogleLoginButton from "./GoogleLoginButton";
 
 interface AuthModalProps {
     isOpen: boolean
@@ -22,7 +23,14 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
     const t = useTranslations('auth');
     const router = useRouter()
     const [activeTab, setActiveTab] = useState<'login' | 'register'>(defaultTab)
-    const { login, register, isLoading, error, clearError } = useAuthStore()
+    const { login, register, isLoading, error, clearError, isAuthenticated } = useAuthStore()
+
+    useEffect(() => {
+        if (isAuthenticated && isOpen) {
+            onClose();
+            router.push('/mainboard');
+        }
+    }, [isAuthenticated, isOpen, onClose, router]);
 
     // Login Form State
     const [loginData, setLoginData] = useState({
@@ -68,7 +76,7 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
             await login(loginData)
             onClose()
             router.push('/mainboard')
-        } catch (err) {
+        } catch {
             // Error handled by store
         }
     }
@@ -102,7 +110,7 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
             })
             onClose()
             router.push('/mainboard')
-        } catch (err) {
+        } catch {
             // Error handled by store
         }
     }
@@ -129,6 +137,17 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
 
                 {activeTab === 'login' ? (
                     <form onSubmit={handleLoginSubmit} className="space-y-4">
+                        <GoogleLoginButton />
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-background px-2 text-muted-foreground">
+                                    {t('login.or')}
+                                </span>
+                            </div>
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="login-email">{t('login.email')}</Label>
                             <Input
@@ -181,6 +200,17 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
                     </form>
                 ) : (
                     <form onSubmit={handleRegisterSubmit} className="space-y-4">
+                        <GoogleLoginButton />
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-background px-2 text-muted-foreground">
+                                    {t('login.or')}
+                                </span>
+                            </div>
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="register-firstName">{t('register.firstName')}</Label>
                             <Input

@@ -11,16 +11,12 @@ import {
     X,
     TrendingUp,
     TrendingDown,
-    DollarSign,
-    Clock,
-    Bell,
-    Zap,
-    Shield,
+    ExternalLink,
     Target,
-    Activity,
     Briefcase,
-    Calendar,
-    ExternalLink
+    Activity,
+    Zap,
+    Calendar
 } from "lucide-react"
 
 // Variantes del Alert
@@ -50,7 +46,7 @@ const alertVariants = cva(
 // Props del Alert base
 export interface AlertProps
     extends React.HTMLAttributes<HTMLDivElement>,
-        VariantProps<typeof alertVariants> {
+    VariantProps<typeof alertVariants> {
     dismissible?: boolean
     onDismiss?: () => void
     icon?: React.ReactNode
@@ -104,7 +100,7 @@ export function Alert({
             <div className="flex-1">
                 {children}
             </div>
-            
+
             {/* Área de acciones */}
             <div className="flex items-center gap-2 ml-auto">
                 {action}
@@ -182,8 +178,8 @@ export function MarketAlert({
             className={className}
             icon={
                 type === "bullish" ? <TrendingUp className="h-4 w-4" /> :
-                type === "bearish" ? <TrendingDown className="h-4 w-4" /> :
-                <Activity className="h-4 w-4" />
+                    type === "bearish" ? <TrendingDown className="h-4 w-4" /> :
+                        <Activity className="h-4 w-4" />
             }
             action={action}
         >
@@ -349,7 +345,7 @@ export function UpcomingEventAlert({
     className?: string
 }) {
     const daysUntil = Math.ceil((date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-    
+
     return (
         <Alert
             variant={importance}
@@ -368,11 +364,11 @@ export function UpcomingEventAlert({
             <AlertDescription>
                 {description}
                 <div className="text-xs text-muted-foreground mt-1">
-                    📅 {date.toLocaleDateString('es-ES', { 
-                        weekday: 'long', 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
+                    📅 {date.toLocaleDateString('es-ES', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
                     })}
                 </div>
             </AlertDescription>
@@ -385,9 +381,11 @@ export function useAlerts() {
     const [alerts, setAlerts] = React.useState<Array<{
         id: string
         type: string
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         props: any
     }>>([])
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addAlert = React.useCallback((type: string, props: any) => {
         const id = Math.random().toString(36).substr(2, 9)
         setAlerts(prev => [...prev, { id, type, props }])

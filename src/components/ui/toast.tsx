@@ -57,6 +57,13 @@ const Toast = ({ id, type, title, description, duration = 5000, action, onRemove
   const [isLeaving, setIsLeaving] = React.useState(false)
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null)
 
+  const handleRemove = React.useCallback(() => {
+    setIsLeaving(true)
+    setTimeout(() => {
+      onRemove(id)
+    }, 300) // Tiempo de animación de salida
+  }, [id, onRemove])
+
   // Animación de entrada
   React.useEffect(() => {
     setIsVisible(true)
@@ -77,14 +84,7 @@ const Toast = ({ id, type, title, description, duration = 5000, action, onRemove
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [duration, type])
-
-  const handleRemove = () => {
-    setIsLeaving(true)
-    setTimeout(() => {
-      onRemove(id)
-    }, 300) // Tiempo de animación de salida
-  }
+  }, [duration, type, handleRemove])
 
   // Iconos y colores por tipo
   const toastConfig = {

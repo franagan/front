@@ -20,12 +20,13 @@ import {
     Cell
 } from "recharts"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
+// import { cn } from "@/lib/utils"
 
 // Types para los datos financieros
 export interface ChartDataPoint {
     name: string
     value: number
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any
 }
 
@@ -68,21 +69,22 @@ const formatPercentage = (value: number): string => {
 }
 
 // Formatter personalizado para tooltip
-const CustomTooltip = ({ 
-    active, 
-    payload, 
-    label, 
-    formatType = "currency" 
+const CustomTooltip = ({
+    active,
+    payload,
+    label,
+    formatType = "currency"
 }: {
     active?: boolean
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     payload?: any[]
     label?: string
     formatType?: "currency" | "percentage" | "number"
 }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-                <p className="font-medium text-gray-900 mb-1">{label}</p>
+            <div className="bg-card p-3 border border-border rounded-lg shadow-lg">
+                <p className="font-medium text-card-foreground mb-1">{label}</p>
                 {payload.map((entry, index) => (
                     <p key={index} className="text-sm" style={{ color: entry.color }}>
                         <span className="font-medium">{entry.dataKey}: </span>
@@ -218,6 +220,7 @@ export function PieFinancialChart({
         innerRadius,
         outerRadius,
         percent
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }: any) => {
         const radius = innerRadius + (outerRadius - innerRadius) * 0.5
         const x = cx + radius * Math.cos(-midAngle * RADIAN)
@@ -266,7 +269,7 @@ export function PieFinancialChart({
                                 />
                             ))}
                         </Pie>
-                        <Tooltip 
+                        <Tooltip
                             formatter={(value: number) => [formatCurrency(value), 'Valor']}
                         />
                         {showLegend && <Legend />}
@@ -359,7 +362,7 @@ export function ComposedFinancialChart({
                         <YAxis tickFormatter={(value) => formatCurrency(value)} />
                         <Tooltip content={<CustomTooltip formatType="currency" />} />
                         {showLegend && <Legend />}
-                        
+
                         {barKeys.map((key, index) => (
                             <Bar
                                 key={key}
@@ -368,7 +371,7 @@ export function ComposedFinancialChart({
                                 radius={[4, 4, 0, 0]}
                             />
                         ))}
-                        
+
                         {lineKeys.map((key, index) => (
                             <Line
                                 key={key}

@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { LineFinancialChart } from "@/components/ui/chart"
 import {
-    User,
     Globe,
     Youtube,
     Target,
@@ -20,15 +19,10 @@ import {
     Heart,
     Coffee,
     Plane,
-    Camera,
     Mail,
-    ExternalLink,
     CheckCircle,
     Star,
-    Clock,
-    DollarSign,
     Briefcase,
-    GraduationCap,
     Compass,
     Zap,
     Calculator
@@ -141,15 +135,15 @@ export default function SobreMiPage() {
                                 </div>
                                 <div className="text-center">
                                     <div className="text-3xl font-bold text-purple-400">5 años</div>
-                                    <div className="text-sm text-gray-400">Desde FIRE</div>
+                                    <div className="text-sm text-muted-foreground">Desde FIRE</div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-3xl font-bold text-green-400">500K+</div>
-                                    <div className="text-sm text-gray-400">Suscriptores</div>
+                                    <div className="text-sm text-muted-foreground">Suscriptores</div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-3xl font-bold text-yellow-400">25</div>
-                                    <div className="text-sm text-gray-400">Países visitados</div>
+                                    <div className="text-sm text-muted-foreground">Países visitados</div>
                                 </div>
                             </div>
 
@@ -163,7 +157,7 @@ export default function SobreMiPage() {
                                 </Button>
                                 <Button
                                     variant="outline"
-                                    className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                                    className="border-primary/50 text-foreground hover:bg-muted"
                                     onClick={() => window.location.href = '/contacto'}
                                 >
                                     <Mail className="h-4 w-4 mr-2" />
@@ -182,20 +176,20 @@ export default function SobreMiPage() {
                                         </div>
 
                                         <div>
-                                            <h3 className="text-2xl font-bold text-white mb-2">Francisco Palero</h3>
+                                            <h3 className="text-2xl font-bold text-foreground mb-2">Francisco Palero</h3>
                                             <p className="text-muted-foreground">Nómada Digital & Educador FIRE</p>
                                         </div>
 
                                         <div className="space-y-3">
-                                            <div className="flex items-center justify-center gap-2 text-gray-300">
+                                            <div className="flex items-center justify-center gap-2 text-muted-foreground">
                                                 <MapPin className="h-4 w-4" />
                                                 <span>Actualmente en Europa</span>
                                             </div>
-                                            <div className="flex items-center justify-center gap-2 text-gray-300">
+                                            <div className="flex items-center justify-center gap-2 text-muted-foreground">
                                                 <Calendar className="h-4 w-4" />
                                                 <span>FIRE desde 2019</span>
                                             </div>
-                                            <div className="flex items-center justify-center gap-2 text-gray-300">
+                                            <div className="flex items-center justify-center gap-2 text-muted-foreground">
                                                 <Briefcase className="h-4 w-4" />
                                                 <span>Ex-Ingeniero de Software</span>
                                             </div>
@@ -209,21 +203,22 @@ export default function SobreMiPage() {
             </section>
 
             {/* Mi Historia */}
-            <section className="py-16 bg-muted/30 dark:bg-gray-800/30">
+            <section className="py-16 bg-muted/30">
                 <div className="max-w-4xl mx-auto px-8">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold mb-4">📖 Mi Historia hacia el FIRE</h2>
+                        <h2 className="text-3xl font-bold mb-4 text-foreground">📖 Mi Historia hacia el FIRE</h2>
                         <p className="text-xl text-muted-foreground">
                             Desde desarrollador con salario normal hasta independencia financiera total
                         </p>
                     </div>
 
-                    <Card className="bg-gray-800 border-gray-700 mb-12">
+                    <Card className="bg-card border-border mb-12">
                         <CardHeader>
-                            <CardTitle className="text-white">📈 Evolución de mi Patrimonio</CardTitle>
+                            <CardTitle className="text-foreground">📈 Evolución de mi Patrimonio</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <LineFinancialChart
+                                /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
                                 data={fireJourneyData as any}
                                 height={300}
                                 colors={["#3b82f6", "#ef4444"]}
@@ -245,12 +240,12 @@ export default function SobreMiPage() {
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <h3 className="text-xl font-semibold text-white">{item.title}</h3>
-                                        <Badge variant="outline" className="border-gray-600 text-gray-300">
+                                        <h3 className="text-xl font-semibold text-foreground">{item.title}</h3>
+                                        <Badge variant="outline" className="text-muted-foreground">
                                             {item.year}
                                         </Badge>
                                     </div>
-                                    <p className="text-gray-300">{item.description}</p>
+                                    <p className="text-muted-foreground">{item.description}</p>
                                 </div>
                             </div>
                         ))}
@@ -270,20 +265,20 @@ export default function SobreMiPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {achievements.map((achievement, index) => (
-                            <Card key={index} className="bg-gray-800 border-gray-700 hover:border-blue-400/50 transition-colors">
+                            <Card key={index} className="bg-card border-border hover:border-blue-400/50 transition-colors">
                                 <CardContent className="p-6">
                                     <div className="flex items-start gap-4">
                                         <div className="bg-blue-500 w-10 h-10 rounded-full flex items-center justify-center text-white">
                                             {achievement.icon}
                                         </div>
                                         <div className="flex-1">
-                                            <h3 className="text-lg font-semibold text-white mb-1">
+                                            <h3 className="text-lg font-semibold text-foreground mb-1">
                                                 {achievement.title}
                                             </h3>
-                                            <p className="text-gray-400 text-sm mb-2">
+                                            <p className="text-muted-foreground text-sm mb-2">
                                                 {achievement.description}
                                             </p>
-                                            <Badge variant="outline" className="border-gray-600 text-gray-300 text-xs">
+                                            <Badge variant="outline" className="text-muted-foreground text-xs">
                                                 {achievement.year}
                                             </Badge>
                                         </div>
@@ -296,119 +291,144 @@ export default function SobreMiPage() {
             </section>
 
             {/* Vida Nómada */}
-            <section className="py-16 bg-muted/30 dark:bg-gray-800/30">
+            <section className="py-20 bg-muted/30">
                 <div className="max-w-6xl mx-auto px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold mb-4">🌍 Vida Nómada Digital</h2>
-                        <p className="text-xl text-gray-400">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-bold mb-4 text-foreground">🌍 Vida Nómada Digital</h2>
+                        <p className="text-xl text-muted-foreground">
                             Viajando por Europa en autocaravana desde que conseguí mi FIRE
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-                        <Card className="bg-gray-800 border-gray-700">
+                        <Card className="bg-card border-border shadow-sm">
                             <CardHeader>
-                                <CardTitle className="text-white flex items-center gap-2">
-                                    <Plane className="h-5 w-5 text-green-400" />
+                                <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
+                                    <Plane className="h-6 w-6 text-primary" />
                                     Países Visitados (25)
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-3 gap-x-4">
                                     {countries.map((country, index) => (
-                                        <div key={index} className="flex items-center gap-2 text-gray-300">
-                                            <span>{country}</span>
+                                        <div key={index} className="flex items-center gap-2 group cursor-default">
+                                            <span className="text-lg opacity-80 group-hover:opacity-100 transition-opacity">
+                                                {country.split(' ')[0]}
+                                            </span>
+                                            <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                                                {country.split(' ')[1]}
+                                            </span>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="mt-6 p-4 bg-gray-900 rounded-lg">
-                                    <div className="flex items-center gap-2 text-green-400 mb-2">
-                                        <Compass className="h-4 w-4" />
-                                        <span className="font-semibold">Próximo destino</span>
+                                <div className="mt-8 p-5 bg-primary/5 rounded-xl border border-primary/10">
+                                    <div className="flex items-center gap-2 text-primary mb-2">
+                                        <Compass className="h-5 w-5" />
+                                        <span className="font-bold">Próximo destino</span>
                                     </div>
-                                    <p className="text-gray-300 text-sm">
-                                        Explorando los Balcanes: Albania, Macedonia del Norte y Kosovo.
-                                        ¡Sígueme en YouTube para ver el viaje!
+                                    <p className="text-muted-foreground text-sm leading-relaxed">
+                                        Explorando los Balcanes: <strong className="text-foreground">Albania, Macedonia del Norte y Kosovo</strong>.
+                                        ¡Sígueme en YouTube para ver nuestra ruta en tiempo real!
                                     </p>
                                 </div>
                             </CardContent>
                         </Card>
 
+
                         <div className="space-y-6">
-                            <Card className="bg-gray-800 border-gray-700">
+                            <Card className="bg-card border-border shadow-sm">
                                 <CardHeader>
-                                    <CardTitle className="text-white">🚐 Mi Oficina Móvil</CardTitle>
+                                    <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
+                                        <Compass className="h-6 w-6 text-primary" />
+                                        Mi Oficina Móvil
+                                    </CardTitle>
                                 </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <p className="text-gray-300">
-                                        Trabajo desde una autocaravana equipada con todo lo necesario:
-                                        internet por satélite, placas solares y un setup de grabación completo.
+                                <CardContent className="space-y-6">
+                                    <p className="text-muted-foreground leading-relaxed">
+                                        Trabajo desde una autocaravana equipada con todo lo necesario para mi día a día:
+                                        internet por satélite, energía solar y un estudio de grabación completo.
                                     </p>
-                                    <div className="grid grid-cols-2 gap-4 text-sm">
-                                        <div className="flex items-center gap-2">
-                                            <CheckCircle className="h-4 w-4 text-green-400" />
-                                            <span className="text-gray-300">Internet Starlink</span>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                                            <CheckCircle className="h-5 w-5 text-green-500" />
+                                            <span className="text-sm font-medium text-foreground">Internet Starlink</span>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <CheckCircle className="h-4 w-4 text-green-400" />
-                                            <span className="text-gray-300">400W Paneles solares</span>
+                                        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                                            <Zap className="h-5 w-5 text-yellow-500" />
+                                            <span className="text-sm font-medium text-foreground">400W Solar</span>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <CheckCircle className="h-4 w-4 text-green-400" />
-                                            <span className="text-gray-300">Estudio móvil</span>
+                                        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                                            <Briefcase className="h-5 w-5 text-blue-500" />
+                                            <span className="text-sm font-medium text-foreground">Estudio móvil</span>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <CheckCircle className="h-4 w-4 text-green-400" />
-                                            <span className="text-gray-300">Autonomía 7 días</span>
+                                        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                                            <Coffee className="h-5 w-5 text-orange-500" />
+                                            <span className="text-sm font-medium text-foreground">Autonomía 7 días</span>
                                         </div>
                                     </div>
                                 </CardContent>
                             </Card>
 
-                            <Card className="bg-gray-800 border-gray-700">
-                                <CardHeader>
-                                    <CardTitle className="text-white">💰 Gastos de Vida Nómada</CardTitle>
+                            <Card className="bg-card border-border shadow-sm overflow-hidden">
+                                <CardHeader className="pb-2">
+                                    <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
+                                        <Calculator className="h-6 w-6 text-primary" />
+                                        Gastos de Vida Nómada
+                                    </CardTitle>
                                 </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-400">Combustible</span>
-                                            <span className="text-white">€400/mes</span>
+                                <CardContent className="space-y-6">
+                                    <div className="space-y-5">
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-muted-foreground font-medium">Combustible</span>
+                                                <span className="text-foreground font-bold">€400/mes</span>
+                                            </div>
+                                            <Progress value={40} className="h-2" variant="default" />
                                         </div>
-                                        <Progress value={40} className="h-2" variant="default" />
 
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-400">Comida</span>
-                                            <span className="text-white">€300/mes</span>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-muted-foreground font-medium">Comida</span>
+                                                <span className="text-foreground font-bold">€300/mes</span>
+                                            </div>
+                                            <Progress value={30} className="h-2" variant="success" />
                                         </div>
-                                        <Progress value={30} className="h-2" variant="success" />
 
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-400">Camping/Parkings</span>
-                                            <span className="text-white">€200/mes</span>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-muted-foreground font-medium">Camping/Parkings</span>
+                                                <span className="text-foreground font-bold">€200/mes</span>
+                                            </div>
+                                            <Progress value={20} className="h-2" variant="warning" />
                                         </div>
-                                        <Progress value={20} className="h-2" variant="warning" />
 
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-400">Otros</span>
-                                            <span className="text-white">€100/mes</span>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-muted-foreground font-medium">Otros</span>
+                                                <span className="text-foreground font-bold">€100/mes</span>
+                                            </div>
+                                            <Progress value={10} className="h-2" variant="destructive" />
                                         </div>
-                                        <Progress value={10} className="h-2" variant="destructive" />
                                     </div>
 
-                                    <div className="pt-4 border-t border-gray-600">
-                                        <div className="flex justify-between font-semibold">
-                                            <span className="text-white">Total mensual:</span>
-                                            <span className="text-green-400">€1,000</span>
+                                    <div className="pt-6 border-t border-border flex items-center justify-between">
+                                        <div>
+                                            <div className="text-2xl font-black text-primary">€1,000</div>
+                                            <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold italic">
+                                                Total mensual estimado
+                                            </div>
                                         </div>
-                                        <p className="text-gray-400 text-xs mt-1">
-                                            Vs €2,500 viviendo en Madrid
-                                        </p>
+                                        <div className="text-right">
+                                            <Badge variant="outline" className="text-green-500 border-green-500/30 bg-green-500/10 py-1">
+                                                -60% vs Madrid
+                                            </Badge>
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
                         </div>
+
                     </div>
                 </div>
             </section>
@@ -417,61 +437,61 @@ export default function SobreMiPage() {
             <section className="py-16">
                 <div className="max-w-4xl mx-auto px-8">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold mb-4">💭 Mi Filosofía</h2>
-                        <p className="text-xl text-gray-400">
-                            Lo que he aprendido en mi camino hacia y después del FIRE
-                        </p>
+                        <h2 className="text-3xl font-bold mb-4 text-foreground">💭 Mi Filosofía</h2>
+                        <div className="mt-4 text-sm text-muted-foreground text-center">
+                            El momento en que crucé la línea roja fue cuando supe que había conseguido mi FIRE 🎉
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                        <Card className="bg-gradient-to-br from-blue-900/30 to-blue-800/20 border-blue-700">
+                        <Card className="bg-card border-blue-500/20 dark:border-blue-500/10 hover:border-blue-500/50 transition-all bg-gradient-to-br from-blue-500/5 to-transparent border shadow-sm">
                             <CardContent className="p-8">
                                 <div className="text-center space-y-4">
-                                    <div className="text-4xl">🎯</div>
-                                    <h3 className="text-xl font-semibold text-white">FIRE no es sobre dinero</h3>
-                                    <p className="text-gray-300">
-                                        Es sobre <strong>libertad de elección</strong>. El dinero es solo la herramienta
+                                    <div className="text-5xl mb-2">🎯</div>
+                                    <h3 className="text-2xl font-bold text-foreground">FIRE no es sobre dinero</h3>
+                                    <p className="text-muted-foreground text-lg">
+                                        Es sobre <strong className="text-foreground">libertad de elección</strong>. El dinero es solo la herramienta
                                         que te permite decidir cómo pasar tu tiempo.
                                     </p>
                                 </div>
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-gradient-to-br from-green-900/30 to-green-800/20 border-green-700">
+                        <Card className="bg-card border-green-500/20 dark:border-green-500/10 hover:border-green-500/50 transition-all bg-gradient-to-br from-green-500/5 to-transparent border shadow-sm">
                             <CardContent className="p-8">
                                 <div className="text-center space-y-4">
-                                    <div className="text-4xl">🌱</div>
-                                    <h3 className="text-xl font-semibold text-white">Empezar es lo importante</h3>
-                                    <p className="text-gray-300">
+                                    <div className="text-5xl mb-2">🌱</div>
+                                    <h3 className="text-2xl font-bold text-foreground">Empezar es lo importante</h3>
+                                    <p className="text-muted-foreground text-lg">
                                         No necesitas ser perfecto desde el día 1. Yo cometí muchos errores,
-                                        pero <strong>empezar temprano</strong> fue la clave.
+                                        pero <strong className="text-foreground">empezar temprano</strong> fue la clave.
                                     </p>
                                 </div>
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-gradient-to-br from-purple-900/30 to-purple-800/20 border-purple-700">
+                        <Card className="bg-card border-purple-500/20 dark:border-purple-500/10 hover:border-purple-500/50 transition-all bg-gradient-to-br from-purple-500/5 to-transparent border shadow-sm">
                             <CardContent className="p-8">
                                 <div className="text-center space-y-4">
-                                    <div className="text-4xl">🎓</div>
-                                    <h3 className="text-xl font-semibold text-white">Educación continua</h3>
-                                    <p className="text-gray-300">
+                                    <div className="text-5xl mb-2">🎓</div>
+                                    <h3 className="text-2xl font-bold text-foreground">Educación continua</h3>
+                                    <p className="text-muted-foreground text-lg">
                                         Los mercados evolucionan, las estrategias cambian.
-                                        <strong>Nunca pares de aprender</strong> sobre finanzas e inversión.
+                                        <strong className="text-foreground">Nunca pares de aprender</strong> sobre finanzas e inversión.
                                     </p>
                                 </div>
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-gradient-to-br from-orange-900/30 to-orange-800/20 border-orange-700">
+                        <Card className="bg-card border-orange-500/20 dark:border-orange-500/10 hover:border-orange-500/50 transition-all bg-gradient-to-br from-orange-500/5 to-transparent border shadow-sm">
                             <CardContent className="p-8">
                                 <div className="text-center space-y-4">
-                                    <div className="text-4xl">🤝</div>
-                                    <h3 className="text-xl font-semibold text-white">Comparte el conocimiento</h3>
-                                    <p className="text-gray-300">
+                                    <div className="text-5xl mb-2">🤝</div>
+                                    <h3 className="text-2xl font-bold text-foreground">Comparte el conocimiento</h3>
+                                    <p className="text-muted-foreground text-lg">
                                         Lo que más me satisface es ver a otros conseguir su FIRE.
-                                        <strong>Ayudar es mi nueva pasión</strong>.
+                                        <strong className="text-foreground">Ayudar es mi nueva pasión</strong>.
                                     </p>
                                 </div>
                             </CardContent>
@@ -530,21 +550,21 @@ export default function SobreMiPage() {
             </section>
 
             {/* Footer */}
-            <footer className="bg-black py-16">
+            <footer className="bg-muted py-16 border-t border-border">
                 <div className="max-w-7xl mx-auto px-8">
                     <div className="text-center">
                         <div className="flex items-center justify-center gap-2 mb-4">
                             <span className="text-2xl">🔥</span>
-                            <span className="text-xl font-bold text-white">Inversión Libre</span>
+                            <span className="text-xl font-bold text-foreground">Inversión Libre</span>
                         </div>
-                        <p className="text-gray-400 mb-6">
+                        <p className="text-muted-foreground mb-6">
                             Compartiendo mi camino hacia la independencia financiera.
                         </p>
                         <div className="flex items-center justify-center gap-4">
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                                className="border-border text-muted-foreground hover:text-foreground"
                                 onClick={() => window.location.href = '/'}
                             >
                                 Inicio
@@ -552,7 +572,7 @@ export default function SobreMiPage() {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                                className="border-border text-muted-foreground hover:text-foreground"
                                 onClick={() => window.location.href = '/blog'}
                             >
                                 Blog
@@ -560,7 +580,7 @@ export default function SobreMiPage() {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                                className="border-border text-muted-foreground hover:text-foreground"
                                 onClick={() => window.location.href = '/calculadoras'}
                             >
                                 Calculadoras
@@ -568,7 +588,7 @@ export default function SobreMiPage() {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                                className="border-border text-muted-foreground hover:text-foreground"
                                 onClick={() => window.location.href = '/contacto'}
                             >
                                 Contacto
