@@ -11,7 +11,8 @@ import {
     Calendar,
     Tag,
     Upload,
-    Loader2
+    Loader2,
+    Plus
 } from "lucide-react"
 import { useTranslations } from 'next-intl'
 
@@ -24,6 +25,16 @@ import CategorySelector from "@/components/shared/CategorySelector"
 import ImportExpensesModal from "@/components/expenses/ImportExpensesModal"
 import EditExpenseModal from "@/components/expenses/EditExpenseModal"
 import { useToast } from "@/components/ui/toast"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import {
+    ResponsiveContainer, Cell, Pie, PieChart as RechartsPieChart, Tooltip
+} from 'recharts'
 
 export default function ExpensesPage() {
     const router = useRouter()
@@ -40,7 +51,13 @@ export default function ExpensesPage() {
 
     // Data state
     const [expenses, setExpenses] = useState<Expense[]>([])
+    const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([])
     const [budgets, setBudgets] = useState<BudgetCategory[]>([])
+
+    // Filters
+    const [dateFilter, setDateFilter] = useState('all') // 'all', 'thisMonth', 'last3Months', 'thisYear'
+    const [categoryFilter, setCategoryFilter] = useState('all')
+
     const [loading, setLoading] = useState(true)
     const [isImportModalOpen, setIsImportModalOpen] = useState(false)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -73,6 +90,45 @@ export default function ExpensesPage() {
         } finally {
             setLoading(false)
         }
+    }
+
+    useEffect(() => {
+        applyFilters()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [expenses, dateFilter, categoryFilter])
+
+    const applyFilters = () => {
+        const now = new Date()
+        let filtered = [...expenses]
+
+        // 1. Date filter
+        if (dateFilter !== 'all') {
+            filtered = filtered.filter(expense => {
+                const expDate = new Date(expense.date)
+                if (dateFilter === 'thisMonth') {
+                    return expDate.getMonth() === now.getMonth() && expDate.getFullYear() === now.getFullYear()
+                }
+                if (dateFilter === 'last3Months') {
+                    const threeMonthsAgo = new Date()
+                    threeMonthsAgo.setMonth(now.getMonth() - 3)
+                    return expDate >= threeMonthsAgo
+                }
+                if (dateFilter === 'thisYear') {
+                    return expDate.getFullYear() === now.getFullYear()
+                }
+                return true
+            })
+        }
+
+        // 2. Category filter
+        if (categoryFilter !== 'all') {
+            filtered = filtered.filter(expense => {
+                const catName = expense.category || 'Sin categoría'
+                return catName === categoryFilter
+            })
+        }
+
+        setFilteredExpenses(filtered)
     }
 
     const { addToast } = useToast()
@@ -127,11 +183,45 @@ export default function ExpensesPage() {
         setIsEditModalOpen(true)
     }
 
-    const getCategoryColor = (cat: string | undefined) => {
-        if (!cat) return 'bg-gray-500'
+    const getCategoryColor = (cat: string | undefined, type: 'tailwind' | 'hex' = 'tailwind') => {
+        if (!cat) return type === 'tailwind' ? 'bg-gray-500' : '#6b7280'
         const budget = budgets.find(b => b.name === cat)
-        return budget?.color || 'bg-gray-500'
+        const twColor = budget?.color || 'bg-gray-500'
+
+        if (type === 'tailwind') return twColor
+
+        const tailwindColors: Record<string, string> = {
+            'bg-blue-500': '#3b82f6',
+            'bg-green-500': '#22c55e',
+            'bg-yellow-500': '#eab308',
+            'bg-purple-500': '#a855f7',
+            'bg-pink-500': '#ec4899',
+            'bg-red-500': '#ef4444',
+            'bg-orange-500': '#f97316',
+            'bg-cyan-500': '#06b6d4',
+            'bg-gray-500': '#6b7280'
+        };
+        return tailwindColors[twColor] || '#6b7280'
     }
+
+    // Chart Data Aggregation
+    const chartData = filteredExpenses.reduce((acc, curr) => {
+        const catName = curr.category || 'Sin categoría'
+        const existing = acc.find(item => item.name === catName)
+        if (existing) {
+            existing.value += curr.amount
+        } else {
+            acc.push({
+                name: catName,
+                value: curr.amount,
+                color: getCategoryColor(catName, 'hex')
+            })
+        }
+        return acc
+    }, [] as { name: string, value: number, color: string }[])
+
+    // Unique Categories for Filter Dropdown
+    const uniqueCategories = Array.from(new Set(expenses.map(e => e.category || 'Sin categoría')))
 
     return (
         <div className="min-h-screen bg-background">
@@ -156,7 +246,7 @@ export default function ExpensesPage() {
                         </div>
                         <Button
                             onClick={() => setIsImportModalOpen(true)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                            className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-600/30 transition-all font-medium hover:-translate-y-0.5"
                         >
                             <Upload className="mr-2 h-4 w-4" />
                             Importar CSV
@@ -238,8 +328,8 @@ export default function ExpensesPage() {
                                     </div>
 
                                     {/* Submit Button */}
-                                    <Button type="submit" className="w-full bg-yellow-600 hover:bg-yellow-700" disabled={loading}>
-                                        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <DollarSign className="h-4 w-4 mr-2" />}
+                                    <Button type="submit" className="w-full bg-yellow-600 hover:bg-yellow-700 text-white shadow-md shadow-yellow-600/20 transition-all font-semibold hover:-translate-y-0.5 h-11" disabled={loading}>
+                                        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="h-5 w-5 mr-1.5" strokeWidth={2.5} />}
                                         {t('addExpense')}
                                     </Button>
                                 </form>
@@ -247,9 +337,76 @@ export default function ExpensesPage() {
                         </Card>
                     </section>
 
-                    {/* Recent Expenses List */}
-                    <section>
-                        <h2 className="text-2xl font-bold mb-6">{t('recentExpenses')}</h2>
+                    {/* Chart and Filter Section */}
+                    <section className="flex flex-col gap-6">
+                        <h2 className="text-2xl font-bold mb-2">{t('recentExpenses')}</h2>
+
+                        {/* Filters */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <Select value={dateFilter} onValueChange={setDateFilter}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Fecha" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Todo el tiempo</SelectItem>
+                                    <SelectItem value="thisMonth">Este Mes</SelectItem>
+                                    <SelectItem value="last3Months">Últimos 3 Meses</SelectItem>
+                                    <SelectItem value="thisYear">Este Año</SelectItem>
+                                </SelectContent>
+                            </Select>
+
+                            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Categoría" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Todas las categorías</SelectItem>
+                                    {uniqueCategories.map(cat => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {/* Chart */}
+                        <Card className="bg-card border-border">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                                    <DollarSign className="h-4 w-4" />
+                                    Distribución de Gastos
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="h-[250px] flex items-center justify-center p-0">
+                                {chartData.length > 0 ? (
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <RechartsPieChart>
+                                            <Pie
+                                                data={chartData}
+                                                dataKey="value"
+                                                nameKey="name"
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={50}
+                                                outerRadius={80}
+                                                paddingAngle={2}
+                                            >
+                                                {chartData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} stroke="hsl(var(--background))" strokeWidth={2} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip
+                                                contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
+                                                formatter={(value: number, name: string) => [`€${value.toFixed(2)}`, name]}
+                                            />
+                                        </RechartsPieChart>
+                                    </ResponsiveContainer>
+                                ) : (
+                                    <div className="text-sm text-muted-foreground">
+                                        No hay datos para la gráfica
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
 
                         {loading ? (
                             <div className="flex justify-center p-8">
@@ -261,8 +418,8 @@ export default function ExpensesPage() {
                                 <p className="text-sm mt-2">Añade uno o importa un CSV</p>
                             </div>
                         ) : (
-                            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-                                {expenses.map((expense) => (
+                            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                                {filteredExpenses.map((expense) => (
                                     <Card
                                         key={expense.id}
                                         className="bg-card border-border hover:border-yellow-400 transition-colors cursor-pointer"
@@ -271,7 +428,7 @@ export default function ExpensesPage() {
                                         <CardContent className="p-4">
                                             <div className="flex justify-between items-start">
                                                 <div className="flex items-start gap-3">
-                                                    <div className={`${getCategoryColor(expense.category)} w-10 h-10 rounded-full flex items-center justify-center shrink-0`}>
+                                                    <div className={`${getCategoryColor(expense.category, 'tailwind')} w-10 h-10 rounded-full flex items-center justify-center shrink-0`}>
                                                         <Tag className="h-5 w-5 text-white" />
                                                     </div>
                                                     <div>

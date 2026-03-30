@@ -1,9 +1,12 @@
+export type Role = 'USER' | 'ADMIN';
+
 export interface User {
     id: string;
     email: string;
     firstName: string;
     lastName: string;
-    role?: string;
+    role?: Role | string;
+    enabled?: boolean;
 }
 
 export interface LoginRequest {

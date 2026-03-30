@@ -14,7 +14,7 @@ interface AuthState {
   error: string | null;
   
   login: (data: LoginRequest) => Promise<void>;
-  googleLogin: (token: string) => Promise<void>;
+  googleLogin: (token: string) => Promise<{success: boolean, unauthorized?: boolean} | void>;
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
   clearError: () => void;
@@ -79,12 +79,19 @@ export const useAuthStore = create<AuthState>()(
           });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
+          const isUnauthorized = error.response?.status === 401 || (error.response?.data?.message || '').includes('validando token');
           const errorMessage = error.response?.data?.message || error.message || 'Error al iniciar sesión con Google';
-          set({ 
-            error: errorMessage, 
-            isLoading: false 
-          });
-          throw error;
+          
+          if (!isUnauthorized) {
+            set({ 
+              error: errorMessage, 
+              isLoading: false 
+            });
+          } else {
+             set({ isLoading: false });
+          }
+          console.log("Google login rejected by backend:", errorMessage);
+          return { success: false, unauthorized: isUnauthorized };
         }
       },
 

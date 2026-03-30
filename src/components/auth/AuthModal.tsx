@@ -6,7 +6,7 @@ import { useAuthStore } from "../../stores/useAuthStore"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+
 import { Modal } from "@/components/ui/modal"
 import { TrendingUp, Loader2 } from "lucide-react"
 import { useTranslations } from 'next-intl';
@@ -130,9 +130,12 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
                 </div>
 
                 {(error || validationError) && (
-                    <Alert variant="destructive">
-                        <AlertDescription>{validationError || error}</AlertDescription>
-                    </Alert>
+                    <div className="p-3 rounded-md bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-400 text-sm flex items-center gap-2 border border-red-200 dark:border-red-900/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        <span>{validationError || error}</span>
+                    </div>
                 )}
 
                 {activeTab === 'login' ? (

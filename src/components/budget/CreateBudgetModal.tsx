@@ -1,6 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,6 +24,18 @@ interface CreateBudgetModalProps {
     existingBudgets?: BudgetCategory[];
 }
 
+const budgetSchema = z.object({
+    name: z.string().min(1, 'El nombre es obligatorio'),
+    budget: z.string().min(1, 'El presupuesto mensual es obligatorio'),
+    spent: z.string().min(1, 'El gasto real es obligatorio'),
+    color: z.string(),
+    description: z.string().optional(),
+    subcategory: z.string().optional(),
+    customName: z.string().optional(),
+});
+
+type BudgetFormData = z.infer<typeof budgetSchema>;
+
 export default function CreateBudgetModal({
     isOpen,
     onClose,
@@ -27,130 +43,110 @@ export default function CreateBudgetModal({
     initialData,
     existingBudgets = []
 }: CreateBudgetModalProps) {
-    const [name, setName] = useState('');
-    const [customName, setCustomName] = useState('');
-    const [isCustom, setIsCustom] = useState(false);
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+        setValue,
+        clearErrors,
+    } = useForm<BudgetFormData>({
+        resolver: zodResolver(budgetSchema),
+        defaultValues: {
+            name: '',
+            budget: '',
+            spent: '0',
+            color: 'bg-blue-500',
+            description: '',
+        },
+    });
 
-    // Subcategory logic
-    const [subcategory, setSubcategory] = useState('');
-
-    const [budget, setBudget] = useState('');
-    const [spent, setSpent] = useState('0');
-    const [color, setColor] = useState('bg-blue-500');
-    const [description, setDescription] = useState('');
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+        const [isCustom, setIsCustom] = useState(false);
     const [isLocked, setIsLocked] = useState(false);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
             if (initialData) {
-                // Edit mode
                 const isPredefined = PREDEFINED_CATEGORIES.includes(initialData.name);
                 setIsCustom(!isPredefined);
-                setName(isPredefined ? initialData.name : 'custom');
-                setCustomName(isPredefined ? '' : initialData.name);
-                setSubcategory(initialData.subcategory || '');
-
-                setBudget(initialData.limit.toString());
-                setSpent(initialData.spent.toString());
-                setColor(initialData.color);
-                setDescription(initialData.description || '');
+                setValue('name', isPredefined ? initialData.name : 'custom');
+                setValue('customName', isPredefined ? '' : initialData.name);
+                setValue('subcategory', initialData.subcategory || '');
+                setValue('budget', initialData.limit.toString());
+                setValue('spent', initialData.spent.toString());
+                setValue('color', initialData.color);
+                setValue('description', initialData.description || '');
                 setIsLocked(false);
+                setHasUnsavedChanges(false);
             } else {
-                // Create mode
                 resetForm();
             }
-            setError(null);
+            clearErrors();
         }
-    }, [isOpen, initialData]);
+    }, [isOpen, initialData, setValue, clearErrors]);
 
-    // Handle Category Change -> Check for existing budget lock
     useEffect(() => {
-        const selectedName = isCustom ? customName.trim() : name;
+        const selectedName = isCustom ? watch('customName')?.trim() : watch('name');
         if (!selectedName || selectedName === 'custom') return;
 
-        // Check if this category already exists in the current budget list
-        // We look for any entry with the same name, EXCLUDING the current item if we are editing.
         const existingCategory = existingBudgets.find(b => b.name === selectedName && b.id !== initialData?.id);
 
         if (existingCategory) {
-            // Lock Limit and Color to match the existing category
-            setBudget(existingCategory.limit.toString());
-            setColor(existingCategory.color);
+            setValue('budget', existingCategory.limit.toString());
+            setValue('color', existingCategory.color);
             setIsLocked(true);
         } else {
-            // Unlock if it's a new category
             setIsLocked(false);
         }
-
-    }, [name, customName, existingBudgets, isCustom, initialData]);
+    }, [watch('name'), watch('customName'), existingBudgets, isCustom, initialData, setValue]);
 
     const resetForm = () => {
-        setName('');
-        setCustomName('');
+        setValue('name', '');
+        setValue('customName', '');
         setIsCustom(false);
-        setSubcategory('');
-        setBudget('');
-        setSpent('0');
-        setColor('bg-blue-500');
-        setDescription('');
+        setValue('subcategory', '');
+        setValue('budget', '');
+        setValue('spent', '0');
+        setValue('color', 'bg-blue-500');
+        setValue('description', '');
         setIsLocked(false);
+        setHasUnsavedChanges(false);
+        clearErrors();
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const finalName = isCustom ? customName.trim() : name;
-
-        if (!finalName || !budget) {
-            setError('Todos los campos son obligatorios');
-            return;
-        }
-
-        setIsLoading(true);
-        setError(null);
+    const onSubmit = async (data: BudgetFormData) => {
+        const budgetData: CreateBudgetRequest = {
+            name: data.name,
+            limit: parseFloat(data.budget),
+            spent: parseFloat(data.spent),
+            color: data.color,
+            description: data.description || '',
+            subcategory: data.subcategory || undefined,
+        };
 
         try {
-            const budgetData: CreateBudgetRequest = {
-                name: finalName,
-                limit: parseFloat(budget),
-                spent: parseFloat(spent),
-                color,
-                description,
-                subcategory: subcategory || undefined
-            };
-
             if (initialData) {
                 await budgetService.updateBudget(initialData.id, budgetData);
+                toast.success('Presupuesto actualizado correctamente');
             } else {
                 await budgetService.createBudget(budgetData);
+                toast.success('Presupuesto creado correctamente');
             }
-
             onSuccess();
             onClose();
+            resetForm();
         } catch (err) {
             console.error('Error saving budget:', err);
             const errorPayload = err as { response?: { data?: { message?: string } } };
             const errorMessage = errorPayload.response?.data?.message || 'Error al guardar el presupuesto';
-            setError(errorMessage);
-        } finally {
-
-            setIsLoading(false);
+            toast.error(errorMessage);
         }
     };
 
-    const handleCategoryChange = (value: string) => {
-        setName(value);
-        if (value !== 'custom') {
-            setSubcategory('');
-        }
-    };
-
-    const handleClose = () => {
-        if (!isLoading) {
-            setError(null);
+        const handleClose = () => {
+        if (!isLoading && !hasUnsavedChanges) {
             onClose();
         }
     };
@@ -159,30 +155,35 @@ export default function CreateBudgetModal({
         <Dialog open={isOpen} onOpenChange={handleClose}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>{initialData ? 'Editar Gasto' : 'Añadir Gasto'}</DialogTitle>
+                    <DialogTitle>{initialData ? 'Editar Presupuesto' : 'Añadir Presupuesto'}</DialogTitle>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <CategorySelector
-                        category={name}
-                        subcategory={subcategory}
-                        onCategoryChange={handleCategoryChange}
-                        onSubcategoryChange={setSubcategory}
-                        allowCustom={true}
-                        isCustom={isCustom}
-                        onIsCustomChange={setIsCustom}
-                        customCategoryName={customName}
-                        onCustomNameChange={setCustomName}
-                    />
+                                            category={watch('name')}
+                                            subcategory={watch('subcategory') || ''}
+                                            onCategoryChange={(value) => {
+                                                setValue('name', value);
+                                                setValue('subcategory', '');
+                                            }}
+                                            onSubcategoryChange={(value) => setValue('subcategory', value)}
+                                            allowCustom={true}
+                                            isCustom={isCustom}
+                                            onIsCustomChange={setIsCustom}
+                                            customCategoryName={watch('customName') || ''}
+                                            onCustomNameChange={(value) => setValue('customName', value)}
+                                        />
 
                     <div className="space-y-2">
                         <Label htmlFor="description">Descripción (Opcional)</Label>
                         <Input
                             id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            {...register('description')}
                             placeholder="Ej: Compra mensual Mercadona"
                         />
+                        {errors.description && (
+                            <span className="text-xs text-red-500">{errors.description.message}</span>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -190,36 +191,39 @@ export default function CreateBudgetModal({
                             <Label htmlFor="limit">Presupuesto Mensual (€)</Label>
                             <Input
                                 id="limit"
+                                {...register('budget')}
                                 type="number"
                                 min="0"
                                 step="0.01"
-                                value={budget}
-                                onChange={(e) => setBudget(e.target.value)}
                                 placeholder="Ej: 500"
-                                required
                                 disabled={isLocked}
                                 className={isLocked ? "bg-muted text-muted-foreground" : ""}
                             />
                             {isLocked && <p className="text-xs text-muted-foreground">Presupuesto compartido con la categoría existente.</p>}
+                            {errors.budget && (
+                                <span className="text-xs text-red-500">{errors.budget.message}</span>
+                            )}
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="spent">Gasto Real (€)</Label>
                             <Input
                                 id="spent"
+                                {...register('spent')}
                                 type="number"
                                 min="0"
                                 step="0.01"
-                                value={spent}
-                                onChange={(e) => setSpent(e.target.value)}
-                                required
+                                placeholder="Ej: 250"
                             />
+                            {errors.spent && (
+                                <span className="text-xs text-red-500">{errors.spent.message}</span>
+                            )}
                         </div>
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="color">Color</Label>
-                        <Select value={color} onValueChange={setColor} disabled={isLocked}>
+                        <Select value={watch('color')} onValueChange={(value) => setValue('color', value)} disabled={isLocked}>
                             <SelectTrigger className={isLocked ? "bg-muted" : ""}>
                                 <SelectValue />
                             </SelectTrigger>
@@ -236,9 +240,9 @@ export default function CreateBudgetModal({
                         </Select>
                     </div>
 
-                    {error && (
+                    {errors.name && (
                         <div className="text-sm text-red-500">
-                            {error}
+                            {errors.name.message}
                         </div>
                     )}
 
@@ -247,7 +251,7 @@ export default function CreateBudgetModal({
                             Cancelar
                         </Button>
                         <Button type="submit" disabled={isLoading} className="bg-yellow-600 hover:bg-yellow-700">
-                            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : (initialData ? 'Guardar Cambios' : 'Añadir Gasto')}
+                            {isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : (initialData ? 'Guardar Cambios' : 'Añadir Presupuesto')}
                         </Button>
                     </DialogFooter>
                 </form>

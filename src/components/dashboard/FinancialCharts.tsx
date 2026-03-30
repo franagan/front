@@ -45,12 +45,17 @@ const resolveColor = (colorClass?: string, fallback: string = '#8884d8') => {
 export default function FinancialCharts({ portfolioData, budgets, goals, incomes, expenses }: FinancialChartsProps) {
     // const t = useTranslations('mainboard');
 
-    // 1. Prepare Income Data (Monthly Basis)
-    const incomeData = useMemo(() => incomes.map(inc => ({
-        name: inc.name,
-        value: inc.frequency === 'ANNUALLY' ? inc.amount / 12 : inc.amount,
-        color: resolveColor(inc.color, '#22c55e')
-    })).filter(d => d.value > 0), [incomes]);
+    // 1. Prepare Income Data (Monthly Basis) - Con validaciones
+        const incomeData = useMemo(() => {
+            if (!incomes || !Array.isArray(incomes)) return [];
+            return incomes
+                .map(inc => ({
+                    name: inc.name,
+                    value: inc.frequency === 'ANNUALLY' ? inc.amount / 12 : inc.amount,
+                    color: resolveColor(inc.color, '#22c55e')
+                }))
+                .filter(d => typeof d.value === 'number' && d.value > 0);
+        }, [incomes]);
 
     // 2. Prepare Expenses Data (By Category)
     const expensesByCategoryData = useMemo(() => budgets.map((b) => ({

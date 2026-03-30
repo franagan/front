@@ -2,13 +2,14 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales } from '@/i18n/request';
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "../globals.css";
 import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Metadata, Viewport } from 'next';
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import PWAInstallPrompt from "@/components/pwa/PWAInstallPrompt";
+import ChatbotWidget from "@/components/shared/ChatbotWidget";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -20,15 +21,47 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
+const outfit = Outfit({
+    variable: "--font-outfit",
+    subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-    title: "Inversión Libre - Tu camino hacia la independencia financiera",
+    title: {
+        template: '%s | Inversión Libre',
+        default: 'Inversión Libre - Tu camino hacia la independencia financiera',
+    },
     description: "Aprende a conseguir la libertad financiera con estrategias FIRE probadas y vive como nómada digital. Calculadoras, educación y comunidad.",
+    keywords: ["libertad financiera", "FIRE", "inversiones", "presupuestos", "nómada digital", "finanzas personales"],
+    authors: [{ name: "Inversión Libre Team" }],
     icons: {
         icon: '/favicon.ico',
         shortcut: '/favicon.ico',
         apple: '/apple-touch-icon.png',
     },
     manifest: '/manifest.webmanifest',
+    openGraph: {
+        title: "Inversión Libre - Tu camino hacia la independencia financiera",
+        description: "Aprende a conseguir la libertad financiera con estrategias FIRE probadas y vive como nómada digital.",
+        url: 'https://inversion-libre.com',
+        siteName: 'Inversión Libre',
+        images: [
+            {
+                url: '/og-image.png',
+                width: 1200,
+                height: 630,
+                alt: 'Inversión Libre - Libertad Financiera',
+            },
+        ],
+        locale: 'es_ES',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: "Inversión Libre",
+        description: "Gestión inteligente de inversiones y finanzas personales hacia el FIRE.",
+        images: ['/twitter-image.png'],
+    },
     appleWebApp: {
         capable: true,
         statusBarStyle: "default",
@@ -62,7 +95,7 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`} suppressHydrationWarning>
+            <body className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} antialiased bg-background text-foreground`} suppressHydrationWarning>
                 <NextIntlClientProvider messages={messages}>
                     <ThemeProvider
                         attribute="class"
@@ -74,6 +107,7 @@ export default async function LocaleLayout({
                             <AuthProvider>
                                 <PWAInstallPrompt />
                                 {children}
+                                <ChatbotWidget />
                             </AuthProvider>
                         </ToastProvider>
                     </ThemeProvider>

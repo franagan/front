@@ -16,7 +16,7 @@ export default function PWAInstallPrompt() {
     console.log('PWAInstallPrompt: Componente montado')
     const { addToast } = useToast()
 
-    const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+    const [, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
 
     useEffect(() => {
         const handler = (e: Event) => {

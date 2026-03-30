@@ -18,4 +18,5 @@ export interface CreateBudgetRequest {
     color: string;
     description?: string;
     subcategory?: string;
+    customName?: string;
 }

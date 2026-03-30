@@ -428,9 +428,24 @@ export default function MainBoardPage() {
                             <div className="text-xs text-muted-foreground uppercase font-semibold">Total este mes</div>
                             <div className="text-xl font-bold text-red-400">€{expensesThisMonth.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</div>
                         </div>
-                        <Button variant="outline" size="sm" onClick={() => router.push('/mainboard/expenses')}>
-                            Gestionar Gastos
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button
+                                onClick={() => router.push('/mainboard/expenses')}
+                                className="bg-red-500 hover:bg-red-600 text-white shadow-sm transition-all shadow-red-500/20"
+                                size="sm"
+                            >
+                                <Plus className="h-4 w-4 mr-1.5" strokeWidth={3} />
+                                Añadir Gasto
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => router.push('/mainboard/expenses')}
+                                className="border-red-500/30 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500/50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-950/50 dark:hover:text-red-300 transition-all font-medium"
+                            >
+                                Gestionar Gastos
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
@@ -481,8 +496,14 @@ export default function MainBoardPage() {
                         <DollarSign className="h-7 w-7 text-yellow-400" />
                         {t('income.title')}
                     </h2>
-                    <Button variant="outline" size="sm" onClick={() => setIsIncomeModalOpen(true)}>
-                        <Plus className="h-4 w-4 mr-1" /> {tCommon('add')}
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsIncomeModalOpen(true)}
+                        className="border-yellow-500/40 text-yellow-600 hover:bg-yellow-100 hover:text-yellow-700 dark:border-yellow-600/40 dark:text-yellow-400 dark:hover:bg-yellow-950/50 dark:hover:text-yellow-300 transition-all font-semibold shadow-sm"
+                    >
+                        <Plus className="h-4 w-4 mr-1.5" strokeWidth={2.5} />
+                        {tCommon('add')}
                     </Button>
                 </div>
 
@@ -524,8 +545,14 @@ export default function MainBoardPage() {
                             <PieChart className="h-7 w-7 text-yellow-400" />
                             {t('budget.title')}
                         </h2>
-                        <Button variant="outline" size="sm" onClick={() => setIsBudgetModalOpen(true)}>
-                            <Plus className="h-4 w-4 mr-1" /> {tCommon('add')}
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setIsBudgetModalOpen(true)}
+                            className="border-yellow-500/40 text-yellow-600 hover:bg-yellow-100 hover:text-yellow-700 dark:border-yellow-600/40 dark:text-yellow-400 dark:hover:bg-yellow-950/50 dark:hover:text-yellow-300 transition-all font-semibold shadow-sm"
+                        >
+                            <Plus className="h-4 w-4 mr-1.5" strokeWidth={2.5} />
+                            {tCommon('add')}
                         </Button>
                     </div>
 
@@ -577,8 +604,14 @@ export default function MainBoardPage() {
                             <Target className="h-7 w-7 text-yellow-400" />
                             {t('goals.title')}
                         </h2>
-                        <Button variant="outline" size="sm" onClick={() => setIsGoalModalOpen(true)}>
-                            <Plus className="h-4 w-4 mr-1" /> {tCommon('add')}
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setIsGoalModalOpen(true)}
+                            className="border-yellow-500/40 text-yellow-600 hover:bg-yellow-100 hover:text-yellow-700 dark:border-yellow-600/40 dark:text-yellow-400 dark:hover:bg-yellow-950/50 dark:hover:text-yellow-300 transition-all font-semibold shadow-sm"
+                        >
+                            <Plus className="h-4 w-4 mr-1.5" strokeWidth={2.5} />
+                            {tCommon('add')}
                         </Button>
                     </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { SessionProvider, useSession } from "next-auth/react";
+import { SessionProvider, useSession, signOut } from "next-auth/react";
 import { useEffect, useRef } from "react";
 import { useAuthStore } from "@/stores/useAuthStore";
 
@@ -17,10 +17,12 @@ function GoogleAuthHandler() {
             // Prevent infinite retries for the same token
             if (idToken && processedTokenRef.current !== idToken) {
                 processedTokenRef.current = idToken;
-                googleLogin(idToken).catch((err) => {
-                    console.error("Google login failed", err);
-                    // Optionally sign out from next-auth if backend auth fails
-                    // signOut(); 
+                googleLogin(idToken).then((result) => {
+                    if (result && typeof result === 'object' && result.unauthorized) {
+                        console.log("Google login session expired, signing out locally.");
+                        // Explicitly sign out from next-auth to avoid stale sessions causing 401s
+                        signOut({ redirect: false });
+                    }
                 });
             }
         }

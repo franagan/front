@@ -9,7 +9,6 @@ import {
     ArrowLeft,
     PieChart as PieChartIcon,
     Plus,
-    Edit,
     Trash2
 } from "lucide-react"
 import { useTranslations } from 'next-intl'
@@ -19,6 +18,15 @@ import CreateBudgetModal from "@/components/budget/CreateBudgetModal"
 import {
     ResponsiveContainer, Cell, Pie, PieChart, Tooltip, Legend
 } from 'recharts'
+import expenseService from "@/services/expense.service"
+import { Expense } from "@/types/expense.types"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 export default function BudgetPage() {
     const router = useRouter()
@@ -28,17 +36,29 @@ export default function BudgetPage() {
 
     // State
     const [budgets, setBudgets] = useState<BudgetCategory[]>([])
+    const [expenses, setExpenses] = useState<Expense[]>([])
+    const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([])
+    const [dateFilter, setDateFilter] = useState('all') // 'all', 'thisMonth', 'last3Months', 'thisYear'
     const [isLoading, setIsLoading] = useState(true)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedBudget, setSelectedBudget] = useState<BudgetCategory | null>(null)
 
-    const fetchBudgets = async () => {
+    const fetchData = async () => {
         try {
             setIsLoading(true)
-            const response = await budgetService.getBudgets()
-            setBudgets(response.data.data || [])
+            const [budgetsRes, expensesRes] = await Promise.all([
+                budgetService.getBudgets(),
+                expenseService.getExpenses()
+            ])
+            setBudgets(budgetsRes.data.data || [])
+
+            const fetchedExpenses = expensesRes.data.data || []
+            // Sort by date desc
+            fetchedExpenses.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            setExpenses(fetchedExpenses)
+            setFilteredExpenses(fetchedExpenses)
         } catch (error) {
-            console.error("Error fetching budgets:", error)
+            console.error("Error fetching data:", error)
         } finally {
             setIsLoading(false)
         }
@@ -49,8 +69,40 @@ export default function BudgetPage() {
             router.push('/auth/login')
             return
         }
-        fetchBudgets()
+        fetchData()
     }, [user, router])
+
+    useEffect(() => {
+        applyFilter()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dateFilter, expenses])
+
+    const applyFilter = () => {
+        if (dateFilter === 'all') {
+            setFilteredExpenses(expenses)
+            return
+        }
+
+        const now = new Date()
+        const filtered = expenses.filter(expense => {
+            const expDate = new Date(expense.date)
+
+            if (dateFilter === 'thisMonth') {
+                return expDate.getMonth() === now.getMonth() && expDate.getFullYear() === now.getFullYear()
+            }
+            if (dateFilter === 'last3Months') {
+                const threeMonthsAgo = new Date()
+                threeMonthsAgo.setMonth(now.getMonth() - 3)
+                return expDate >= threeMonthsAgo
+            }
+            if (dateFilter === 'thisYear') {
+                return expDate.getFullYear() === now.getFullYear()
+            }
+            return true
+        })
+
+        setFilteredExpenses(filtered)
+    }
 
     if (!user) {
         return null
@@ -62,24 +114,19 @@ export default function BudgetPage() {
         setIsModalOpen(true)
     }
 
-    const handleEdit = (budget: BudgetCategory) => {
-        setSelectedBudget(budget)
-        setIsModalOpen(true)
-    }
-
-    const handleDelete = async (id: string) => {
-        if (confirm('¿Estás seguro de que quieres eliminar este presupuesto?')) {
+    const handleDeleteExpense = async (id: string) => {
+        if (confirm('¿Estás seguro de que quieres eliminar este gasto?')) {
             try {
-                await budgetService.deleteBudget(id)
-                fetchBudgets()
+                await expenseService.deleteExpense(id)
+                fetchData()
             } catch (error) {
-                console.error("Error deleting budget:", error)
+                console.error("Error deleting expense:", error)
             }
         }
     }
 
     const handleModalSuccess = () => {
-        fetchBudgets()
+        fetchData()
         setIsModalOpen(false)
     }
 
@@ -179,7 +226,7 @@ export default function BudgetPage() {
                     </h2>
                     <Button onClick={handleCreate} className="bg-yellow-600 hover:bg-yellow-700">
                         <Plus className="h-4 w-4 mr-2" />
-                        {t('addExpense')}
+                        Añadir Presupuesto
                     </Button>
                 </div>
 
@@ -296,57 +343,80 @@ export default function BudgetPage() {
 
                 {/* Expense History List */}
                 <section>
-                    <h2 className="text-xl font-bold mb-4">Historial de Gastos</h2>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold">Historial de Gastos</h2>
+                        <Select value={dateFilter} onValueChange={setDateFilter}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Filtrar por fecha" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Todo el historial</SelectItem>
+                                <SelectItem value="thisMonth">Este Mes</SelectItem>
+                                <SelectItem value="last3Months">Últimos 3 Meses</SelectItem>
+                                <SelectItem value="thisYear">Este Año</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                     <Card className="bg-card border-border">
                         <CardContent className="p-0">
-                            {budgets.length === 0 ? (
-                                <div className="p-6 text-center text-muted-foreground">No hay gastos registrados</div>
+                            {filteredExpenses.length === 0 ? (
+                                <div className="p-6 text-center text-muted-foreground">No hay gastos registrados en este periodo</div>
                             ) : (
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm">
                                         <thead className="bg-muted/50 border-b border-border">
                                             <tr>
+                                                <th className="px-4 py-3 text-left font-medium">Fecha</th>
                                                 <th className="px-4 py-3 text-left font-medium">Categoría</th>
-                                                <th className="px-4 py-3 text-left font-medium">Subcategoría</th>
-                                                <th className="px-4 py-3 text-left font-medium">Descripción</th>
+                                                <th className="px-4 py-3 text-left font-medium">Concepto</th>
                                                 <th className="px-4 py-3 text-right font-medium">Monto</th>
                                                 <th className="px-4 py-3 text-right font-medium">Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {budgets.map((item) => (
-                                                <tr key={item.id} className="border-b border-border last:border-0 hover:bg-muted/30">
-                                                    <td className="px-4 py-3 font-medium">
-                                                        <div className="flex items-center gap-2">
-                                                            <div className={`w-3 h-3 rounded-full ${item.color}`}></div>
-                                                            {item.name}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-4 py-3 text-muted-foreground">{item.subcategory || '-'}</td>
-                                                    <td className="px-4 py-3 text-muted-foreground">{item.description || '-'}</td>
-                                                    <td className="px-4 py-3 text-right font-bold">€{item.spent}</td>
-                                                    <td className="px-4 py-3 text-right">
-                                                        <div className="flex justify-end gap-2">
+                                            {filteredExpenses.map((expense) => {
+                                                const catBudget = budgets.find(b => b.name === expense.category);
+                                                const dotColor = catBudget ? catBudget.color : 'bg-gray-400';
+
+                                                return (
+                                                    <tr key={expense.id} className="border-b border-border last:border-0 hover:bg-muted/30">
+                                                        <td className="px-4 py-3 text-muted-foreground">
+                                                            {new Date(expense.date).toLocaleDateString('es-ES')}
+                                                        </td>
+                                                        <td className="px-4 py-3 font-medium">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className={`w-3 h-3 rounded-full ${dotColor}`}></div>
+                                                                {expense.category || 'Sin Categoría'}
+                                                                {expense.subcategory && <span className="text-xs text-muted-foreground ml-1">({expense.subcategory})</span>}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-4 py-3 text-muted-foreground">{expense.concept || '-'}</td>
+                                                        <td className="px-4 py-3 text-right font-bold text-red-500">-€{expense.amount.toFixed(2)}</td>
+                                                        <td className="px-4 py-3 text-right">
+                                                            <div className="flex justify-end gap-2">
+                                                                {/*
                                                             <Button
                                                                 variant="ghost"
                                                                 size="icon"
                                                                 className="h-8 w-8 hover:bg-muted"
-                                                                onClick={() => handleEdit(item)}
+                                                                onClick={() => router.push('/mainboard/expenses')} // Or navigate to Edit Expense somewhere
                                                             >
                                                                 <Edit className="h-4 w-4" />
                                                             </Button>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
-                                                                onClick={() => handleDelete(item.id)}
-                                                            >
-                                                                <Trash2 className="h-4 w-4" />
-                                                            </Button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                                            */}
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
+                                                                    onClick={() => handleDeleteExpense(expense.id)}
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>

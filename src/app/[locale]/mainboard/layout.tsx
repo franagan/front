@@ -6,10 +6,12 @@ import { useEffect } from "react";
 import { ReactNode, useTransition } from 'react';
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
-import { TrendingUp, Sun, Moon } from "lucide-react"
+import { Sun, Moon } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useLocale, useTranslations } from 'next-intl';
 import ReactCountryFlag from "react-country-flag"
+import { Sidebar } from "@/components/mainboard/Sidebar"
+import { DynamicBreadcrumb } from "@/components/mainboard/DynamicBreadcrumb"
 
 export default function MainboardLayout({
     children,
@@ -62,20 +64,22 @@ export default function MainboardLayout({
     }
 
     return (
-        <div className="min-h-screen">
-            {/* Shared Header */}
-            <header className="bg-background/50 border-b border-border sticky top-0 z-50 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/mainboard')}>
-                            <div className="h-10 w-10 bg-primary rounded-full flex items-center justify-center">
-                                <TrendingUp className="h-6 w-6 text-primary-foreground" />
-                            </div>
-                            <div>
-                                <h1 className="text-xl font-bold">Inversión Libre</h1>
-                                <p className="text-sm text-muted-foreground">{tNav('dashboard')}</p>
+        <div className="min-h-screen bg-background">
+            <Sidebar />
+
+            {/* Main content area */}
+            <div className="lg:pl-64 flex flex-col flex-1 min-h-screen">
+                {/* Top Navbar */}
+                <header className="bg-background/80 border-b border-border sticky top-0 z-40 backdrop-blur-sm">
+                    <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
+                        {/* Left Side: Space for mobile menu button or Breadcrumbs */}
+                        <div className="flex items-center flex-1">
+                            <div className="hidden lg:block">
+                                <DynamicBreadcrumb />
                             </div>
                         </div>
+
+                        {/* Right Side: User Controls */}
                         <div className="flex items-center gap-4">
                             <div className="text-right hidden sm:block">
                                 <p className="text-sm text-muted-foreground">{t('welcome')}</p>
@@ -115,11 +119,17 @@ export default function MainboardLayout({
                             </Button>
                         </div>
                     </div>
-                </div>
-            </header>
+                    {/* Mobile Breadcrumb (Below Header) */}
+                    <div className="lg:hidden px-4 py-2 border-t border-border bg-background/50">
+                        <DynamicBreadcrumb />
+                    </div>
+                </header>
 
-            {/* Page Content */}
-            {children}
+                {/* Page Content */}
+                <main className="flex-1 p-4 sm:p-6 lg:p-8">
+                    {children}
+                </main>
+            </div>
         </div>
     );
 }
