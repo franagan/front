@@ -2,7 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales } from '@/i18n/request';
-import { Geist, Geist_Mono, Outfit } from "next/font/google";
+import { Geist, Geist_Mono, Outfit, Manrope, Inter } from "next/font/google";
 import "../globals.css";
 import { ToastProvider } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -26,6 +26,15 @@ const outfit = Outfit({
     subsets: ["latin"],
 });
 
+const manrope = Manrope({
+    variable: "--font-manrope",
+    subsets: ["latin"],
+});
+
+const inter = Inter({
+    variable: "--font-inter",
+    subsets: ["latin"],
+});
 export const metadata: Metadata = {
     title: {
         template: '%s | Inversión Libre',
@@ -95,7 +104,10 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} antialiased bg-background text-foreground`} suppressHydrationWarning>
+            <head>
+                <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+            </head>
+            <body className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} ${manrope.variable} ${inter.variable} antialiased bg-background text-foreground font-body`} suppressHydrationWarning>
                 <NextIntlClientProvider messages={messages}>
                     <ThemeProvider
                         attribute="class"

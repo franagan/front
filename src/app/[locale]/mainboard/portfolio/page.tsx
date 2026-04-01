@@ -11,7 +11,8 @@ import {
     PieChart,
     Plus,
     Loader2,
-    ArrowUpDown
+    ArrowUpDown,
+    Download
 } from "lucide-react"
 import { useTranslations } from 'next-intl'
 import portfolioService from "@/services/portfolio.service"
@@ -19,6 +20,7 @@ import investmentService from "@/services/investment.service"
 import { Portfolio, Investment } from "@/types/portfolio.types"
 import AddInvestmentModal from "@/components/portfolio/AddInvestmentModal"
 import CreatePortfolioModal from "@/components/portfolio/CreatePortfolioModal"
+import { ExportButtons } from "@/components/reports/ExportButtons"
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 
 export default function PortfolioPage() {
@@ -247,15 +249,18 @@ export default function PortfolioPage() {
                             </div>
                         </div>
 
-                        {/* Create Portfolio Button */}
-                        <Button
-                            variant="outline"
-                            onClick={() => setIsCreatePortfolioModalOpen(true)}
-                            className="border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-black"
-                        >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Nuevo Portfolio
-                        </Button>
+                        {/* Action Buttons */}
+                        <div className="flex items-center gap-2">
+                            <ExportButtons type="portfolio" variant="outline" size="sm" />
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsCreatePortfolioModalOpen(true)}
+                                className="border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-black"
+                            >
+                                <Plus className="h-4 w-4 mr-2" />
+                                Nuevo Portfolio
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </header>
