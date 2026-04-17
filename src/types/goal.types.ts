@@ -5,6 +5,7 @@ export interface SavingsGoal {
     currentAmount: number;
     targetAmount: number;
     icon: string;
+    startDate?: string;
     deadline?: string;
     createdAt?: string;
     updatedAt?: string;
@@ -15,5 +16,6 @@ export interface CreateGoalRequest {
     currentAmount: number;
     targetAmount: number;
     icon: string;
+    startDate?: string;
     deadline?: string;
 }

@@ -31,10 +31,10 @@ export function Sidebar() {
     const navItems = [
         { name: 'Dashboard', href: basePath, icon: LayoutDashboard },
         { name: 'Portfolio', href: `${basePath}/portfolio`, icon: Briefcase },
-        { name: 'Gastos', href: `${basePath}/expenses`, icon: DollarSign },
-        { name: 'Presupuestos', href: `${basePath}/budget`, icon: Wallet },
+        // { name: 'Gastos', href: `${basePath}/expenses`, icon: DollarSign },
+        { name: 'Gastos-Presupuestos', href: `${basePath}/budget`, icon: Wallet },
         { name: 'Objetivos', href: `${basePath}/goals`, icon: Target },
-        { name: 'Calculadoras', href: `${basePath}/fire-calculator`, icon: Calculator },
+        { name: 'Calculadoras', href: `${basePath}/tools`, icon: Calculator },
     ]
 
     const toggleSidebar = () => setIsOpen(!isOpen)

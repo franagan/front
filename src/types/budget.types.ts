@@ -1,3 +1,5 @@
+export type BudgetPeriod = 'MONTHLY' | 'ANNUAL';
+
 export interface BudgetCategory {
     id: string;
     userId: string;
@@ -5,6 +7,7 @@ export interface BudgetCategory {
     spent: number;
     limit: number;
     color: string;
+    period: BudgetPeriod;
     description?: string;
     subcategory?: string;
     createdAt?: string;
@@ -16,6 +19,7 @@ export interface CreateBudgetRequest {
     spent: number;
     limit: number;
     color: string;
+    period: BudgetPeriod;
     description?: string;
     subcategory?: string;
     customName?: string;

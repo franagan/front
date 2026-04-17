@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { SavingsGoal, CreateGoalRequest } from '@/types/goal.types';
 import { ApiResponse } from '@/types/portfolio.types';
+import { Expense } from '@/types/expense.types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
 
@@ -39,6 +40,10 @@ const goalService = {
 
     deleteGoal: (id: string) => {
         return api.delete<ApiResponse<void>>(`/goals/${id}`);
+    },
+
+    getGoalMovements: (id: string) => {
+        return api.get<ApiResponse<Expense[]>>(`/goals/${id}/movements`);
     }
 };
 

@@ -36,6 +36,7 @@ export interface TabItem {
 
 export interface TabsProps {
     defaultTab?: string
+    defaultValue?: string // Alias for defaultTab to match common UI libraries
     activeTab?: string
     onTabChange?: (tabId: string) => void
     orientation?: "horizontal" | "vertical"
@@ -65,6 +66,7 @@ export interface TabsContentProps {
 // Componente principal Tabs
 export function Tabs({
     defaultTab,
+    defaultValue,
     activeTab: controlledActiveTab,
     onTabChange,
     orientation = "horizontal",
@@ -72,7 +74,7 @@ export function Tabs({
     className,
     children
 }: TabsProps) {
-    const [internalActiveTab, setInternalActiveTab] = useState(defaultTab || "")
+    const [internalActiveTab, setInternalActiveTab] = useState(defaultValue || defaultTab || "")
     
     const activeTab = controlledActiveTab !== undefined ? controlledActiveTab : internalActiveTab
     

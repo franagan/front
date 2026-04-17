@@ -6,6 +6,9 @@ export interface Expense {
     amount: number;
     category?: string;
     subcategory?: string;
+    isRecurring?: boolean;
+    recurringPeriod?: string;
+    linkedGoalId?: string;
     createdAt?: string;
 }
 

@@ -74,6 +74,7 @@ export default function FireCalculatorPage() {
             savingsRate: savingsRate.toFixed(1),
             futureValue,
             leanFire: fireNumber * 0.7,
+            coastFire: fireNumber / Math.pow(1 + expectedReturn / 100, yearsToRetirement),
             regularFire: fireNumber,
             fatFire: fireNumber * 1.5
         })
@@ -269,6 +270,10 @@ export default function FireCalculatorPage() {
                                         <div className="flex justify-between items-center pb-3 border-b border-border">
                                             <span className="text-muted-foreground">{t('leanFire')}</span>
                                             <span className="font-semibold">€{results.leanFire.toLocaleString('es-ES', { maximumFractionDigits: 0 })}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center pb-3 border-b border-border">
+                                            <span className="text-muted-foreground">Coast FIRE</span>
+                                            <span className="font-semibold text-blue-500">€{Math.round(results.coastFire).toLocaleString('es-ES')}</span>
                                         </div>
                                         <div className="flex justify-between items-center pb-3 border-b border-border">
                                             <span className="text-muted-foreground">{t('regularFire')}</span>

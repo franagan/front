@@ -13,13 +13,15 @@ interface EditExpenseModalProps {
     onClose: () => void;
     onSuccess: () => void;
     expense: Expense | null;
+    userCategories?: string[];
 }
 
 export default function EditExpenseModal({
     isOpen,
     onClose,
     onSuccess,
-    expense
+    expense,
+    userCategories = []
 }: EditExpenseModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState<Partial<Expense>>({});
@@ -95,6 +97,7 @@ export default function EditExpenseModal({
                         subcategory={formData.subcategory || ''}
                         onCategoryChange={(val) => setFormData(prev => ({ ...prev, category: val, subcategory: '' }))}
                         onSubcategoryChange={(val) => setFormData(prev => ({ ...prev, subcategory: val }))}
+                        userCategories={userCategories}
                     />
 
                     <DialogFooter>

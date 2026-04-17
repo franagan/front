@@ -11,23 +11,30 @@ import {
     Plus,
     Edit,
     Calendar,
-    Loader2
+    Loader2,
+    History,
+    Trash2
 } from "lucide-react"
 import { useTranslations } from 'next-intl'
 import goalService from "@/services/goal.service"
 import { SavingsGoal } from "@/types/goal.types"
 import CreateGoalModal from "@/components/goals/CreateGoalModal"
+import GoalMovementsModal from "@/components/goals/GoalMovementsModal"
+import { useToast } from "@/components/ui/toast"
 
 export default function GoalsPage() {
     const router = useRouter()
     const { user } = useAuthStore()
     const t = useTranslations('goals')
     const tCommon = useTranslations('common')
+    const { addToast } = useToast()
 
     const [goals, setGoals] = useState<SavingsGoal[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+    const [isMovementsModalOpen, setIsMovementsModalOpen] = useState(false)
+    const [selectedGoal, setSelectedGoal] = useState<SavingsGoal | null>(null)
 
     useEffect(() => {
         if (!user) {
@@ -52,13 +59,49 @@ export default function GoalsPage() {
     }
 
     const getTimeRemaining = (deadline?: string) => {
-        if (!deadline) return 0
+        if (!deadline) return null
         const now = new Date()
         const end = new Date(deadline)
-        const months = Math.round((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 30))
-        return Math.max(0, months)
+        const diffTime = end.getTime() - now.getTime()
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+        
+        if (diffDays < 0) return "Excedido"
+        if (diffDays < 30) return `${diffDays} días`
+        
+        const months = Math.round(diffDays / 30)
+        return `${months} ${months === 1 ? 'mes' : 'meses'}`
     }
 
+    const getGoalDuration = (start?: string, end?: string) => {
+        if (!start || !end) return null
+        const s = new Date(start)
+        const e = new Date(end)
+        const diffTime = e.getTime() - s.getTime()
+        const months = Math.round(diffTime / (1000 * 60 * 60 * 24 * 30))
+        return Math.max(1, months)
+    }
+
+    const handleEdit = (goal: SavingsGoal) => {
+        setSelectedGoal(goal)
+        setIsCreateModalOpen(true)
+    }
+
+    const handleViewMovements = (goal: SavingsGoal) => {
+        setSelectedGoal(goal)
+        setIsMovementsModalOpen(true)
+    }
+
+    const handleDelete = async (id: string) => {
+        if (!confirm('¿Estás seguro de que quieres eliminar este objetivo?')) return
+        try {
+            await goalService.deleteGoal(id)
+            addToast({ type: 'success', title: 'Objetivo eliminado', description: 'El objetivo se ha borrado correctamente.' })
+            fetchGoals()
+        } catch (err) {
+            console.error(err)
+            addToast({ type: 'error', title: 'Error', description: 'No se pudo eliminar el objetivo.' })
+        }
+    }
 
     if (!user) {
         return null
@@ -100,13 +143,14 @@ export default function GoalsPage() {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Add Goal Button */}
-                <div className="mb-6">
+                <div className="mb-6 flex justify-between items-center">
+                    <h2 className="text-xl font-bold hidden sm:block">Mis Objetivos de Ahorro</h2>
                     <Button
                         className="bg-yellow-600 hover:bg-yellow-700"
                         onClick={() => setIsCreateModalOpen(true)}
                     >
                         <Plus className="h-4 w-4 mr-2" />
-                        {t('addGoal')}
+                        Añadir Objetivo
                     </Button>
                 </div>
 
@@ -120,54 +164,102 @@ export default function GoalsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {goals.map((goal) => {
                         const percentage = (goal.currentAmount / goal.targetAmount) * 100
-                        const timeRemaining = getTimeRemaining(goal.deadline)
+                        const duration = getGoalDuration(goal.startDate, goal.deadline)
 
                         return (
-                            <Card key={goal.id} className="bg-card border-border hover:border-yellow-400 transition-colors">
+                            <Card key={goal.id} className="bg-card border-border hover:border-yellow-400 transition-all shadow-sm hover:shadow-md group">
                                 <CardContent className="p-6">
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-4xl">{goal.icon}</span>
+                                            <span className="text-4xl filter drop-shadow-sm group-hover:scale-110 transition-transform">{goal.icon}</span>
                                             <div>
                                                 <h3 className="text-xl font-bold">{goal.name}</h3>
-                                                {goal.deadline && (
-                                                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                                                        <Calendar className="h-4 w-4" />
-                                                        <span>{timeRemaining} {timeRemaining === 1 ? 'mes' : 'meses'} restantes</span>
+                                                <div className="flex flex-col gap-1 mt-1">
+                                                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                                        <Calendar className="h-3 w-3 text-yellow-500" />
+                                                        <span>
+                                                            {goal.startDate ? new Date(goal.startDate).toLocaleDateString() : '---'} 
+                                                            <span className="mx-1 opacity-50">→</span> 
+                                                            {goal.deadline ? new Date(goal.deadline).toLocaleDateString() : '---'}
+                                                        </span>
                                                     </div>
-                                                )}
+                                                    {goal.deadline && (
+                                                        <span className="text-[10px] bg-yellow-500/10 text-yellow-600 px-2 py-0.5 rounded-full w-fit font-black">
+                                                            {getTimeRemaining(goal.deadline)} restantes
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
-                                        <Button variant="outline" size="sm">
-                                            <Edit className="h-4 w-4" />
-                                        </Button>
+                                        <div className="flex items-center gap-1">
+                                            <Button 
+                                                variant="ghost" 
+                                                size="icon" 
+                                                className="h-8 w-8 text-muted-foreground hover:text-blue-500 hover:bg-blue-50/10"
+                                                onClick={() => handleViewMovements(goal)}
+                                                title="Ver movimientos"
+                                            >
+                                                <History className="h-4 w-4" />
+                                            </Button>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="icon" 
+                                                className="h-8 w-8 text-muted-foreground hover:text-yellow-500 hover:bg-yellow-50/10"
+                                                onClick={() => handleEdit(goal)}
+                                                title="Editar"
+                                            >
+                                                <Edit className="h-4 w-4" />
+                                            </Button>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="icon" 
+                                                className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-50/10"
+                                                onClick={() => handleDelete(goal.id!)}
+                                                title="Eliminar"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
                                     </div>
 
                                     {/* Progress Bar */}
                                     <div className="mb-4">
-                                        <div className="flex justify-between text-sm mb-2">
-                                            <span className="text-muted-foreground">{t('progress')}</span>
-                                            <span className="font-semibold">{percentage.toFixed(1)}%</span>
+                                        <div className="flex justify-between text-[11px] mb-2 font-black uppercase tracking-widest text-muted-foreground">
+                                            <span>Progreso de Ahorro</span>
+                                            <span className="text-foreground">{percentage.toFixed(1)}%</span>
                                         </div>
-                                        <div className="w-full bg-muted rounded-full h-3">
+                                        <div className="w-full bg-muted rounded-full h-3 overflow-hidden border border-border/50 shadow-inner">
                                             <div
-                                                className="bg-gradient-to-r from-yellow-400 to-yellow-600 h-3 rounded-full transition-all"
+                                                className="bg-gradient-to-r from-yellow-400 to-yellow-600 h-full rounded-full transition-all duration-1000"
                                                 style={{ width: `${Math.min(percentage, 100)}%` }}
                                             ></div>
                                         </div>
-                                        <div className="flex justify-between text-sm mt-2 text-muted-foreground">
-                                            <span>€{goal.currentAmount.toLocaleString('es-ES')}</span>
-                                            <span>€{goal.targetAmount.toLocaleString('es-ES')}</span>
+                                        <div className="flex justify-between text-xs mt-3">
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] text-muted-foreground font-bold uppercase">Actual</span>
+                                                <span className="font-black text-lg">€{goal.currentAmount.toLocaleString('es-ES')}</span>
+                                            </div>
+                                            <div className="flex flex-col text-right">
+                                                <span className="text-[10px] text-muted-foreground font-bold uppercase">Objetivo</span>
+                                                <span className="font-black text-lg">€{goal.targetAmount.toLocaleString('es-ES')}</span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Goal Details */}
-                                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
+                                    {/* Goal Analysis */}
+                                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border mt-2">
                                         <div>
-                                            {/* We don't have monthly contribution in backend model yet, so hiding or mocking */}
-                                            <p className="text-xs text-muted-foreground">{t('timeRemaining')}</p>
-                                            <p className="font-semibold text-lg">
-                                                {goal.deadline ? `${timeRemaining} meses` : 'Sin fecha'}
+                                            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Plataforma Temporal</p>
+                                            <p className="font-bold text-base">
+                                                {duration ? `${duration} meses` : 'Estrategia abierta'}
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Ahorro Mensual Nec.</p>
+                                            <p className="font-black text-base text-yellow-600">
+                                                {goal.deadline && goal.targetAmount > goal.currentAmount 
+                                                    ? `€${((goal.targetAmount - goal.currentAmount) / Math.max(1, duration || 1)).toFixed(0)}`
+                                                    : '---'}
                                             </p>
                                         </div>
                                     </div>
@@ -181,15 +273,15 @@ export default function GoalsPage() {
                 {!loading && goals.length === 0 && (
                     <Card className="bg-card border-border">
                         <CardContent className="p-12 text-center">
-                            <Target className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                            <h3 className="text-xl font-semibold mb-2">{t('noGoals')}</h3>
-                            <p className="text-muted-foreground mb-6">{t('createFirst')}</p>
+                            <Target className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-20" />
+                            <h3 className="text-xl font-semibold mb-2">No tienes objetivos activos</h3>
+                            <p className="text-muted-foreground mb-6">Define un rango de fechas y un monto para empezar a ahorrar hoy mismo.</p>
                             <Button
-                                className="bg-yellow-600 hover:bg-yellow-700"
+                                className="bg-yellow-600 hover:bg-yellow-700 font-bold"
                                 onClick={() => setIsCreateModalOpen(true)}
                             >
                                 <Plus className="h-4 w-4 mr-2" />
-                                {t('addGoal')}
+                                Crear mi Primer Objetivo
                             </Button>
                         </CardContent>
                     </Card>
@@ -197,8 +289,21 @@ export default function GoalsPage() {
 
                 <CreateGoalModal
                     isOpen={isCreateModalOpen}
-                    onClose={() => setIsCreateModalOpen(false)}
+                    onClose={() => {
+                        setIsCreateModalOpen(false)
+                        setSelectedGoal(null)
+                    }}
                     onSuccess={fetchGoals}
+                    initialData={selectedGoal}
+                />
+
+                <GoalMovementsModal
+                    isOpen={isMovementsModalOpen}
+                    onClose={() => {
+                        setIsMovementsModalOpen(false)
+                        setSelectedGoal(null)
+                    }}
+                    goal={selectedGoal}
                 />
             </main>
         </div>

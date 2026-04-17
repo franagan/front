@@ -288,15 +288,34 @@ export default function ExpensesPage() {
                                     </div>
 
                                     {/* Category Selector */}
-                                    <CategorySelector
-                                        category={category}
-                                        subcategory={subcategory}
-                                        onCategoryChange={(val) => {
-                                            setCategory(val);
-                                            setSubcategory('');
-                                        }}
-                                        onSubcategoryChange={setSubcategory}
-                                    />
+                                    <div className="space-y-2">
+                                        <CategorySelector
+                                            category={category}
+                                            subcategory={subcategory}
+                                            onCategoryChange={(val) => {
+                                                setCategory(val);
+                                                setSubcategory('');
+                                            }}
+                                            onSubcategoryChange={setSubcategory}
+                                            userCategories={Array.from(new Set(budgets.map(b => b.name)))}
+                                        />
+                                        {category && budgets.find(b => b.name === category) && (
+                                            <div className="mt-2 text-xs flex justify-between items-center p-2 bg-muted/50 rounded border border-border">
+                                                <span className="text-muted-foreground">Estado del presupuesto:</span>
+                                                {(() => {
+                                                    const budget = budgets.find(b => b.name === category);
+                                                    if (!budget) return null;
+                                                    const remaining = budget.limit - budget.spent;
+                                                    const isOver = remaining < 0;
+                                                    return (
+                                                        <span className={`font-bold ${isOver ? 'text-red-500' : 'text-green-500'}`}>
+                                                            {isOver ? `Excedido por €${Math.abs(remaining).toFixed(2)}` : `Quedan €${remaining.toFixed(2)}`}
+                                                        </span>
+                                                    );
+                                                })()}
+                                            </div>
+                                        )}
+                                    </div>
 
                                     {/* Description */}
                                     <div>
@@ -475,6 +494,7 @@ export default function ExpensesPage() {
                     onClose={() => setIsEditModalOpen(false)}
                     onSuccess={fetchData}
                     expense={selectedExpense}
+                    userCategories={Array.from(new Set(budgets.map(b => b.name)))}
                 />
             </main>
         </div>

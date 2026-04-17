@@ -18,6 +18,7 @@ interface CategorySelectorProps {
     onIsCustomChange?: (isCustom: boolean) => void;
 
     disabled?: boolean;
+    userCategories?: string[];
 }
 
 export default function CategorySelector({
@@ -30,7 +31,8 @@ export default function CategorySelector({
     customCategoryName = '',
     onCustomNameChange,
     onIsCustomChange,
-    disabled = false
+    disabled = false,
+    userCategories = []
 }: CategorySelectorProps) {
 
     // Derived state for subcategories
@@ -50,6 +52,9 @@ export default function CategorySelector({
         onSubcategoryChange(''); // Reset subcategory
     };
 
+    // Merge predefined with user categories
+    const allCategories = Array.from(new Set([...userCategories, ...PREDEFINED_CATEGORIES]));
+
     return (
         <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -63,7 +68,7 @@ export default function CategorySelector({
                         <SelectValue placeholder="Selecciona..." />
                     </SelectTrigger>
                     <SelectContent>
-                        {PREDEFINED_CATEGORIES.map(cat => (
+                        {allCategories.map(cat => (
                             <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                         ))}
                         {allowCustom && <SelectItem value="custom">Personalizado...</SelectItem>}

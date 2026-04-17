@@ -2,9 +2,10 @@
 
 import { useAuthStore } from "../../../../stores/useAuthStore"
 import { useRouter } from "@/i18n/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
     ArrowLeft,
@@ -12,13 +13,14 @@ import {
     Plus,
     Loader2,
     ArrowUpDown,
-    Download
+    Download,
+    History
 } from "lucide-react"
 import { useTranslations } from 'next-intl'
 import portfolioService from "@/services/portfolio.service"
 import investmentService from "@/services/investment.service"
 import { Portfolio, Investment } from "@/types/portfolio.types"
-import AddInvestmentModal from "@/components/portfolio/AddInvestmentModal"
+import AddTransactionModal from "@/components/portfolio/AddTransactionModal"
 import CreatePortfolioModal from "@/components/portfolio/CreatePortfolioModal"
 import { ExportButtons } from "@/components/reports/ExportButtons"
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
@@ -98,25 +100,56 @@ export default function PortfolioPage() {
         ? allInvestments.filter(inv => inv.portfolioId === selectedPortfolioId)
         : allInvestments
 
-    // Sort investments
-    const sortedInvestments = [...investments].sort((a, b) => {
-        let comparison = 0
-        switch (sortBy) {
-            case 'name':
-                comparison = a.stockName.localeCompare(b.stockName)
-                break
-            case 'value':
-                comparison = (a.currentValue || 0) - (b.currentValue || 0)
-                break
-            case 'return':
-                comparison = (a.gainLossPercentage || 0) - (b.gainLossPercentage || 0)
-                break
-            case 'gainLoss':
-                comparison = (a.gainLoss || 0) - (b.gainLoss || 0)
-                break
-        }
-        return sortOrder === 'asc' ? comparison : -comparison
-    })
+    // Group investments by symbol before showing in the general list
+    const groupedInvestments = useMemo(() => {
+        const groups: Record<string, any> = {};
+        investments.forEach(inv => {
+            const sym = inv.stockSymbol;
+            if (!groups[sym]) {
+                groups[sym] = { ...inv };
+            } else {
+                const g = groups[sym];
+                const totalQty = (g.quantity || 0) + (inv.quantity || 0);
+                const totalInv = (g.totalInvested || 0) + (inv.totalInvested || 0);
+
+                g.quantity = totalQty;
+                g.totalInvested = totalInv;
+                g.currentValue = (g.currentValue || 0) + (inv.currentValue || 0);
+                g.averagePrice = totalQty > 0 ? totalInv / totalQty : 0;
+                // Pre-calculate gain/loss for the group
+                g.gainLoss = g.currentValue - g.totalInvested;
+                g.gainLossPercentage = g.totalInvested > 0 ? (g.gainLoss / g.totalInvested) * 100 : 0;
+
+                // Use the ID of the largest position for the link
+                if ((inv.currentValue || 0) > (groups[sym].currentValue || 0)) {
+                    g.id = inv.id;
+                }
+            }
+        });
+        return Object.values(groups);
+    }, [investments]);
+
+    // Sort the potentially grouped investments
+    const sortedInvestments = useMemo(() => {
+        return [...groupedInvestments].sort((a, b) => {
+            let comparison = 0;
+            switch (sortBy) {
+                case 'name':
+                    comparison = (a.stockName || '').localeCompare(b.stockName || '');
+                    break;
+                case 'value':
+                    comparison = (a.currentValue || 0) - (b.currentValue || 0);
+                    break;
+                case 'return':
+                    comparison = (a.gainLossPercentage || 0) - (b.gainLossPercentage || 0);
+                    break;
+                case 'gainLoss':
+                    comparison = (a.gainLoss || 0) - (b.gainLoss || 0);
+                    break;
+            }
+            return sortOrder === 'asc' ? comparison : -comparison;
+        });
+    }, [groupedInvestments, sortBy, sortOrder]);
 
     if (!user) {
         return null
@@ -251,6 +284,15 @@ export default function PortfolioPage() {
 
                         {/* Action Buttons */}
                         <div className="flex items-center gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => router.push('/mainboard/portfolio/transactions')}
+                                className="border-border text-foreground"
+                            >
+                                <History className="h-4 w-4 mr-2" />
+                                Historial
+                            </Button>
                             <ExportButtons type="portfolio" variant="outline" size="sm" />
                             <Button
                                 variant="outline"
@@ -365,30 +407,12 @@ export default function PortfolioPage() {
                                                 data={pieChartData}
                                                 cx="50%"
                                                 cy="50%"
-                                                labelLine={false}
-                                                outerRadius={150}
-                                                fill="#8884d8"
+                                                innerRadius={80}
+                                                outerRadius={120}
+                                                paddingAngle={2}
                                                 dataKey="value"
-                                                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-                                                    const RADIAN = Math.PI / 180;
-                                                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                                    const angle = (midAngle || 0) * -1;
-                                                    const x = cx + radius * Math.cos(angle * RADIAN);
-                                                    const y = cy + radius * Math.sin(angle * RADIAN);
-
-                                                    return (
-                                                        <text
-                                                            x={x}
-                                                            y={y}
-                                                            fill="white"
-                                                            textAnchor={x > cx ? 'start' : 'end'}
-                                                            dominantBaseline="central"
-                                                            className="text-sm font-bold drop-shadow-md"
-                                                        >
-                                                            {`${((percent || 0) * 100).toFixed(0)}%`}
-                                                        </text>
-                                                    );
-                                                }}
+                                                nameKey="name"
+                                                label={({ name, percent }) => `${name} ${(percent! * 100).toFixed(0)}%`}
                                             >
                                                 {pieChartData.map((entry, index) => (
                                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -434,10 +458,14 @@ export default function PortfolioPage() {
                                 {sortedInvestments.map((investment) => (
                                     <div
                                         key={investment.id}
-                                        className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors"
+                                        onClick={() => router.push(`/mainboard/portfolio/investment/${investment.id}`)}
+                                        className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-yellow-500/5 hover:border-yellow-500/50 transition-all cursor-pointer group"
                                     >
                                         <div className="flex-1">
-                                            <h3 className="font-semibold">{investment.stockSymbol}</h3>
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="font-semibold group-hover:text-yellow-500 transition-colors">{investment.stockSymbol}</h3>
+                                                <Badge variant="outline" className="text-[10px] py-0 h-4 border-muted-foreground/30 text-muted-foreground">Posición</Badge>
+                                            </div>
                                             <p className="text-sm text-muted-foreground">{investment.stockName}</p>
                                             <p className="text-xs text-muted-foreground mt-1">
                                                 {investment.quantity} acciones @ €{investment.averagePrice?.toFixed(2)}
@@ -463,10 +491,11 @@ export default function PortfolioPage() {
                     </CardContent>
                 </Card>
 
-                {/* Add Investment Modal */}
-                <AddInvestmentModal
+                {/* Add Transaction Modal */}
+                <AddTransactionModal
                     isOpen={isAddModalOpen}
                     onClose={() => setIsAddModalOpen(false)}
+                    initialPortfolioId={selectedPortfolioId || undefined}
                     onSuccess={async () => {
                         // Refresh all investments from all portfolios
                         try {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BudgetCategory, CreateBudgetRequest } from '@/types/budget.types';
+import { BudgetCategory, CreateBudgetRequest, BudgetPeriod } from '@/types/budget.types';
 import { ApiResponse } from '@/types/portfolio.types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
@@ -25,8 +25,10 @@ api.interceptors.request.use((config) => {
 });
 
 const budgetService = {
-    getBudgets: () => {
-        return api.get<ApiResponse<BudgetCategory[]>>('/budgets');
+    getBudgets: (period?: BudgetPeriod, year?: number, month?: number) => {
+        return api.get<ApiResponse<BudgetCategory[]>>('/budgets', {
+            params: { period, year, month }
+        });
     },
 
     createBudget: (data: CreateBudgetRequest) => {

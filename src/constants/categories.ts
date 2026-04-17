@@ -12,4 +12,18 @@ export const CATEGORY_MAPPING: Record<string, string[]> = {
     "Otros": ["Regalos", "Donaciones", "Imprevistos", "Otros"]
 };
 
+export const CATEGORY_COLORS: Record<string, string> = {
+    "Vivienda": "bg-blue-500",
+    "Alimentación": "bg-green-500",
+    "Transporte": "bg-yellow-500",
+    "Servicios": "bg-purple-500",
+    "Ocio": "bg-pink-500",
+    "Salud": "bg-red-500",
+    "Educación": "bg-indigo-500",
+    "Ropa": "bg-orange-500",
+    "Ahorro": "bg-teal-500",
+    "Deudas": "bg-cyan-500",
+    "Otros": "bg-gray-500"
+};
+
 export const PREDEFINED_CATEGORIES = Object.keys(CATEGORY_MAPPING);
