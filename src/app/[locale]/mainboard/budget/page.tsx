@@ -34,6 +34,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
 
 export default function BudgetPage() {
     const router = useRouter()
@@ -195,64 +196,56 @@ export default function BudgetPage() {
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            {/* Header */}
-            <header className="bg-background/50 dark:bg-neutral-950/80 border-b border-border sticky top-0 z-50 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            {/* Premium Header */}
+            <header className="bg-card/50 border-b border-border sticky top-0 z-50 backdrop-blur-xl">
+                <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => router.push('/mainboard')}
-                            className="border-border text-foreground hover:bg-accent"
-                        >
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            {tCommon('back')}
+                        <Button variant="ghost" size="icon" onClick={() => router.push('/mainboard')} className="rounded-xl">
+                            <ArrowLeft className="h-5 w-5" />
                         </Button>
                         <div>
-                            <h1 className="text-2xl font-bold">
-                                {activePeriod === 'MONTHLY' ? t('title') : 'Presupuesto Anual'}
-                            </h1>
-                            <p className="text-sm text-muted-foreground">
-                                {activePeriod === 'MONTHLY' ? t('subtitle') : 'Controla tus gastos anuales'}
-                            </p>
+                            <h1 className="text-xl font-black italic tracking-tight">GESTIÓN <span className="text-orange-500">PRESUPUESTARIA</span></h1>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Financial Target Optimization</p>
                         </div>
                     </div>
                 </div>
             </header>
 
             {/* Navigation & Period Selector */}
-            <div className="bg-card/30 border-b border-border py-3 sticky top-[73px] z-40 backdrop-blur-md">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div className="flex bg-muted p-1 rounded-lg">
-                        <Button
-                            variant={activePeriod === 'MONTHLY' ? 'secondary' : 'ghost'}
-                            size="sm"
+            <div className="bg-card/30 border-b border-border py-4 sticky top-20 z-40 backdrop-blur-md">
+                <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div className="flex bg-muted/50 p-1 rounded-xl border border-border">
+                        <button
                             onClick={() => setActivePeriod('MONTHLY')}
-                            className={activePeriod === 'MONTHLY' ? 'bg-background shadow-sm' : 'text-muted-foreground'}
+                            className={cn(
+                                "px-6 py-2 rounded-lg text-xs font-black tracking-widest transition-all",
+                                activePeriod === 'MONTHLY' ? "bg-orange-500 text-black shadow-lg" : "text-muted-foreground hover:text-foreground"
+                            )}
                         >
-                            Mensual
-                        </Button>
-                        <Button
-                            variant={activePeriod === 'ANNUAL' ? 'secondary' : 'ghost'}
-                            size="sm"
+                            MENSUAL
+                        </button>
+                        <button
                             onClick={() => setActivePeriod('ANNUAL')}
-                            className={activePeriod === 'ANNUAL' ? 'bg-background shadow-sm' : 'text-muted-foreground'}
+                            className={cn(
+                                "px-6 py-2 rounded-lg text-xs font-black tracking-widest transition-all",
+                                activePeriod === 'ANNUAL' ? "bg-orange-500 text-black shadow-lg" : "text-muted-foreground hover:text-foreground"
+                            )}
                         >
-                            Anual
-                        </Button>
+                            ANUAL
+                        </button>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         <Button variant="ghost" size="icon" onClick={() => {
                             const d = new Date(viewDate);
                             if (activePeriod === 'MONTHLY') d.setMonth(d.getMonth() - 1);
                             else d.setFullYear(d.getFullYear() - 1);
                             setViewDate(d);
-                        }} className="h-9 w-9">
+                        }} className="h-10 w-10 rounded-xl hover:bg-orange-500/10 hover:text-orange-500">
                             <ChevronLeft className="h-5 w-5" />
                         </Button>
-                        <div className="flex items-center gap-2 px-6 py-2 bg-background rounded-full border border-border/50 shadow-sm min-w-[180px] justify-center text-sm font-bold">
-                            <Calendar className="h-4 w-4 text-yellow-500" />
+                        <div className="flex items-center gap-3 px-8 py-2.5 bg-background rounded-2xl border border-border shadow-2xl min-w-[220px] justify-center text-[11px] font-black tracking-widest italic group">
+                            <Calendar className="h-4 w-4 text-orange-500 group-hover:animate-bounce" />
                             {activePeriod === 'MONTHLY'
                                 ? viewDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()
                                 : viewDate.getFullYear()
@@ -263,13 +256,13 @@ export default function BudgetPage() {
                             if (activePeriod === 'MONTHLY') d.setMonth(d.getMonth() + 1);
                             else d.setFullYear(d.getFullYear() + 1);
                             setViewDate(d);
-                        }} className="h-9 w-9">
+                        }} className="h-10 w-10 rounded-xl hover:bg-orange-500/10 hover:text-orange-500">
                             <ChevronRight className="h-5 w-5" />
                         </Button>
                     </div>
 
-                    <Button variant="link" size="sm" onClick={() => setViewDate(new Date())} className="text-xs text-muted-foreground hover:text-yellow-500">
-                        Actual
+                    <Button variant="ghost" size="sm" onClick={() => setViewDate(new Date())} className="text-[10px] font-black uppercase tracking-widest text-orange-500 italic hover:bg-orange-500/5">
+                        Volver a hoy
                     </Button>
                 </div>
             </div>

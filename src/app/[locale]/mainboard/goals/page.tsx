@@ -120,39 +120,38 @@ export default function GoalsPage() {
 
     return (
         <div className="min-h-screen bg-background">
-            {/* Header */}
-            <header className="bg-background/50 dark:bg-neutral-950/80 dark:text-white border-b border-border sticky top-0 z-50 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            {/* Premium Header */}
+            <header className="bg-card/50 border-b border-border sticky top-0 z-50 backdrop-blur-xl">
+                <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => router.push('/mainboard')}
-                            className="border-border text-foreground hover:bg-accent"
-                        >
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            {tCommon('back')}
+                        <Button variant="ghost" size="icon" onClick={() => router.push('/mainboard')} className="rounded-xl">
+                            <ArrowLeft className="h-5 w-5" />
                         </Button>
                         <div>
-                            <h1 className="text-2xl font-bold">{t('title')}</h1>
-                            <p className="text-sm text-muted-foreground dark:text-gray-300">{t('subtitle')}</p>
+                            <h1 className="text-xl font-black italic tracking-tight">OBJETIVOS DE <span className="text-orange-500">AHORRO</span></h1>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Savings & Target Intelligence</p>
                         </div>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={fetchGoals}
+                            className="rounded-xl border-border font-bold h-11"
+                        >
+                            Refrescar
+                        </Button>
+                        <Button
+                            onClick={() => setIsCreateModalOpen(true)}
+                            className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black h-11"
+                        >
+                            <Plus className="h-4 w-4 mr-2" /> AÑADIR OBJETIVO
+                        </Button>
                     </div>
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Add Goal Button */}
-                <div className="mb-6 flex justify-between items-center">
-                    <h2 className="text-xl font-bold hidden sm:block">Mis Objetivos de Ahorro</h2>
-                    <Button
-                        className="bg-yellow-600 hover:bg-yellow-700"
-                        onClick={() => setIsCreateModalOpen(true)}
-                    >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Añadir Objetivo
-                    </Button>
-                </div>
+            <main className="max-w-7xl mx-auto px-4 py-8">
 
                 {error && (
                     <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-md">

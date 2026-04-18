@@ -9,21 +9,29 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
     ArrowLeft,
-    PieChart,
+    PieChart as PieChartIcon,
     Plus,
     Loader2,
     ArrowUpDown,
-    Download,
-    History
+    History,
+    TrendingUp,
+    TrendingDown,
+    Filter,
+    Layers,
+    Target,
+    Upload
 } from "lucide-react"
 import { useTranslations } from 'next-intl'
 import portfolioService from "@/services/portfolio.service"
 import investmentService from "@/services/investment.service"
-import { Portfolio, Investment } from "@/types/portfolio.types"
+import { Portfolio, Investment, AssetType } from "@/types/portfolio.types"
 import AddTransactionModal from "@/components/portfolio/AddTransactionModal"
 import CreatePortfolioModal from "@/components/portfolio/CreatePortfolioModal"
+import BrokerImportModal from "@/components/portfolio/BrokerImportModal"
 import { ExportButtons } from "@/components/reports/ExportButtons"
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import { cn } from "@/lib/utils"
+import StockSearch from "@/components/mainboard/StockSearch"
 
 export default function PortfolioPage() {
     const router = useRouter()
@@ -34,13 +42,16 @@ export default function PortfolioPage() {
     const [portfolios, setPortfolios] = useState<Portfolio[]>([])
     const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
     const [allInvestments, setAllInvestments] = useState<Investment[]>([])
-    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null) // null = "All Portfolios"
+    const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null)
     const [sortBy, setSortBy] = useState<'name' | 'value' | 'return' | 'gainLoss'>('value')
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+    const [distributionMode, setDistributionMode] = useState<'ticker' | 'category'>('ticker')
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
     const [isCreatePortfolioModalOpen, setIsCreatePortfolioModalOpen] = useState(false)
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false)
+    const [selectedCategory, setSelectedCategory] = useState<string>('ALL')
 
     useEffect(() => {
         if (!user) {
@@ -48,20 +59,14 @@ export default function PortfolioPage() {
             return
         }
 
-        // Fetch all portfolios and their investments
         const fetchData = async () => {
             try {
                 setLoading(true)
-                setError(null)
-
-                // Get user's portfolios
                 const portfoliosResponse = await portfolioService.getPortfolios()
                 const userPortfolios = portfoliosResponse.data.data
 
                 if (userPortfolios && userPortfolios.length > 0) {
                     setPortfolios(userPortfolios)
-
-                    // Load investments from ALL portfolios
                     const allInvs: Investment[] = []
                     for (const p of userPortfolios) {
                         try {
@@ -71,36 +76,23 @@ export default function PortfolioPage() {
                             console.error(`Error loading investments for portfolio ${p.id}:`, err)
                         }
                     }
-
                     setAllInvestments(allInvs)
-
-                    // Set first portfolio as selected (for compatibility)
                     setPortfolio(userPortfolios[0])
-                    console.log('Loaded', userPortfolios.length, 'portfolios with', allInvs.length, 'total investments')
-                } else {
-                    console.log('No portfolios found')
-                    // Portfolio will remain null, showing empty state
                 }
             } catch (err) {
                 console.error('Error fetching portfolio data:', err)
-                const errorPayload = err as { response?: { data?: { message?: string } } };
-                setError(errorPayload.response?.data?.message || 'Error al cargar los datos')
+                setError('Error al cargar los datos')
             } finally {
-
-
                 setLoading(false)
             }
         }
-
         fetchData()
     }, [user, router])
 
-    // Filter investments based on selected portfolio
     const investments = selectedPortfolioId
         ? allInvestments.filter(inv => inv.portfolioId === selectedPortfolioId)
         : allInvestments
 
-    // Group investments by symbol before showing in the general list
     const groupedInvestments = useMemo(() => {
         const groups: Record<string, any> = {};
         investments.forEach(inv => {
@@ -109,417 +101,352 @@ export default function PortfolioPage() {
                 groups[sym] = { ...inv };
             } else {
                 const g = groups[sym];
-                const totalQty = (g.quantity || 0) + (inv.quantity || 0);
-                const totalInv = (g.totalInvested || 0) + (inv.totalInvested || 0);
-
-                g.quantity = totalQty;
-                g.totalInvested = totalInv;
-                g.currentValue = (g.currentValue || 0) + (inv.currentValue || 0);
-                g.averagePrice = totalQty > 0 ? totalInv / totalQty : 0;
-                // Pre-calculate gain/loss for the group
+                g.quantity += (inv.quantity || 0);
+                g.totalInvested += (inv.totalInvested || 0);
+                g.currentValue += (inv.currentValue || 0);
+                g.averagePrice = g.quantity > 0 ? g.totalInvested / g.quantity : 0;
                 g.gainLoss = g.currentValue - g.totalInvested;
                 g.gainLossPercentage = g.totalInvested > 0 ? (g.gainLoss / g.totalInvested) * 100 : 0;
-
-                // Use the ID of the largest position for the link
-                if ((inv.currentValue || 0) > (groups[sym].currentValue || 0)) {
-                    g.id = inv.id;
-                }
             }
         });
         return Object.values(groups);
     }, [investments]);
 
-    // Sort the potentially grouped investments
     const sortedInvestments = useMemo(() => {
-        return [...groupedInvestments].sort((a, b) => {
-            let comparison = 0;
-            switch (sortBy) {
-                case 'name':
-                    comparison = (a.stockName || '').localeCompare(b.stockName || '');
-                    break;
-                case 'value':
-                    comparison = (a.currentValue || 0) - (b.currentValue || 0);
-                    break;
-                case 'return':
-                    comparison = (a.gainLossPercentage || 0) - (b.gainLossPercentage || 0);
-                    break;
-                case 'gainLoss':
-                    comparison = (a.gainLoss || 0) - (b.gainLoss || 0);
-                    break;
-            }
-            return sortOrder === 'asc' ? comparison : -comparison;
-        });
-    }, [groupedInvestments, sortBy, sortOrder]);
-
-    if (!user) {
-        return null
-    }
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="text-center">
-                    <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-yellow-400" />
-                    <p className="text-muted-foreground">{tCommon('loading')}</p>
-                </div>
-            </div>
-        )
-    }
-
-    if (error) {
-        return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
-                <Card className="bg-card border-border max-w-md">
-                    <CardContent className="p-6 text-center">
-                        <p className="text-red-400 mb-4">{error}</p>
-                        <Button onClick={() => window.location.reload()} className="bg-yellow-600 hover:bg-yellow-700">
-                            {tCommon('retry')}
-                        </Button>
-                    </CardContent>
-                </Card>
-            </div>
-        )
-    }
-
-    // Show empty state if no portfolio exists
-    if (!portfolio) {
-        return (
-            <div className="min-h-screen bg-background">
-                <header className="bg-background/50 dark:bg-neutral-950/80 dark:text-white border-b border-border sticky top-0 z-50 backdrop-blur-sm">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                        <div className="flex items-center gap-4">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => router.push('/mainboard')}
-                                className="border-border text-foreground hover:bg-accent"
-                            >
-                                <ArrowLeft className="h-4 w-4 mr-2" />
-                                {tCommon('back')}
-                            </Button>
-                            <div>
-                                <h1 className="text-2xl font-bold">{t('title')}</h1>
-                                <p className="text-sm text-muted-foreground dark:text-gray-300">{t('subtitle')}</p>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <Card className="bg-card border-border">
-                        <CardContent className="p-12 text-center">
-                            <div className="max-w-md mx-auto">
-                                <PieChart className="h-16 w-16 text-yellow-400 mx-auto mb-4" />
-                                <h2 className="text-2xl font-bold mb-2">No tienes portfolios</h2>
-                                <p className="text-muted-foreground mb-6">
-                                    Crea tu primer portfolio para empezar a gestionar tus inversiones
-                                </p>
-                                <Button
-                                    className="bg-yellow-600 hover:bg-yellow-700"
-                                    onClick={() => setIsCreatePortfolioModalOpen(true)}
-                                >
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    Crear Portfolio
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Create Portfolio Modal */}
-                    <CreatePortfolioModal
-                        isOpen={isCreatePortfolioModalOpen}
-                        onClose={() => setIsCreatePortfolioModalOpen(false)}
-                        onSuccess={() => {
-                            // Reload page to show new portfolio
-                            window.location.reload();
-                        }}
-                    />
-                </main>
-            </div>
-        )
-    }
-
-    // Calculate global totals from filtered investments
-    const totalValue = investments.reduce((sum, inv) => sum + (inv.currentValue || 0), 0)
-    const totalInvested = investments.reduce((sum, inv) => sum + (inv.totalInvested || 0), 0)
-    const totalGainLoss = totalValue - totalInvested
-    const totalReturn = totalInvested > 0 ? (totalGainLoss / totalInvested) * 100 : 0
-
-    // Prepare data for Pie Chart
-    const COLORS = ['#FFBB28', '#FF8042', '#0088FE', '#00C49F', '#8884d8', '#82ca9d', '#ffc658', '#8dd1e1']
-    const pieChartData = investments.reduce((acc, inv) => {
-        const existing = acc.find(item => item.name === inv.stockSymbol)
-        if (existing) {
-            existing.value += inv.currentValue || 0
-        } else {
-            acc.push({ name: inv.stockSymbol, value: inv.currentValue || 0 })
+        let filtered = [...groupedInvestments];
+        if (selectedCategory !== 'ALL') {
+            filtered = filtered.filter(inv => {
+                const type = inv.assetType || 'STOCK';
+                return type === selectedCategory;
+            });
         }
-        return acc
-    }, [] as { name: string; value: number }[])
-        .sort((a, b) => b.value - a.value)
+
+        return filtered.sort((a, b) => {
+            let comp = 0;
+            if (sortBy === 'name') comp = (a.stockName || '').localeCompare(b.stockName || '');
+            else if (sortBy === 'value') comp = (a.currentValue || 0) - (b.currentValue || 0);
+            else if (sortBy === 'return') comp = (a.gainLossPercentage || 0) - (b.gainLossPercentage || 0);
+            else if (sortBy === 'gainLoss') comp = (a.gainLoss || 0) - (b.gainLoss || 0);
+            return sortOrder === 'asc' ? comp : -comp;
+        });
+    }, [groupedInvestments, sortBy, sortOrder, selectedCategory]);
+
+    const stats = useMemo(() => {
+        const totalValue = investments.reduce((sum, inv) => sum + (inv.currentValue || 0), 0)
+        const totalInvested = investments.reduce((sum, inv) => sum + (inv.totalInvested || 0), 0)
+        
+        // Find Winners/Losers
+        const sortedByReturn = [...groupedInvestments].sort((a, b) => (b.gainLossPercentage || 0) - (a.gainLossPercentage || 0))
+        const winner = sortedByReturn[0] || null
+        const loser = sortedByReturn[sortedByReturn.length - 1] || null
+
+        return {
+            totalValue,
+            totalInvested,
+            gainLoss: totalValue - totalInvested,
+            return: totalInvested > 0 ? ((totalValue - totalInvested) / totalInvested) * 100 : 0,
+            winner,
+            loser
+        }
+    }, [investments, groupedInvestments])
+
+    const TICKER_COLORS: Record<string, string> = {
+        'AAPL': '#A2AAAD',   // Apple Silver
+        'GOOG': '#4285F4',   // Google Blue
+        'GOOGL': '#4285F4',
+        'MSFT': '#00A4EF',   // Microsoft Blue
+        'AMZN': '#FF9900',   // Amazon Orange
+        'TSLA': '#E81010',   // Tesla Red
+        'META': '#0668E1',   // Meta Blue
+        'NVDA': '#76B900',   // Nvidia Green
+        'BTC': '#F7931A',    // Bitcoin Orange
+        'ETH': '#627EEA',    // Ethereum Blue
+        'EUR': '#2e5baf',
+        'USD': '#85bb65',
+    }
+
+    const pieChartData = useMemo(() => {
+        if (distributionMode === 'ticker') {
+            return groupedInvestments.map(inv => ({ 
+                name: inv.stockSymbol, 
+                value: inv.currentValue || 0,
+                color: TICKER_COLORS[inv.stockSymbol.toUpperCase()]
+            }))
+            .sort((a, b) => b.value - a.value)
+        } else {
+            const catMap: Record<string, number> = {}
+            investments.forEach(inv => {
+                const cat = inv.assetType === 'STOCK' ? 'Acciones' : 
+                            inv.assetType === 'CRYPTO' ? 'Cripto' : 
+                            inv.assetType === 'REAL_ESTATE' ? 'Inmuebles' :
+                            inv.assetType === 'MUTUAL_FUND' ? 'Fondos' :
+                            inv.assetType === 'ETF' ? 'ETFs' :
+                            inv.assetType || 'Otros'
+                catMap[cat] = (catMap[cat] || 0) + (inv.currentValue || 0)
+            })
+            return Object.entries(catMap).map(([name, value]) => ({ 
+                name, 
+                value,
+                color: undefined as string | undefined
+            }))
+                .sort((a, b) => b.value - a.value)
+        }
+    }, [investments, groupedInvestments, distributionMode])
+
+    const COLORS = ['#f97316', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#facc15', '#ef4444', '#06b6d4']
+
+    if (loading) return (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+        </div>
+    )
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* Header */}
-            <header className="bg-background/50 dark:bg-neutral-950/80 dark:text-white border-b border-border sticky top-0 z-50 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => router.push('/mainboard')}
-                                className="border-border text-foreground hover:bg-accent"
-                            >
-                                <ArrowLeft className="h-4 w-4 mr-2" />
-                                {tCommon('back')}
-                            </Button>
-                            <div>
-                                <h1 className="text-2xl font-bold">{t('title')}</h1>
-                                <p className="text-sm text-muted-foreground dark:text-gray-300">
-                                    {portfolios.length} {portfolios.length === 1 ? 'Portfolio' : 'Portfolios'} • {investments.length} {investments.length === 1 ? 'Posición' : 'Posiciones'}
-                                </p>
-                            </div>
+        <div className="min-h-screen bg-background pb-20">
+            {/* Nav Header */}
+            <header className="bg-card/50 border-b border-border sticky top-0 z-50 backdrop-blur-xl">
+                <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <Button variant="ghost" size="icon" onClick={() => router.push('/mainboard')} className="rounded-xl">
+                            <ArrowLeft className="h-5 w-5" />
+                        </Button>
+                        <div>
+                            <h1 className="text-xl font-black italic tracking-tight">MI <span className="text-orange-500">PORTFOLIO</span></h1>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Personal Wealth center</p>
                         </div>
+                    </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => router.push('/mainboard/portfolio/transactions')}
-                                className="border-border text-foreground"
-                            >
-                                <History className="h-4 w-4 mr-2" />
-                                Historial
-                            </Button>
-                            <ExportButtons type="portfolio" variant="outline" size="sm" />
-                            <Button
-                                variant="outline"
-                                onClick={() => setIsCreatePortfolioModalOpen(true)}
-                                className="border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-black"
-                            >
-                                <Plus className="h-4 w-4 mr-2" />
-                                Nuevo Portfolio
-                            </Button>
-                        </div>
+                    <div className="hidden md:flex flex-1 justify-center max-w-md px-8">
+                        <StockSearch />
+                    </div>
+
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => setIsImportModalOpen(true)} className="rounded-xl border-border font-bold">
+                            <Upload className="h-4 w-4 mr-2" /> Importar
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => setIsCreatePortfolioModalOpen(true)} className="rounded-xl border-border font-bold">
+                            <Plus className="h-4 w-4 mr-2" /> Portafolio
+                        </Button>
+                        <Button onClick={() => setIsAddModalOpen(true)} className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black">
+                            <Plus className="h-4 w-4 mr-2" /> POSICIÓN
+                        </Button>
                     </div>
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Portfolio Selector and Sort Controls */}
-                <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
-                    {/* Portfolio Selector */}
-                    <div className="flex-1 w-full md:w-auto">
-                        <Select
-                            value={selectedPortfolioId || "all"}
-                            onValueChange={(value) => setSelectedPortfolioId(value === "all" ? null : value)}
-                        >
-                            <SelectTrigger className="w-full md:max-w-xs">
-                                <SelectValue placeholder="Seleccionar portfolio" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">
-                                    📊 Todos los Portfolios
-                                </SelectItem>
-                                {portfolios.map((p) => (
-                                    <SelectItem key={p.id} value={p.id}>
-                                        {p.name} - €{(p.totalValue || 0).toLocaleString('es-ES', { minimumFractionDigits: 2 })}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    {/* Sort Controls */}
-                    <div className="flex items-center gap-2 w-full md:w-auto">
-                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                        <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-                            <SelectTrigger className="w-full md:w-[180px]">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="value">Ordenar por Valor</SelectItem>
-                                <SelectItem value="return">Ordenar por Retorno %</SelectItem>
-                                <SelectItem value="gainLoss">Ordenar por Ganancia</SelectItem>
-                                <SelectItem value="name">Ordenar por Nombre</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                        >
-                            <ArrowUpDown className="h-4 w-4" />
-                        </Button>
-                    </div>
-                </div>
-
-                {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <Card className="bg-gradient-to-br from-yellow-500 to-yellow-600 border-0 text-black">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-sm font-medium">{t('totalValue')}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold">
-                                €{totalValue.toLocaleString('es-ES', { minimumFractionDigits: 2 })}
-                            </div>
-                        </CardContent>
+            <main className="max-w-7xl mx-auto px-4 py-8">
+                {/* Global Stats bar */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                    <Card className="bg-card border-border border-l-4 border-l-orange-500 rounded-2xl p-6 shadow-xl">
+                        <p className="text-[10px] font-black uppercase text-muted-foreground mb-1">Capital Actual</p>
+                        <p className="text-3xl font-black">€{stats.totalValue.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</p>
                     </Card>
-
-                    <Card className="bg-card border-border">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">{t('totalReturn')}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className={`text-3xl font-bold ${totalReturn >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                {totalReturn >= 0 ? '+' : ''}{totalReturn.toFixed(2)}%
-                            </div>
-                        </CardContent>
+                    <Card className="bg-card border-border rounded-2xl p-6 shadow-xl">
+                        <p className="text-[10px] font-black uppercase text-muted-foreground mb-1">P/L Total</p>
+                        <p className={cn("text-3xl font-black", stats.gainLoss >= 0 ? "text-emerald-500" : "text-red-500")}>
+                            {stats.gainLoss >= 0 ? "+" : ""}€{stats.gainLoss.toLocaleString('es-ES', { minimumFractionDigits: 2 })}
+                        </p>
                     </Card>
-
-                    <Card className="bg-card border-border">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">{t('positions')}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold">
-                                {investments.length}
+                    <Card className="bg-card border-border rounded-2xl p-6 shadow-xl">
+                        <p className="text-[10px] font-black uppercase text-muted-foreground mb-1">Rentabilidad</p>
+                        <p className={cn("text-3xl font-black", stats.return >= 0 ? "text-emerald-500" : "text-red-500")}>
+                            {stats.return >= 0 ? "+" : ""}{stats.return.toFixed(2)}%
+                        </p>
+                    </Card>
+                    <Card className="bg-orange-500 rounded-2xl p-6 shadow-xl shadow-orange-500/10 text-white">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className="text-[10px] font-black uppercase opacity-80 mb-1">Mejor Activo</p>
+                                <p className="text-xl font-black">{stats.winner?.stockSymbol || "N/A"}</p>
+                                <p className="text-xs font-bold">+{stats.winner?.gainLossPercentage?.toFixed(2)}%</p>
                             </div>
-                        </CardContent>
+                            <TrendingUp className="h-4 w-4 opacity-50" />
+                        </div>
                     </Card>
                 </div>
 
-                {/* Asset Allocation Chart */}
-                {investments.length > 0 && (
-                    <div className="grid grid-cols-1 gap-6 mb-8">
-                        <Card className="bg-card border-border">
-                            <CardHeader>
-                                <CardTitle>Distribución de Activos</CardTitle>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    {/* Distribution Chart Section */}
+                    <div className="lg:col-span-4 space-y-6">
+                        <Card className="bg-card border-border rounded-[2rem] overflow-hidden shadow-2xl">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2 bg-muted/30">
+                                <CardTitle className="text-sm font-black flex items-center gap-2">
+                                    <PieChartIcon className="h-4 w-4 text-orange-500" /> DISTRIBUCIÓN
+                                </CardTitle>
+                                <div className="flex bg-background rounded-lg p-1 border border-border">
+                                    <button 
+                                        onClick={() => setDistributionMode('category')}
+                                        className={cn("px-2 py-1 text-[10px] font-black rounded-md transition-all", distributionMode === 'category' ? "bg-orange-500 text-white" : "text-muted-foreground")}
+                                    >TIPO</button>
+                                    <button 
+                                        onClick={() => setDistributionMode('ticker')}
+                                        className={cn("px-2 py-1 text-[10px] font-black rounded-md transition-all", distributionMode === 'ticker' ? "bg-orange-500 text-white" : "text-muted-foreground")}
+                                    >TICKER</button>
+                                </div>
                             </CardHeader>
-                            <CardContent>
-                                <div className="w-full flex justify-center">
-                                    <ResponsiveContainer width="100%" height={400}>
+                            <CardContent className="pt-8">
+                                <div className="h-[300px] w-full">
+                                    <ResponsiveContainer width="100%" height="100%">
                                         <RechartsPieChart>
                                             <Pie
                                                 data={pieChartData}
                                                 cx="50%"
                                                 cy="50%"
-                                                innerRadius={80}
-                                                outerRadius={120}
-                                                paddingAngle={2}
+                                                innerRadius={60}
+                                                outerRadius={100}
+                                                paddingAngle={5}
                                                 dataKey="value"
-                                                nameKey="name"
-                                                label={({ name, percent }) => `${name} ${(percent! * 100).toFixed(0)}%`}
                                             >
-                                                {pieChartData.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                {pieChartData.map((entry: any, index: number) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip
-                                                formatter={(value: number) => `€${value.toLocaleString('es-ES', { minimumFractionDigits: 2 })}`}
-                                                contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', color: '#f3f4f6' }}
-                                                itemStyle={{ color: '#f3f4f6' }}
+                                            <Tooltip 
+                                                contentStyle={{ borderRadius: '16px', border: 'none', backgroundColor: '#18181b', color: '#fff' }} 
+                                                itemStyle={{ color: '#fff' }}
+                                                formatter={(value: number) => `€${value.toLocaleString()}`}
                                             />
-                                            <Legend verticalAlign="bottom" height={36} />
                                         </RechartsPieChart>
                                     </ResponsiveContainer>
                                 </div>
+                                <div className="space-y-2 mt-4">
+                                    {pieChartData.slice(0, 4).map((entry, i) => (
+                                        <div key={entry.name} className="flex items-center justify-between text-xs">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color || COLORS[i % COLORS.length] }} />
+                                                <span className="font-bold">{entry.name}</span>
+                                            </div>
+                                            <span className="text-muted-foreground">€{entry.value.toLocaleString()}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </CardContent>
                         </Card>
+
+                        {/* Loser and Performance Stats */}
+                        <Card className="bg-card border-border rounded-[2rem] p-6 shadow-xl">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">En Revisión</h3>
+                                <TrendingDown className="h-4 w-4 text-red-500" />
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <div className="bg-red-500/10 p-4 rounded-2xl">
+                                    <Target className="h-6 w-6 text-red-500" />
+                                </div>
+                                <div>
+                                    <p className="text-lg font-black">{stats.loser?.stockSymbol || "N/A"}</p>
+                                    <p className="text-xs text-red-500 font-bold">{stats.loser?.gainLossPercentage?.toFixed(2)}% desde la compra</p>
+                                </div>
+                            </div>
+                        </Card>
                     </div>
-                )}
 
-                {/* Add Position Button */}
-                <div className="mb-6">
-                    <Button
-                        onClick={() => setIsAddModalOpen(true)}
-                        className="bg-yellow-600 hover:bg-yellow-700"
-                    >
-                        <Plus className="h-4 w-4 mr-2" />
-                        {t('addPosition')}
-                    </Button>
-                </div>
+                    <div className="lg:col-span-8 flex flex-col gap-6">
+                        {/* Tab Filters */}
+                        <div className="flex gap-2 p-1 bg-muted/30 border border-border rounded-2xl overflow-x-auto no-scrollbar">
+                            {['ALL', 'STOCK', 'ETF', 'CRYPTO', 'COMMODITY', 'REAL_ESTATE', 'MUTUAL_FUND'].map((cat) => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setSelectedCategory(cat)}
+                                    className={cn(
+                                        "px-4 py-2.5 rounded-xl text-[9px] font-black tracking-widest transition-all whitespace-nowrap",
+                                        selectedCategory === cat 
+                                            ? "bg-orange-500 text-black shadow-lg" 
+                                            : "text-muted-foreground hover:text-foreground"
+                                    )}
+                                >
+                                    {cat === 'ALL' ? 'GENERAL' : 
+                                     cat === 'STOCK' ? 'ACCIONES' :
+                                     cat === 'MUTUAL_FUND' ? 'FONDOS' :
+                                     cat === 'COMMODITY' ? 'ORO/METALES' :
+                                     cat === 'REAL_ESTATE' ? 'INMUEBLES' : cat}
+                                </button>
+                            ))}
+                        </div>
 
-                {/* Positions List */}
-                <Card className="bg-card border-border mb-8">
-                    <CardHeader>
-                        <CardTitle>{t('positions')}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {sortedInvestments.length === 0 ? (
-                            <p className="text-center text-muted-foreground py-8">
-                                No hay posiciones en {selectedPortfolioId ? 'este portfolio' : 'tus portfolios'}
-                            </p>
-                        ) : (
-                            <div className="space-y-4">
-                                {sortedInvestments.map((investment) => (
-                                    <div
-                                        key={investment.id}
-                                        onClick={() => router.push(`/mainboard/portfolio/investment/${investment.id}`)}
-                                        className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-yellow-500/5 hover:border-yellow-500/50 transition-all cursor-pointer group"
-                                    >
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2">
-                                                <h3 className="font-semibold group-hover:text-yellow-500 transition-colors">{investment.stockSymbol}</h3>
-                                                <Badge variant="outline" className="text-[10px] py-0 h-4 border-muted-foreground/30 text-muted-foreground">Posición</Badge>
+                        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+                            <div className="flex bg-card p-1 border border-border rounded-xl">
+                                <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
+                                    <SelectTrigger className="h-9 border-0 bg-transparent text-xs font-black uppercase tracking-tight w-[160px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="value">Valor</SelectItem>
+                                        <SelectItem value="return">Rentabilidad</SelectItem>
+                                        <SelectItem value="gainLoss">P/L €</SelectItem>
+                                        <SelectItem value="name">Nombre</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Button variant="ghost" size="icon" onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')} className="h-9 w-9">
+                                    <ArrowUpDown className={cn("h-4 w-4 transition-all", sortOrder === 'desc' ? "rotate-180" : "")} />
+                                </Button>
+                            </div>
+                            <div className="flex gap-2">
+                                <ExportButtons type="portfolio" variant="outline" size="sm" className="rounded-xl h-11" />
+                                <Button 
+                                    variant="outline" size="sm" className="rounded-xl h-11 h-11"
+                                    onClick={() => router.push('/mainboard/portfolio/transactions')}
+                                >
+                                    <History className="h-4 w-4 mr-2" /> Historial
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            {sortedInvestments.map((inv) => (
+                                <Card 
+                                    key={inv.id} 
+                                    onClick={() => router.push(`/mainboard/portfolio/stock/${inv.stockSymbol}`)}
+                                    className="bg-card border-border hover:border-orange-500/50 hover:bg-orange-500/[0.02] cursor-pointer transition-all rounded-3xl p-6 shadow-lg group relative overflow-hidden"
+                                >
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                        <div className="flex items-center gap-5">
+                                            <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center text-xl shadow-inner", 
+                                                inv.assetType === AssetType.CRYPTO ? "bg-orange-500/10 text-orange-500" :
+                                                inv.assetType === AssetType.STOCK ? "bg-blue-500/10 text-blue-500" :
+                                                inv.assetType === AssetType.REAL_ESTATE ? "bg-emerald-500/10 text-emerald-500" : "bg-muted"
+                                            )}>
+                                                {inv.stockSymbol.slice(0, 1)}
                                             </div>
-                                            <p className="text-sm text-muted-foreground">{investment.stockName}</p>
-                                            <p className="text-xs text-muted-foreground mt-1">
-                                                {investment.quantity} acciones @ €{investment.averagePrice?.toFixed(2)}
-                                            </p>
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <h3 className="text-lg font-black group-hover:text-orange-500 transition-colors uppercase italic">{inv.stockName}</h3>
+                                                    <Badge variant="outline" className="text-[9px] font-black uppercase text-muted-foreground bg-muted/30 border-0">{inv.assetType || "Acción"}</Badge>
+                                                </div>
+                                                <p className="text-[11px] font-bold text-muted-foreground mt-1">
+                                                    {inv.stockSymbol} • {inv.quantity.toLocaleString()} UNIDADES
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="text-right">
-                                            <div className="font-semibold">
-                                                €{(investment.currentValue || 0).toLocaleString('es-ES', { minimumFractionDigits: 2 })}
+                                        
+                                        <div className="flex items-center gap-8 md:gap-16">
+                                            <div className="text-right">
+                                                <p className="text-[10px] font-black uppercase text-muted-foreground opacity-60">Valorización</p>
+                                                <p className="text-xl font-black">€{inv.currentValue.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</p>
                                             </div>
-                                            <div className={`text-sm ${(investment.gainLossPercentage || 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                                {(investment.gainLossPercentage || 0) >= 0 ? '+' : ''}
-                                                {(investment.gainLossPercentage || 0).toFixed(2)}%
-                                            </div>
-                                            <div className="text-xs text-muted-foreground">
-                                                {(investment.gainLoss || 0) >= 0 ? '+' : ''}
-                                                €{(investment.gainLoss || 0).toFixed(2)}
+                                            <div className="text-right pointer-events-none">
+                                                <p className="text-[10px] font-black uppercase text-muted-foreground opacity-60">Resultado</p>
+                                                <div className={cn("text-lg font-black", inv.gainLoss >= 0 ? "text-emerald-500" : "text-red-500")}>
+                                                    {inv.gainLoss >= 0 ? "+" : ""}€{inv.gainLoss.toFixed(2)}
+                                                </div>
+                                                <div className={cn("text-xs font-bold", inv.gainLoss >= 0 ? "text-emerald-500" : "text-red-500")}>
+                                                    {inv.gainLoss >= 0 ? "+" : ""}{inv.gainLossPercentage.toFixed(2)}%
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                                    {/* Small subtle bar at bottom */}
+                                    <div className={cn("absolute bottom-0 left-0 h-1 transition-all group-hover:h-2", inv.gainLoss >= 0 ? "bg-emerald-500" : "bg-red-500")} style={{ width: '100%', opacity: 0.3 }} />
+                                </Card>
+                            ))}
+                        </div>
+                    </div>
+                </div>
 
-                {/* Add Transaction Modal */}
-                <AddTransactionModal
-                    isOpen={isAddModalOpen}
-                    onClose={() => setIsAddModalOpen(false)}
-                    initialPortfolioId={selectedPortfolioId || undefined}
-                    onSuccess={async () => {
-                        // Refresh all investments from all portfolios
-                        try {
-                            const allInvs: Investment[] = []
-                            for (const p of portfolios) {
-                                const investmentsResponse = await investmentService.getInvestments(p.id)
-                                allInvs.push(...investmentsResponse.data.data)
-                            }
-                            setAllInvestments(allInvs)
-                        } catch (err) {
-                            console.error('Error refreshing investments:', err)
-                        }
-                    }}
-                />
-
-                {/* Create Portfolio Modal */}
-                <CreatePortfolioModal
-                    isOpen={isCreatePortfolioModalOpen}
-                    onClose={() => setIsCreatePortfolioModalOpen(false)}
-                    onSuccess={() => {
-                        // Reload page to show new portfolio
-                        window.location.reload();
-                    }}
-                />
+                {/* Modals */}
+                <AddTransactionModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onSuccess={() => window.location.reload()} />
+                <CreatePortfolioModal isOpen={isCreatePortfolioModalOpen} onClose={() => setIsCreatePortfolioModalOpen(false)} onSuccess={() => window.location.reload()} />
+                <BrokerImportModal isOpen={isImportModalOpen} onClose={() => setIsImportModalOpen(false)} portfolioId={portfolio?.id} onSuccess={() => window.location.reload()} />
             </main>
         </div>
     )

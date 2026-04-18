@@ -32,6 +32,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
 import {
     ResponsiveContainer, Cell, Pie, PieChart as RechartsPieChart, Tooltip
 } from 'recharts'
@@ -225,31 +226,26 @@ export default function ExpensesPage() {
 
     return (
         <div className="min-h-screen bg-background">
-            {/* Header */}
-            <header className="bg-background/50 dark:bg-neutral-950/80 dark:text-white border-b border-border sticky top-0 z-50 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => router.push('/mainboard')}
-                                className="border-border text-foreground hover:bg-accent"
-                            >
-                                <ArrowLeft className="h-4 w-4 mr-2" />
-                                {tCommon('back')}
-                            </Button>
-                            <div>
-                                <h1 className="text-2xl font-bold">{t('title')}</h1>
-                                <p className="text-sm text-muted-foreground dark:text-gray-300">{t('subtitle')}</p>
-                            </div>
+            {/* Premium Header */}
+            <header className="bg-card/50 border-b border-border sticky top-0 z-50 backdrop-blur-xl">
+                <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <Button variant="ghost" size="icon" onClick={() => router.push('/mainboard')} className="rounded-xl">
+                            <ArrowLeft className="h-5 w-5" />
+                        </Button>
+                        <div>
+                            <h1 className="text-xl font-black italic tracking-tight">CONTROL DE <span className="text-orange-500">GASTOS</span></h1>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Expense & Cashflow Intelligence</p>
                         </div>
-                        <Button
+                    </div>
+                    <div className="flex gap-2">
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
                             onClick={() => setIsImportModalOpen(true)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-600/30 transition-all font-medium hover:-translate-y-0.5"
+                            className="rounded-xl border-border font-bold h-11"
                         >
-                            <Upload className="mr-2 h-4 w-4" />
-                            Importar CSV
+                            <Upload className="h-4 w-4 mr-2" /> Importar CSV
                         </Button>
                     </div>
                 </div>

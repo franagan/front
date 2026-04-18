@@ -148,51 +148,57 @@ export default function CompoundInterestCalculator() {
                                 <AreaChart data={chartData}>
                                     <defs>
                                         <linearGradient id="colorInterest" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.6}/>
                                             <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                                         </linearGradient>
                                         <linearGradient id="colorContrib" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
-                                            <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
+                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                                     <XAxis 
                                         dataKey="year" 
                                         stroke="#888" 
-                                        fontSize={12} 
+                                        fontSize={10} 
                                         tickLine={false} 
                                         axisLine={false}
+                                        label={{ value: 'Plazo (Años)', position: 'insideBottom', offset: -5, fontSize: 10, fill: '#666', fontWeight: 'bold' }}
                                     />
                                     <YAxis 
                                         stroke="#888" 
-                                        fontSize={12} 
+                                        fontSize={10} 
                                         tickLine={false} 
                                         axisLine={false}
                                         tickFormatter={(value) => `€${Math.round(value / 1000)}k`}
+                                        fontWeight="bold"
                                     />
                                     <Tooltip 
-                                        contentStyle={{ backgroundColor: '#171717', border: '1px solid #333', borderRadius: '12px' }}
-                                        formatter={(value: any) => [`€${value.toLocaleString('es-ES')}`, '']}
+                                        contentStyle={{ backgroundColor: 'rgba(23, 23, 23, 0.95)', border: '1px solid #10b981', borderRadius: '16px', backdropFilter: 'blur(10px)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+                                        itemStyle={{ fontWeight: 'black' }}
+                                        formatter={(value: any) => [`€${value.toLocaleString('es-ES')}`]}
+                                        labelFormatter={(label) => `AÑO ${label}`}
                                     />
-                                    <Legend />
+                                    <Legend verticalAlign="top" height={36} />
                                     <Area 
                                         type="monotone" 
                                         dataKey="contributions" 
-                                        name="Tus Aportaciones"
-                                        stroke="#22c55e" 
+                                        name="TUS APORTACIONES"
+                                        stroke="#10b981" 
                                         strokeWidth={3}
                                         fillOpacity={1} 
                                         fill="url(#colorContrib)" 
+                                        animationDuration={1500}
                                     />
                                     <Area 
                                         type="monotone" 
                                         dataKey="balance" 
-                                        name="Total Acumulado"
+                                        name="TOTAL ACUMULADO"
                                         stroke="#3b82f6" 
-                                        strokeWidth={3}
+                                        strokeWidth={4}
                                         fillOpacity={1} 
                                         fill="url(#colorInterest)" 
+                                        animationDuration={2500}
                                     />
                                 </AreaChart>
                             </ResponsiveContainer>

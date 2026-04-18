@@ -1,14 +1,16 @@
 'use client'
 
 import { useState } from "react"
+import { useRouter } from "@/i18n/navigation"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Calculator, Flame, TrendingUp, Info, Zap, Globe, Clock, ShieldCheck } from "lucide-react"
+import { Calculator, Flame, TrendingUp, Info, Zap, Globe, Clock, ShieldCheck, ArrowLeft } from "lucide-react"
 import FireCalculator from "@/components/tools/FireCalculator"
 import CompoundInterestCalculator from "@/components/tools/CompoundInterestCalculator"
 import { cn } from "@/lib/utils"
 
 export default function ToolsHubPage() {
+    const router = useRouter()
     const [selectedTool, setSelectedTool] = useState<string | null>('fire')
 
     const tools = [
@@ -43,12 +45,27 @@ export default function ToolsHubPage() {
 
     return (
         <div className="min-h-screen bg-background pb-24">
+            {/* Premium Header */}
+            <header className="bg-card/50 border-b border-border sticky top-0 z-50 backdrop-blur-xl">
+                <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <Button variant="ghost" size="icon" onClick={() => router.push('/mainboard')} className="rounded-xl">
+                            <ArrowLeft className="h-5 w-5" />
+                        </Button>
+                        <div>
+                            <h1 className="text-xl font-black italic tracking-tight">CALCULADORAS DE <span className="text-emerald-500">PATRIMONIO</span></h1>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-70">Strategic Planning & Simulation</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
             {/* Hero Section with Stats */}
-            <div className="bg-muted/30 pt-12 pb-16 border-b border-border">
+            <div className="bg-muted/30 pt-16 pb-20 border-b border-border">
                 <div className="max-w-7xl mx-auto px-4 text-center">
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
-                        Calculadoras <span className="text-emerald-500">Financieras</span>
-                    </h1>
+                    <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
+                        Toma el Control de tu <span className="text-emerald-500">Libertad</span>
+                    </h2>
                     <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
                         Herramientas gratuitas para planificar tu independencia financiera. Calcula tu FIRE, 
                         simula inversiones y optimiza tu patrimonio con datos precisos.

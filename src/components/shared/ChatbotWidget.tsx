@@ -11,7 +11,10 @@ interface Message {
     sender: "user" | "bot";
 }
 
+import { useAuthStore } from "@/stores/useAuthStore";
+
 export default function ChatbotWidget() {
+    const { isAuthenticated } = useAuthStore();
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -77,6 +80,8 @@ export default function ChatbotWidget() {
             setIsLoading(false);
         }
     };
+
+    if (!isAuthenticated) return null;
 
     return (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">

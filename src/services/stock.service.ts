@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from './api';
 import type {
   StockSearchResult,
   StockQuote,
@@ -6,8 +6,6 @@ import type {
   StockPriceResponse
 } from '@/types/stock.types';
 import type { ApiResponse } from '@/types/auth.types';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 // Tipo para resultados de busqueda de Finnhub
 export interface FinnhubSearchResult {
@@ -32,7 +30,7 @@ export interface FinnhubQuoteResponse {
 }
 
 /**
- * Service for stock data operations using Alpha Vantage and Finnhub APIs
+ * Service for stock data operations using unified api client
  */
 class StockService {
 
@@ -41,14 +39,9 @@ class StockService {
    */
   async searchSymbols(query: string): Promise<ApiResponse<FinnhubSearchResult[]>> {
     try {
-      const response = await axios.get<ApiResponse<FinnhubSearchResult[]>>(
-        `${API_URL}/api/stocks/search`,
-        {
-          params: { q: query },
-          headers: this.getAuthHeaders()
-        }
-      );
-
+      const response = await api.get<ApiResponse<FinnhubSearchResult[]>>('/stocks/search', {
+        params: { keywords: query } // Consistent with backend StockDataController
+      });
       return response.data;
     } catch (error) {
       console.error('Error searching stocks:', error);
@@ -61,56 +54,43 @@ class StockService {
    */
   async getQuote(symbol: string): Promise<FinnhubQuoteResponse> {
     try {
-      const response = await axios.get<FinnhubQuoteResponse>(
-        `${API_URL}/api/stocks/${symbol}/quote`,
-        {
-          headers: this.getAuthHeaders()
-        }
-      );
-
+      const response = await api.get<FinnhubQuoteResponse>(`/stocks/${symbol}/quote`);
       return response.data;
     } catch (error) {
       console.error(`Error getting quote for ${symbol}:`, error);
-      return { success: false, data: { currentPrice: 0, high: 0, low: 0, open: 0, previousClose: 0, timestamp: 0 }, message: 'Error al obtener cotizacion' };
+      return { 
+        success: false, 
+        data: { currentPrice: 0, high: 0, low: 0, open: 0, previousClose: 0, timestamp: 0 }, 
+        message: 'Error al obtener cotizacion' 
+      };
     }
   }
 
   /**
-   * Search for stocks by keywords (Alpha Vantage - legacy)
+   * Search for stocks by keywords (Legacy/Alpha Vantage)
    */
   async searchStocks(keywords: string): Promise<StockSearchResult[]> {
     try {
-      const response = await axios.get<ApiResponse<StockSearchResult[]>>(
-        `${API_URL}/stocks/search`,
-        {
-          params: { keywords },
-          headers: this.getAuthHeaders()
-        }
-      );
-
+      const response = await api.get<ApiResponse<StockSearchResult[]>>('/stocks/search', {
+        params: { keywords }
+      });
       return response.data.data || [];
     } catch (error) {
       console.error('Error searching stocks:', error);
-      throw error;
+      return [];
     }
   }
 
   /**
-   * Get current quote for a stock (Alpha Vantage - legacy)
+   * Get current quote for a stock
    */
   async getStockQuote(symbol: string): Promise<StockQuote | null> {
     try {
-      const response = await axios.get<ApiResponse<StockQuote>>(
-        `${API_URL}/stocks/${symbol}/quote`,
-        {
-          headers: this.getAuthHeaders()
-        }
-      );
-
+      const response = await api.get<ApiResponse<StockQuote>>(`/stocks/${symbol}/quote`);
       return response.data.data || null;
     } catch (error) {
       console.error(`Error getting quote for ${symbol}:`, error);
-      throw error;
+      return null;
     }
   }
 
@@ -119,17 +99,24 @@ class StockService {
    */
   async getCompanyOverview(symbol: string): Promise<CompanyOverview | null> {
     try {
-      const response = await axios.get<ApiResponse<CompanyOverview>>(
-        `${API_URL}/stocks/${symbol}/overview`,
-        {
-          headers: this.getAuthHeaders()
-        }
-      );
-
+      const response = await api.get<ApiResponse<CompanyOverview>>(`/stocks/${symbol}/overview`);
       return response.data.data || null;
     } catch (error) {
       console.error(`Error getting overview for ${symbol}:`, error);
-      throw error;
+      return null;
+    }
+  }
+
+  /**
+   * Get complete stock details (Aggregated)
+   */
+  async getStockDetails(symbol: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await api.get<ApiResponse<any>>(`/stocks/${symbol}/details`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error getting details for ${symbol}:`, error);
+      return { success: false, data: null, message: 'Error al obtener detalles' };
     }
   }
 
@@ -138,45 +125,12 @@ class StockService {
    */
   async getStockPrice(symbol: string): Promise<number | null> {
     try {
-      const response = await axios.get<ApiResponse<StockPriceResponse>>(
-        `${API_URL}/stocks/${symbol}/price`,
-        {
-          headers: this.getAuthHeaders()
-        }
-      );
-
+      const response = await api.get<ApiResponse<StockPriceResponse>>(`/stocks/${symbol}/price`);
       return response.data.data?.price || null;
     } catch (error) {
       console.error(`Error getting price for ${symbol}:`, error);
-      throw error;
+      return null;
     }
-  }
-
-  /**
-   * Get authorization headers with JWT token
-   */
-  private getAuthHeaders() {
-    const token = this.getToken();
-    return token ? { Authorization: `Bearer ${token}` } : {};
-  }
-
-  /**
-   * Get JWT token from localStorage
-   */
-  private getToken(): string | null {
-    if (typeof window === 'undefined') return null;
-
-    try {
-      const authStorage = localStorage.getItem('auth-storage');
-      if (authStorage) {
-        const parsed = JSON.parse(authStorage);
-        return parsed.state?.token || null;
-      }
-    } catch (error) {
-      console.error('Error getting token:', error);
-    }
-
-    return null;
   }
 }
 

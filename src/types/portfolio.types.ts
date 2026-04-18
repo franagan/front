@@ -104,10 +104,25 @@ export interface Investment {
     currentValue: number;
     gainLoss: number;
     gainLossPercentage: number;
+    assetType?: AssetType;
     strategy: InvestmentStrategy;
     status: InvestmentStatus;
     createdAt: string;
     updatedAt: string;
+}
+
+export enum AssetType {
+    STOCK = 'STOCK',
+    ETF = 'ETF',
+    MUTUAL_FUND = 'MUTUAL_FUND',
+    BOND = 'BOND',
+    COMMODITY = 'COMMODITY',
+    CRYPTO = 'CRYPTO',
+    REIT = 'REIT',
+    REAL_ESTATE = 'REAL_ESTATE',
+    FIXED_INCOME = 'FIXED_INCOME',
+    CASH = 'CASH',
+    INDEX = 'INDEX'
 }
 
 export interface InvestmentDetail extends Investment {

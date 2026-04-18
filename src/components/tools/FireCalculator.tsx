@@ -159,46 +159,51 @@ export default function FireCalculator() {
                                 <AreaChart data={chartData}>
                                     <defs>
                                         <linearGradient id="colorAcc" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#f97316" stopOpacity={0.4}/>
+                                            <stop offset="5%" stopColor="#f97316" stopOpacity={0.6}/>
+                                            <stop offset="50%" stopColor="#f97316" stopOpacity={0.2}/>
                                             <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                                     <XAxis 
                                         dataKey="age" 
                                         stroke="#888" 
-                                        fontSize={12} 
+                                        fontSize={10} 
                                         tickLine={false} 
                                         axisLine={false}
+                                        label={{ value: 'Edad (años)', position: 'insideBottom', offset: -10, fontSize: 10, fill: '#666', fontWeight: 'bold' }}
                                     />
                                     <YAxis 
                                         stroke="#888" 
-                                        fontSize={12} 
+                                        fontSize={10} 
                                         tickLine={false} 
                                         axisLine={false}
                                         tickFormatter={(value) => `€${Math.round(value / 1000)}k`}
+                                        fontWeight="bold"
                                     />
                                     <Tooltip 
-                                        contentStyle={{ backgroundColor: '#171717', border: '1px solid #333', borderRadius: '12px' }}
-                                        formatter={(value: any) => [`€${value.toLocaleString('es-ES')}`, 'Capital']}
-                                        labelFormatter={(label) => `Edad: ${label}`}
+                                        contentStyle={{ backgroundColor: 'rgba(23, 23, 23, 0.95)', border: '1px solid #f97316', borderRadius: '16px', backdropFilter: 'blur(10px)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+                                        itemStyle={{ color: '#f97316', fontWeight: 'black' }}
+                                        formatter={(value: any) => [`€${value.toLocaleString('es-ES')}`, 'PATRIMONIO']}
+                                        labelFormatter={(label) => `EDAD: ${label} AÑOS`}
                                     />
-                                    <Legend />
+                                    <Legend verticalAlign="top" height={36} />
                                     <Area 
                                         type="monotone" 
                                         dataKey="accumulated" 
-                                        name="Patrimonio Estimado"
+                                        name="PROYECCIÓN TOTAL"
                                         stroke="#f97316" 
                                         strokeWidth={4}
                                         fillOpacity={1} 
                                         fill="url(#colorAcc)" 
+                                        animationDuration={2000}
                                     />
                                     <Area 
                                         type="step" 
                                         dataKey="target" 
-                                        name="Objetivo FIRE"
-                                        stroke="#888" 
-                                        strokeDasharray="5 5"
+                                        name="LÍNEA FIRE"
+                                        stroke="#666" 
+                                        strokeDasharray="8 8"
                                         strokeWidth={2}
                                         fill="transparent"
                                     />
@@ -211,14 +216,17 @@ export default function FireCalculator() {
                 {results && (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {[
-                            { name: 'LEAN FIRE', val: results.leanFire, desc: 'Indispensable', color: 'text-blue-500' },
-                            { name: 'REGULAR FIRE', val: results.regularFire, desc: 'Nivel actual', color: 'text-orange-500' },
-                            { name: 'FAT FIRE', val: results.fatFire, desc: 'Nivel lujo', color: 'text-yellow-600' },
-                            { name: 'COAST FIRE', val: results.coastFire, desc: 'Ya no ahorres', color: 'text-green-600' }
+                            { name: 'LEAN FIRE', val: results.leanFire, desc: 'Indispensable', color: 'text-cyan-500', bg: 'bg-cyan-500/10' },
+                            { name: 'REGULAR FIRE', val: results.regularFire, desc: 'Nivel actual', color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                            { name: 'FAT FIRE', val: results.fatFire, desc: 'Nivel lujo', color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
+                            { name: 'COAST FIRE', val: results.coastFire, desc: 'Ya no ahorres', color: 'text-emerald-500', bg: 'bg-emerald-500/10' }
                         ].map(s => (
-                            <div key={s.name} className="bg-card p-4 rounded-xl border border-border flex flex-col items-center text-center">
-                                <p className="text-[10px] text-muted-foreground font-black tracking-tighter uppercase whitespace-nowrap">{s.name}</p>
-                                <p className={`text-lg font-black mt-1 ${s.color}`}>€{Math.round(s.val).toLocaleString('es-ES')}</p>
+                            <div key={s.name} className={`bg-card p-5 rounded-3xl border border-border flex flex-col items-center text-center transition-all hover:border-${s.color.split('-')[1]}-500/50 hover:-translate-y-1`}>
+                                <p className={`text-[10px] ${s.color} font-black tracking-[0.2em] uppercase whitespace-nowrap`}>{s.name}</p>
+                                <p className={`text-xl font-black mt-2 tracking-tighter`}>€{Math.round(s.val).toLocaleString('es-ES')}</p>
+                                <div className={`mt-2 px-3 py-1 ${s.bg} rounded-full`}>
+                                    <span className={`text-[9px] font-black uppercase ${s.color}`}>{s.desc}</span>
+                                </div>
                             </div>
                         ))}
                     </div>
