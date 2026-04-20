@@ -13,7 +13,8 @@ import {
     Menu,
     X,
     TrendingUp,
-    DollarSign
+    DollarSign,
+    Landmark
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
@@ -30,6 +31,7 @@ export function Sidebar() {
 
     const navItems = [
         { name: 'Dashboard', href: basePath, icon: LayoutDashboard },
+        { name: 'Patrimonio', href: `${basePath}/net-worth`, icon: Landmark },
         { name: 'Portfolio', href: `${basePath}/portfolio`, icon: Briefcase },
         // { name: 'Gastos', href: `${basePath}/expenses`, icon: DollarSign },
         { name: 'Gastos-Presupuestos', href: `${basePath}/budget`, icon: Wallet },
