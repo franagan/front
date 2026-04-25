@@ -2,6 +2,7 @@
     "navigation": {
         "home": "Home",
         "blog": "Blog",
+        "features": "Features",
         "calculators": "Calculators",
         "about": "About Me",
         "contact": "Contact",
@@ -9,6 +10,16 @@
         "register": "Sign Up",
         "logout": "Logout",
         "dashboard": "Dashboard"
+    },
+    "sidebar": {
+        "dashboard": "Dashboard",
+        "netWorth": "Net Worth",
+        "portfolio": "Portfolio",
+        "budget": "Expenses-Budgets",
+        "goals": "Goals",
+        "tools": "Calculators",
+        "admin": "Administration",
+        "adminPanel": "Admin Panel"
     },
     "home": {
         "hero": {
@@ -192,17 +203,24 @@
         "income": {
             "title": "Income",
             "label": "Income",
-            "empty": "No income recorded"
+            "empty": "No income recorded",
+            "emptyTooltip": "Recording your income is the first step to calculate your savings rate. Add salaries, rents or any other recurring income."
         },
         "expenses": {
             "title": "Expenses",
             "label": "Expenses",
-            "empty": "No expenses recorded"
+            "evolution": "Expense Evolution",
+            "totalThisMonth": "Total this month",
+            "add": "Add Expense",
+            "manage": "Manage Expenses",
+            "empty": "No expenses recorded",
+            "emptyTooltip": "Add your expenses to know where your money goes and optimize your budget."
         },
         "investments": {
             "title": "Investments",
             "label": "Investments",
-            "empty": "No investments recorded"
+            "empty": "No investments recorded",
+            "emptyTooltip": "Compound interest is key for FIRE. Start recording your assets to track their growth."
         },
         "portfolio": {
             "title": "Investment Details",
@@ -217,13 +235,94 @@
         "budget": {
             "title": "Budgets",
             "empty": "No budgets defined. Create your first one!",
+            "emptyTooltip": "Budgets help you avoid overspending. Create limits for categories like 'Food' or 'Leisure'.",
             "manage": "Manage Budgets"
         },
         "goals": {
             "title": "Savings Goals",
             "empty": "No goals defined. Create your first one!",
-            "viewAll": "View All Goals"
+            "emptyTooltip": "Setting goals keeps you motivated. It could be a trip, a car, or your emergency fund.",
+            "viewAll": "View All Goals",
+            "inCount": "In {count} goals"
+        },
+        "charts": {
+            "title": "Visual Analysis",
+            "monthlyBalance": "Monthly Balance (Income vs Expenses)",
+            "expensesByCategory": "Expenses by Category",
+            "incomeDistribution": "Income Distribution (Monthly)",
+            "netWorthEvolution": "Net Worth Evolution",
+            "noFinancialData": "No financial data",
+            "noExpensesData": "No expenses recorded",
+            "noIncomeData": "No income data",
+            "noNetWorthData": "No net worth data",
+            "income": "Income",
+            "expenses": "Expenses",
+            "netWorth": "Net Worth"
         }
+    },
+    "modals": {
+        "cancel": "Cancel",
+        "create": "Create",
+        "save": "Save",
+        "creating": "Creating...",
+        "saving": "Saving...",
+        "addIncome": {
+            "title": "Add Income Source",
+            "name": "Name",
+            "namePlaceholder": "E.g.: Salary, Rent, Dividends",
+            "amount": "Amount (€)",
+            "amountPlaceholder": "E.g.: 2000",
+            "frequency": "Frequency",
+            "monthly": "Monthly",
+            "annually": "Annually",
+            "color": "Color",
+            "colors": {
+                "green": "Green",
+                "blue": "Blue",
+                "yellow": "Yellow",
+                "purple": "Purple",
+                "pink": "Pink"
+            }
+        },
+        "addInvestment": {
+            "title": "Add Investment",
+            "portfolio": "Portfolio *",
+            "portfolioPlaceholder": "Select a portfolio",
+            "portfolioDesc": "Select the portfolio where to add this investment",
+            "stock": "Stock *",
+            "stockPlaceholder": "Search stock (e.g.: AAPL, GOOGL)...",
+            "selected": "Selected:",
+            "quantity": "Quantity *",
+            "quantityPlaceholder": "E.g.: 10",
+            "price": "Average Price *",
+            "pricePlaceholder": "E.g.: 175.50",
+            "priceAuto": "✓ Price loaded automatically",
+            "priceManual": "The price is loaded automatically when you select a stock. If it fails, you can enter it manually.",
+            "strategy": "Strategy",
+            "strategyOther": "Other",
+            "submit": "Add Investment"
+        }
+    },
+    "tour": {
+        "next": "Next",
+        "prev": "Previous",
+        "done": "Done",
+        "welcomeTitle": "Welcome to Inversión Libre",
+        "welcomeDesc": "Let's take a quick tour so you can learn about the main features of the platform.",
+        "sidebarTitle": "Main Menu",
+        "sidebarDesc": "Navigate to all sections of the application from here.",
+        "controlsTitle": "User Controls",
+        "controlsDesc": "Change language, visual theme, or log out from here.",
+        "summaryTitle": "Financial Summary",
+        "summaryDesc": "A quick glance at your net worth, investments, and monthly cash flow.",
+        "portfolioTitle": "Investment Details",
+        "portfolioDesc": "Check the detailed performance of your investment portfolio.",
+        "expensesTitle": "Expense Evolution",
+        "expensesDesc": "Visualize how your expenses change over time.",
+        "budgetTitle": "Budgets",
+        "budgetDesc": "Control your monthly spending limits by category.",
+        "goalsTitle": "Savings Goals",
+        "goalsDesc": "Set financial goals and track your progress."
     },
     "blog": {
         "title": "Blog",

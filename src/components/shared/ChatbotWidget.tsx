@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Bot, User } from "lucide-react";
-import axios from "axios";
+import api from "@/services/api";
 
 
 interface Message {
@@ -57,7 +57,7 @@ export default function ChatbotWidget() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post("http://localhost:8080/api/chat", {
+            const response = await api.post("/chat", {
                 message: userMsg.text,
             });
 
@@ -196,15 +196,6 @@ export default function ChatbotWidget() {
                 <MessageCircle size={28} />
             </button>
 
-            {/* Botón de cierre alternativo cuando el chat está abierto (opcional, para móvil) */}
-            <button
-                onClick={toggleChat}
-                className={`bg-background text-foreground border border-border p-4 rounded-full shadow-lg hover:bg-muted transition-all duration-300 ${isOpen ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"
-                    } absolute bottom-0 right-0 z-0`}
-                aria-hidden={!isOpen}
-            >
-                <X size={28} />
-            </button>
         </div>
     );
 }

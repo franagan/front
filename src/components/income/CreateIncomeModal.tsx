@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2 } from 'lucide-react';
 import incomeService from '@/services/income.service';
 import type { CreateIncomeRequest } from '@/types/income.types';
+import { useTranslations } from 'next-intl';
 
 interface CreateIncomeModalProps {
     isOpen: boolean;
@@ -21,6 +22,7 @@ export default function CreateIncomeModal({
     onClose,
     onSuccess
 }: CreateIncomeModalProps) {
+    const t = useTranslations('modals');
     const [name, setName] = useState('');
     const [amount, setAmount] = useState('');
     const [frequency, setFrequency] = useState<'MONTHLY' | 'ANNUALLY'>('MONTHLY');
@@ -79,23 +81,23 @@ export default function CreateIncomeModal({
         <Dialog open={isOpen} onOpenChange={handleClose}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Añadir Fuente de Ingresos</DialogTitle>
+                    <DialogTitle>{t('addIncome.title')}</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="name">Nombre</Label>
+                        <Label htmlFor="name">{t('addIncome.name')}</Label>
                         <Input
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Ej: Nómina, Alquiler, Dividendos"
+                            placeholder={t('addIncome.namePlaceholder')}
                             required
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="amount">Monto (€)</Label>
+                        <Label htmlFor="amount">{t('addIncome.amount')}</Label>
                         <Input
                             id="amount"
                             type="number"
@@ -103,36 +105,36 @@ export default function CreateIncomeModal({
                             step="0.01"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
-                            placeholder="Ej: 2000"
+                            placeholder={t('addIncome.amountPlaceholder')}
                             required
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="frequency">Frecuencia</Label>
+                        <Label htmlFor="frequency">{t('addIncome.frequency')}</Label>
                         <Select value={frequency} onValueChange={(val: 'MONTHLY' | 'ANNUALLY') => setFrequency(val)}>
                             <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="MONTHLY">Mensual</SelectItem>
-                                <SelectItem value="ANNUALLY">Anual</SelectItem>
+                                <SelectItem value="MONTHLY">{t('addIncome.monthly')}</SelectItem>
+                                <SelectItem value="ANNUALLY">{t('addIncome.annually')}</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="color">Color</Label>
+                        <Label htmlFor="color">{t('addIncome.color')}</Label>
                         <Select value={color} onValueChange={setColor}>
                             <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="bg-green-500">Verde</SelectItem>
-                                <SelectItem value="bg-blue-500">Azul</SelectItem>
-                                <SelectItem value="bg-yellow-500">Amarillo</SelectItem>
-                                <SelectItem value="bg-purple-500">Morado</SelectItem>
-                                <SelectItem value="bg-pink-500">Rosa</SelectItem>
+                                <SelectItem value="bg-green-500">{t('addIncome.colors.green')}</SelectItem>
+                                <SelectItem value="bg-blue-500">{t('addIncome.colors.blue')}</SelectItem>
+                                <SelectItem value="bg-yellow-500">{t('addIncome.colors.yellow')}</SelectItem>
+                                <SelectItem value="bg-purple-500">{t('addIncome.colors.purple')}</SelectItem>
+                                <SelectItem value="bg-pink-500">{t('addIncome.colors.pink')}</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -145,10 +147,10 @@ export default function CreateIncomeModal({
 
                     <DialogFooter>
                         <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
-                            Cancelar
+                            {t('cancel')}
                         </Button>
                         <Button type="submit" disabled={isLoading} className="bg-yellow-600 hover:bg-yellow-700">
-                            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Crear'}
+                            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : t('create')}
                         </Button>
                     </DialogFooter>
                 </form>

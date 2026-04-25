@@ -13,6 +13,7 @@ import portfolioService from '@/services/portfolio.service';
 import stockService from '@/services/stock.service';
 import type { StockSearchResult } from '@/types/stock.types';
 import type { CreateInvestmentRequest, Portfolio } from '@/types/portfolio.types';
+import { useTranslations } from 'next-intl';
 
 interface AddInvestmentModalProps {
     isOpen: boolean;
@@ -25,6 +26,7 @@ export default function AddInvestmentModal({
     onClose,
     onSuccess
 }: AddInvestmentModalProps) {
+    const t = useTranslations('modals');
     const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
     const [selectedPortfolioId, setSelectedPortfolioId] = useState<string>('');
     const [selectedStock, setSelectedStock] = useState<StockSearchResult | null>(null);
@@ -155,13 +157,13 @@ export default function AddInvestmentModal({
         <Dialog open={isOpen} onOpenChange={handleClose}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Añadir Inversión</DialogTitle>
+                    <DialogTitle>{t('addInvestment.title')}</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Portfolio Selector */}
                     <div className="space-y-2">
-                        <Label htmlFor="portfolio">Portfolio *</Label>
+                        <Label htmlFor="portfolio">{t('addInvestment.portfolio')}</Label>
                         {isLoadingPortfolios ? (
                             <div className="flex items-center justify-center h-10">
                                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -169,7 +171,7 @@ export default function AddInvestmentModal({
                         ) : (
                             <Select value={selectedPortfolioId} onValueChange={setSelectedPortfolioId}>
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Selecciona un portfolio" />
+                                    <SelectValue placeholder={t('addInvestment.portfolioPlaceholder')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {portfolios.map((portfolio) => (
@@ -181,27 +183,27 @@ export default function AddInvestmentModal({
                             </Select>
                         )}
                         <p className="text-xs text-muted-foreground">
-                            Selecciona el portfolio donde añadir esta inversión
+                            {t('addInvestment.portfolioDesc')}
                         </p>
                     </div>
 
                     {/* Stock Search */}
                     <div className="space-y-2">
-                        <Label>Acción *</Label>
+                        <Label>{t('addInvestment.stock')}</Label>
                         <StockSearchInput
                             onSelectStock={handleStockSelect}
-                            placeholder="Buscar acción (ej: AAPL, GOOGL)..."
+                            placeholder={t('addInvestment.stockPlaceholder')}
                         />
                         {selectedStock && (
                             <div className="text-sm text-muted-foreground mt-1">
-                                Seleccionado: <span className="font-semibold">{selectedStock.symbol}</span> - {selectedStock.name}
+                                {t('addInvestment.selected')} <span className="font-semibold">{selectedStock.symbol}</span> - {selectedStock.name}
                             </div>
                         )}
                     </div>
 
                     {/* Quantity */}
                     <div className="space-y-2">
-                        <Label htmlFor="quantity">Cantidad *</Label>
+                        <Label htmlFor="quantity">{t('addInvestment.quantity')}</Label>
                         <Input
                             id="quantity"
                             type="number"
@@ -209,14 +211,14 @@ export default function AddInvestmentModal({
                             min="0.0001"
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
-                            placeholder="Ej: 10"
+                            placeholder={t('addInvestment.quantityPlaceholder')}
                             required
                         />
                     </div>
 
                     {/* Average Price */}
                     <div className="space-y-2">
-                        <Label htmlFor="averagePrice">Precio Promedio *</Label>
+                        <Label htmlFor="averagePrice">{t('addInvestment.price')}</Label>
                         <div className="relative">
                             <Input
                                 id="averagePrice"
@@ -225,7 +227,7 @@ export default function AddInvestmentModal({
                                 min="0.01"
                                 value={averagePrice}
                                 onChange={(e) => setAveragePrice(e.target.value)}
-                                placeholder="Ej: 175.50"
+                                placeholder={t('addInvestment.pricePlaceholder')}
                                 required
                                 disabled={isFetchingPrice}
                             />
@@ -237,18 +239,18 @@ export default function AddInvestmentModal({
                         {/* Show different messages based on data availability */}
                         {averagePrice ? (
                             <p className="text-xs text-muted-foreground">
-                                ✓ Precio cargado automáticamente
+                                {t('addInvestment.priceAuto')}
                             </p>
                         ) : (
                             <p className="text-xs text-muted-foreground">
-                                El precio se carga automáticamente al seleccionar una acción. Si falla, puedes ingresarlo manualmente.
+                                {t('addInvestment.priceManual')}
                             </p>
                         )}
                     </div>
 
                     {/* Strategy */}
                     <div className="space-y-2">
-                        <Label htmlFor="strategy">Estrategia</Label>
+                        <Label htmlFor="strategy">{t('addInvestment.strategy')}</Label>
                         <Select value={strategy} onValueChange={setStrategy}>
                             <SelectTrigger>
                                 <SelectValue />
@@ -260,7 +262,7 @@ export default function AddInvestmentModal({
                                 <SelectItem value="DIVIDEND">Dividend</SelectItem>
                                 <SelectItem value="MOMENTUM">Momentum</SelectItem>
                                 <SelectItem value="INDEX">Index</SelectItem>
-                                <SelectItem value="OTHER">Otra</SelectItem>
+                                <SelectItem value="OTHER">{t('addInvestment.strategyOther')}</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -279,7 +281,7 @@ export default function AddInvestmentModal({
                             onClick={handleClose}
                             disabled={isLoading}
                         >
-                            Cancelar
+                            {t('cancel')}
                         </Button>
                         <Button
                             type="submit"
@@ -289,10 +291,10 @@ export default function AddInvestmentModal({
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Creando...
+                                    {t('creating')}
                                 </>
                             ) : (
-                                'Añadir Inversión'
+                                t('addInvestment.submit')
                             )}
                         </Button>
                     </DialogFooter>

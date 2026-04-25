@@ -26,6 +26,7 @@ import {
     Tooltip as RechartsTooltip,
     ResponsiveContainer
 } from 'recharts'
+import { Info } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useTranslations } from 'next-intl'
@@ -256,7 +257,7 @@ export default function MainBoardPage() {
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Resumen Financiero Principal */}
-            <section className="mb-8">
+            <section id="tour-summary" className="mb-8">
                 <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
                     <Activity className="h-8 w-8 text-yellow-400" />
                     {t('financialSummary')}
@@ -324,7 +325,7 @@ export default function MainBoardPage() {
                             </div>
                             <div className="flex items-center gap-1 text-sm text-blue-400">
                                 <Target className="h-4 w-4" />
-                                <span className="text-muted-foreground">En {goals.length} objetivos</span>
+                                <span className="text-muted-foreground">{t('goals.inCount', { count: goals.length })}</span>
                             </div>
                         </CardContent>
                     </Card>
@@ -360,7 +361,7 @@ export default function MainBoardPage() {
             />
 
             {/* Inversiones Detalle */}
-            <section className="mb-8">
+            <section id="tour-portfolio" className="mb-8">
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                     <BarChart3 className="h-7 w-7 text-yellow-400" />
                     {t('portfolio.title')}
@@ -417,15 +418,15 @@ export default function MainBoardPage() {
             </section>
 
             {/* Evolución de Gastos (Bar Chart) */}
-            <section className="mb-8">
+            <section id="tour-expenses" className="mb-8">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                         <Activity className="h-7 w-7 text-red-500" />
-                        Evolución de Gastos
+                        {t('expenses.evolution')}
                     </h2>
                     <div className="flex items-center gap-4">
                         <div className="text-right">
-                            <div className="text-xs text-muted-foreground uppercase font-semibold">Total este mes</div>
+                            <div className="text-xs text-muted-foreground uppercase font-semibold">{t('expenses.totalThisMonth')}</div>
                             <div className="text-xl font-bold text-red-400">€{expensesThisMonth.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</div>
                         </div>
                         <div className="flex gap-2">
@@ -435,7 +436,7 @@ export default function MainBoardPage() {
                                 size="sm"
                             >
                                 <Plus className="h-4 w-4 mr-1.5" strokeWidth={3} />
-                                Añadir Gasto
+                                {t('expenses.add')}
                             </Button>
                             <Button
                                 variant="outline"
@@ -443,7 +444,7 @@ export default function MainBoardPage() {
                                 onClick={() => router.push('/mainboard/expenses')}
                                 className="border-red-500/30 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500/50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-950/50 dark:hover:text-red-300 transition-all font-medium"
                             >
-                                Gestionar Gastos
+                                {t('expenses.manage')}
                             </Button>
                         </div>
                     </div>
@@ -510,8 +511,12 @@ export default function MainBoardPage() {
                 <Card className="bg-card border-border">
                     <CardContent className="p-6">
                         {incomes.length === 0 ? (
-                            <div className="text-center py-6 text-muted-foreground">
-                                {t('income.empty')}
+                            <div className="text-center py-6 text-muted-foreground flex flex-col items-center">
+                                <p>{t('income.empty')}</p>
+                                <div className="mt-2 text-sm max-w-sm flex items-center justify-center gap-1 text-primary-foreground/70" title={t('income.emptyTooltip')}>
+                                    <Info className="h-4 w-4" />
+                                    <span>{t('income.emptyTooltip')}</span>
+                                </div>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -539,7 +544,7 @@ export default function MainBoardPage() {
 
             {/* Presupuesto y Objetivos */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <section>
+                <section id="tour-budget">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-2xl font-bold flex items-center gap-2">
                             <PieChart className="h-7 w-7 text-yellow-400" />
@@ -559,8 +564,12 @@ export default function MainBoardPage() {
                     <Card className="bg-card border-border">
                         <CardContent className="p-6">
                             {budgets.length === 0 ? (
-                                <div className="text-center py-6 text-muted-foreground">
-                                    {t('budget.empty')}
+                                <div className="text-center py-6 text-muted-foreground flex flex-col items-center">
+                                    <p>{t('budget.empty')}</p>
+                                    <div className="mt-2 text-sm max-w-sm flex items-center justify-center gap-1 text-primary-foreground/70" title={t('budget.emptyTooltip')}>
+                                        <Info className="h-4 w-4" />
+                                        <span>{t('budget.emptyTooltip')}</span>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
@@ -598,7 +607,7 @@ export default function MainBoardPage() {
                     </Card>
                 </section>
 
-                <section>
+                <section id="tour-goals">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-2xl font-bold flex items-center gap-2">
                             <Target className="h-7 w-7 text-yellow-400" />
@@ -618,8 +627,12 @@ export default function MainBoardPage() {
                     <Card className="bg-card border-border">
                         <CardContent className="p-6">
                             {goals.length === 0 ? (
-                                <div className="text-center py-6 text-muted-foreground">
-                                    {t('goals.empty')}
+                                <div className="text-center py-6 text-muted-foreground flex flex-col items-center">
+                                    <p>{t('goals.empty')}</p>
+                                    <div className="mt-2 text-sm max-w-sm flex items-center justify-center gap-1 text-primary-foreground/70" title={t('goals.emptyTooltip')}>
+                                        <Info className="h-4 w-4" />
+                                        <span>{t('goals.emptyTooltip')}</span>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="space-y-6">

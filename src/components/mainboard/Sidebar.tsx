@@ -18,11 +18,14 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export function Sidebar() {
     const pathname = usePathname()
     const { user } = useAuthStore()
     const [isOpen, setIsOpen] = useState(false)
+
+    const t = useTranslations('sidebar')
 
     // Using basic Next.js routing, locale is in pathname. Let's extract it.
     // e.g. /es/mainboard -> locale is 'es'
@@ -30,13 +33,12 @@ export function Sidebar() {
     const basePath = `/${locale}/mainboard`
 
     const navItems = [
-        { name: 'Dashboard', href: basePath, icon: LayoutDashboard },
-        { name: 'Patrimonio', href: `${basePath}/net-worth`, icon: Landmark },
-        { name: 'Portfolio', href: `${basePath}/portfolio`, icon: Briefcase },
-        // { name: 'Gastos', href: `${basePath}/expenses`, icon: DollarSign },
-        { name: 'Gastos-Presupuestos', href: `${basePath}/budget`, icon: Wallet },
-        { name: 'Objetivos', href: `${basePath}/goals`, icon: Target },
-        { name: 'Calculadoras', href: `${basePath}/tools`, icon: Calculator },
+        { name: t('dashboard'), href: basePath, icon: LayoutDashboard },
+        { name: t('netWorth'), href: `${basePath}/net-worth`, icon: Landmark },
+        { name: t('portfolio'), href: `${basePath}/portfolio`, icon: Briefcase },
+        { name: t('budget'), href: `${basePath}/budget`, icon: Wallet },
+        { name: t('goals'), href: `${basePath}/goals`, icon: Target },
+        { name: t('tools'), href: `${basePath}/tools`, icon: Calculator },
     ]
 
     const toggleSidebar = () => setIsOpen(!isOpen)
@@ -81,7 +83,7 @@ export function Sidebar() {
                 {user?.role === 'ADMIN' && (
                     <div className="mt-8">
                         <div className="px-6 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                            Administración
+                            {t('admin')}
                         </div>
                         <nav className="space-y-1 px-3">
                             <Link
@@ -95,7 +97,7 @@ export function Sidebar() {
                                 )}
                             >
                                 <ShieldAlert className="mr-3 flex-shrink-0 h-5 w-5" />
-                                Panel Admin
+                                {t('adminPanel')}
                             </Link>
                         </nav>
                     </div>
@@ -123,7 +125,7 @@ export function Sidebar() {
             )}
 
             {/* Mobile Sidebar */}
-            <div className={cn(
+            <div id="tour-sidebar-mobile" className={cn(
                 "fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out lg:hidden",
                 isOpen ? "translate-x-0" : "-translate-x-full"
             )}>
@@ -136,7 +138,7 @@ export function Sidebar() {
             </div>
 
             {/* Desktop Sidebar */}
-            <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0">
+            <div id="tour-sidebar" className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0">
                 <SidebarContent />
             </div>
         </>

@@ -12,6 +12,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import ReactCountryFlag from "react-country-flag"
 import { Sidebar } from "@/components/mainboard/Sidebar"
 import { DynamicBreadcrumb } from "@/components/mainboard/DynamicBreadcrumb"
+import { useAppTour } from "@/hooks/useAppTour"
+import { HelpCircle } from "lucide-react"
 
 export default function MainboardLayout({
     children,
@@ -28,6 +30,7 @@ export default function MainboardLayout({
     const tNav = useTranslations('navigation');
     const t = useTranslations('mainboard');
     const firstName = user?.firstName
+    const { startTour } = useAppTour();
 
     useEffect(() => {
         // Only redirect if hydration is complete AND we are not authenticated in store AND not authenticated in NextAuth (meaning no potential token exchange pending)
@@ -80,11 +83,20 @@ export default function MainboardLayout({
                         </div>
 
                         {/* Right Side: User Controls */}
-                        <div className="flex items-center gap-4">
+                        <div id="tour-user-controls" className="flex items-center gap-4">
                             <div className="text-right hidden sm:block">
                                 <p className="text-sm text-muted-foreground">{t('welcome')}</p>
                                 <p className="font-semibold">{firstName}</p>
                             </div>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={startTour}
+                                className="border-border text-foreground hover:bg-accent"
+                                title="Tour"
+                            >
+                                <HelpCircle className="h-4 w-4" />
+                            </Button>
                             <Button
                                 variant="outline"
                                 size="sm"

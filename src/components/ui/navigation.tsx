@@ -48,6 +48,11 @@ const Navigation = ({ className }: NavigationProps) => {
             icon: Home
         },
         {
+            href: "/funcionalidades",
+            label: t('features') || "Funcionalidades",
+            icon: TrendingUp
+        },
+        {
             href: "/blog",
             label: t('blog'),
             icon: BookOpen

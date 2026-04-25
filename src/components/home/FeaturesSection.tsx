@@ -68,7 +68,7 @@ export default function FeaturesSection() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {features.map((feature, idx) => (
-                         <div key={idx} className="bg-card text-card-foreground p-8 md:p-10 rounded-[2rem] hover:shadow-2xl transition-all duration-300 border border-black/5 dark:border-white/10 group hover:-translate-y-1">
+                        <div key={idx} className="bg-card text-card-foreground p-8 md:p-10 rounded-[2rem] hover:shadow-2xl transition-all duration-300 border border-black/5 dark:border-white/10 group hover:-translate-y-1">
                             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-8 transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-sm ${feature.colorClass}`}>
                                 <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>{feature.icon}</span>
                             </div>

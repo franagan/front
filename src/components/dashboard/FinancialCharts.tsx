@@ -8,7 +8,7 @@ import { BudgetCategory } from "@/types/budget.types";
 import { SavingsGoal } from "@/types/goal.types";
 import { IncomeSource } from "@/types/income.types";
 import { Expense } from "@/types/expense.types";
-// import { useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 
 interface FinancialChartsProps {
@@ -43,7 +43,7 @@ const resolveColor = (colorClass?: string, fallback: string = '#8884d8') => {
 };
 
 export default function FinancialCharts({ portfolioData, budgets, goals, incomes, expenses }: FinancialChartsProps) {
-    // const t = useTranslations('mainboard');
+    const t = useTranslations('mainboard.charts');
 
     // 1. Prepare Income Data (Monthly Basis) - Con validaciones
         const incomeData = useMemo(() => {
@@ -162,7 +162,7 @@ export default function FinancialCharts({ portfolioData, budgets, goals, incomes
         <section className="mb-8">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                 <span className="text-yellow-400">📊</span>
-                Análisis Visual
+                {t('title')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -170,7 +170,7 @@ export default function FinancialCharts({ portfolioData, budgets, goals, incomes
                 {/* Monthly Financial Chart (Income vs Expenses) */}
                 <Card className="bg-card border-border">
                     <CardHeader>
-                        <CardTitle className="text-lg">Equilibrio Mensual (Ingresos vs Gastos)</CardTitle>
+                        <CardTitle className="text-lg">{t('monthlyBalance')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {monthlyFinancialData.some(d => d.expenses > 0 || d.income > 0) ? (
@@ -181,13 +181,13 @@ export default function FinancialCharts({ portfolioData, budgets, goals, incomes
                                     <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value: number) => `€${value}`} />
                                     <RechartsTooltip content={renderTooltip} />
                                     <Legend />
-                                    <Bar dataKey="income" name="Ingresos" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                                    <Bar dataKey="expenses" name="Gastos" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="income" name={t('income')} fill="#22c55e" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="expenses" name={t('expenses')} fill="#ef4444" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         ) : (
                             <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                                No hay datos financieros
+                                {t('noFinancialData')}
                             </div>
                         )}
                     </CardContent>
@@ -196,7 +196,7 @@ export default function FinancialCharts({ portfolioData, budgets, goals, incomes
                 {/* Expenses by Category Chart */}
                 <Card className="bg-card border-border">
                     <CardHeader>
-                        <CardTitle className="text-lg">Gastos por Categoría</CardTitle>
+                        <CardTitle className="text-lg">{t('expensesByCategory')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {expensesByCategoryData.length > 0 ? (
@@ -222,7 +222,7 @@ export default function FinancialCharts({ portfolioData, budgets, goals, incomes
                             </ResponsiveContainer>
                         ) : (
                             <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                                No hay gastos registrados
+                                {t('noExpensesData')}
                             </div>
                         )}
                     </CardContent>
@@ -231,7 +231,7 @@ export default function FinancialCharts({ portfolioData, budgets, goals, incomes
                 {/* Income Chart */}
                 <Card className="bg-card border-border">
                     <CardHeader>
-                        <CardTitle className="text-lg">Distribución de Ingresos (Mensual)</CardTitle>
+                        <CardTitle className="text-lg">{t('incomeDistribution')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {incomeData.length > 0 ? (
@@ -257,7 +257,7 @@ export default function FinancialCharts({ portfolioData, budgets, goals, incomes
                             </ResponsiveContainer>
                         ) : (
                             <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                                No hay datos de ingresos
+                                {t('noIncomeData')}
                             </div>
                         )}
                     </CardContent>
@@ -266,7 +266,7 @@ export default function FinancialCharts({ portfolioData, budgets, goals, incomes
                 {/* Net Worth Evolution (Line Chart) */}
                 <Card className="bg-card border-border">
                     <CardHeader>
-                        <CardTitle className="text-lg">Evolución del Patrimonio</CardTitle>
+                        <CardTitle className="text-lg">{t('netWorthEvolution')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {currentNetWorth > 0 ? (
@@ -295,7 +295,7 @@ export default function FinancialCharts({ portfolioData, budgets, goals, incomes
                                     <Line
                                         type="monotone"
                                         dataKey="value"
-                                        name="Patrimonio Neto"
+                                        name={t('netWorth')}
                                         stroke="#EAB308"
                                         strokeWidth={3}
                                         dot={{ r: 4, fill: "#EAB308" }}
@@ -305,7 +305,7 @@ export default function FinancialCharts({ portfolioData, budgets, goals, incomes
                             </ResponsiveContainer>
                         ) : (
                             <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                                No hay datos de patrimonio
+                                {t('noNetWorthData')}
                             </div>
                         )}
                     </CardContent>

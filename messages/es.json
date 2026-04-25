@@ -2,6 +2,7 @@
     "navigation": {
         "home": "Inicio",
         "blog": "Blog",
+        "features": "Funcionalidades",
         "calculators": "Calculadoras",
         "about": "Sobre Mí",
         "contact": "Contacto",
@@ -9,6 +10,16 @@
         "register": "Registrarse",
         "logout": "Cerrar Sesión",
         "dashboard": "Panel de Control"
+    },
+    "sidebar": {
+        "dashboard": "Dashboard",
+        "netWorth": "Patrimonio",
+        "portfolio": "Portfolio",
+        "budget": "Gastos-Presupuestos",
+        "goals": "Objetivos",
+        "tools": "Calculadoras",
+        "admin": "Administración",
+        "adminPanel": "Panel Admin"
     },
     "home": {
         "hero": {
@@ -193,17 +204,24 @@
         "income": {
             "title": "Ingresos",
             "label": "Ingresos",
-            "empty": "No hay ingresos registrados"
+            "empty": "No hay ingresos registrados",
+            "emptyTooltip": "Registrar tus ingresos es el primer paso para calcular tu tasa de ahorro. Puedes añadir nóminas, rentas o cualquier otro ingreso recurrente."
         },
         "expenses": {
             "title": "Gastos",
             "label": "Gastos",
-            "empty": "No hay gastos registrados"
+            "evolution": "Evolución de Gastos",
+            "totalThisMonth": "Total este mes",
+            "add": "Añadir Gasto",
+            "manage": "Gestionar Gastos",
+            "empty": "No hay gastos registrados",
+            "emptyTooltip": "Añade tus gastos para conocer a dónde va tu dinero y poder optimizar tu presupuesto."
         },
         "investments": {
             "title": "Inversiones",
             "label": "Inversiones",
-            "empty": "No hay inversiones registradas"
+            "empty": "No hay inversiones registradas",
+            "emptyTooltip": "El interés compuesto es clave para el FIRE. Empieza a registrar tus activos para seguir su crecimiento."
         },
         "portfolio": {
             "title": "Detalle de Inversiones",
@@ -218,13 +236,94 @@
         "budget": {
             "title": "Presupuestos",
             "empty": "No hay presupuestos definidos. ¡Crea el primero!",
+            "emptyTooltip": "Los presupuestos te ayudan a no gastar de más. Crea límites para categorías como 'Alimentación' o 'Ocio'.",
             "manage": "Gestionar Presupuestos"
         },
         "goals": {
             "title": "Objetivos de Ahorro",
             "empty": "No hay objetivos definidos. ¡Crea el primero!",
-            "viewAll": "Ver Todos los Objetivos"
+            "emptyTooltip": "Fijar metas te mantendrá motivado. Puede ser un viaje, un coche o tu fondo de emergencia.",
+            "viewAll": "Ver Todos los Objetivos",
+            "inCount": "En {count} objetivos"
+        },
+        "charts": {
+            "title": "Análisis Visual",
+            "monthlyBalance": "Equilibrio Mensual (Ingresos vs Gastos)",
+            "expensesByCategory": "Gastos por Categoría",
+            "incomeDistribution": "Distribución de Ingresos (Mensual)",
+            "netWorthEvolution": "Evolución del Patrimonio",
+            "noFinancialData": "No hay datos financieros",
+            "noExpensesData": "No hay gastos registrados",
+            "noIncomeData": "No hay datos de ingresos",
+            "noNetWorthData": "No hay datos de patrimonio",
+            "income": "Ingresos",
+            "expenses": "Gastos",
+            "netWorth": "Patrimonio Neto"
         }
+    },
+    "modals": {
+        "cancel": "Cancelar",
+        "create": "Crear",
+        "save": "Guardar",
+        "creating": "Creando...",
+        "saving": "Guardando...",
+        "addIncome": {
+            "title": "Añadir Fuente de Ingresos",
+            "name": "Nombre",
+            "namePlaceholder": "Ej: Nómina, Alquiler, Dividendos",
+            "amount": "Monto (€)",
+            "amountPlaceholder": "Ej: 2000",
+            "frequency": "Frecuencia",
+            "monthly": "Mensual",
+            "annually": "Anual",
+            "color": "Color",
+            "colors": {
+                "green": "Verde",
+                "blue": "Azul",
+                "yellow": "Amarillo",
+                "purple": "Morado",
+                "pink": "Rosa"
+            }
+        },
+        "addInvestment": {
+            "title": "Añadir Inversión",
+            "portfolio": "Portfolio *",
+            "portfolioPlaceholder": "Selecciona un portfolio",
+            "portfolioDesc": "Selecciona el portfolio donde añadir esta inversión",
+            "stock": "Acción *",
+            "stockPlaceholder": "Buscar acción (ej: AAPL, GOOGL)...",
+            "selected": "Seleccionado:",
+            "quantity": "Cantidad *",
+            "quantityPlaceholder": "Ej: 10",
+            "price": "Precio Promedio *",
+            "pricePlaceholder": "Ej: 175.50",
+            "priceAuto": "✓ Precio cargado automáticamente",
+            "priceManual": "El precio se carga automáticamente al seleccionar una acción. Si falla, puedes ingresarlo manualmente.",
+            "strategy": "Estrategia",
+            "strategyOther": "Otra",
+            "submit": "Añadir Inversión"
+        }
+    },
+    "tour": {
+        "next": "Siguiente",
+        "prev": "Anterior",
+        "done": "Finalizar",
+        "welcomeTitle": "Bienvenido a Inversión Libre",
+        "welcomeDesc": "Vamos a dar un rápido paseo para que conozcas las principales funciones de la plataforma.",
+        "sidebarTitle": "Menú Principal",
+        "sidebarDesc": "Desde aquí puedes navegar a todas las secciones de la aplicación.",
+        "controlsTitle": "Controles de Usuario",
+        "controlsDesc": "Cambia el idioma, el tema visual o cierra sesión desde aquí.",
+        "summaryTitle": "Resumen Financiero",
+        "summaryDesc": "Un vistazo rápido a tu patrimonio neto, inversiones y flujo de caja mensual.",
+        "portfolioTitle": "Detalle de Inversiones",
+        "portfolioDesc": "Consulta el rendimiento detallado de tu cartera de inversiones.",
+        "expensesTitle": "Evolución de Gastos",
+        "expensesDesc": "Visualiza cómo cambian tus gastos a lo largo del tiempo.",
+        "budgetTitle": "Presupuestos",
+        "budgetDesc": "Controla tus límites de gasto mensual por categoría.",
+        "goalsTitle": "Objetivos de Ahorro",
+        "goalsDesc": "Establece metas financieras y sigue tu progreso."
     },
     "blog": {
         "title": "Blog",
