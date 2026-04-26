@@ -186,6 +186,7 @@
             }
         },
         "common": {
+            "continueWithGoogle": "Continue with Google",
             "loading": "Loading...",
             "loggingIn": "Logging in...",
             "creatingAccount": "Creating account...",
