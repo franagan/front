@@ -17,9 +17,12 @@
         "portfolio": "Portfolio",
         "budget": "Expenses-Budgets",
         "goals": "Goals",
+        "alerts": "Alerts",
         "tools": "Calculators",
         "admin": "Administration",
-        "adminPanel": "Admin Panel"
+        "adminPanel": "Admin Panel",
+        "settings": "Settings",
+        "deleteAccount": "Delete Account"
     },
     "home": {
         "hero": {
@@ -413,6 +416,7 @@
         "save": "Save",
         "cancel": "Cancel",
         "delete": "Delete",
+        "deleteConfirm": "Are you sure? This action is irreversible.",
         "edit": "Edit",
         "add": "Add",
         "close": "Close",

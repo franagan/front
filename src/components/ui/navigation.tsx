@@ -18,6 +18,7 @@ import {
     Sun
 } from "lucide-react"
 import AuthModal from "@/components/auth/AuthModal"
+import { useUIStore } from "@/stores/useUIStore"
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import ReactCountryFlag from "react-country-flag"
@@ -36,8 +37,7 @@ const Navigation = ({ className }: NavigationProps) => {
     const [isPending, startTransition] = useTransition();
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
-    const [authModalTab, setAuthModalTab] = useState<'login' | 'register'>('login')
+    const { isAuthModalOpen, authModalTab, openAuthModal, closeAuthModal } = useUIStore()
     const { theme, setTheme } = useTheme()
 
     // Enlaces principales del menú
@@ -73,9 +73,8 @@ const Navigation = ({ className }: NavigationProps) => {
         setIsMobileMenuOpen(!isMobileMenuOpen)
     }
 
-    const openAuthModal = (tab: 'login' | 'register') => {
-        setAuthModalTab(tab)
-        setIsAuthModalOpen(true)
+    const handleOpenAuth = (tab: 'login' | 'register') => {
+        openAuthModal(tab)
         setIsMobileMenuOpen(false)
     }
 
@@ -224,7 +223,7 @@ const Navigation = ({ className }: NavigationProps) => {
                                         variant="outline"
                                         size="sm"
                                         className="w-full justify-start"
-                                        onClick={() => openAuthModal('login')}
+                                        onClick={() => handleOpenAuth('login')}
                                     >
                                         <LogIn className="h-4 w-4 mr-2" />
                                         {t('login')}
@@ -232,7 +231,7 @@ const Navigation = ({ className }: NavigationProps) => {
                                     <Button
                                         size="sm"
                                         className="w-full bg-yellow-600 hover:bg-yellow-700"
-                                        onClick={() => openAuthModal('register')}
+                                        onClick={() => handleOpenAuth('register')}
                                     >
                                         {t('register')}
                                     </Button>
@@ -248,7 +247,7 @@ const Navigation = ({ className }: NavigationProps) => {
 
             <AuthModal
                 isOpen={isAuthModalOpen}
-                onClose={() => setIsAuthModalOpen(false)}
+                onClose={closeAuthModal}
                 defaultTab={authModalTab}
             />
         </>

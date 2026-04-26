@@ -1,7 +1,28 @@
+'use client'
+
 import { Button } from "@/components/ui/button"
 import { CheckCircle2 } from "lucide-react"
+import { useUIStore } from "@/stores/useUIStore"
+import { useAuthStore } from "@/stores/useAuthStore"
+import { useRouter } from "@/i18n/navigation"
 
 export default function PricingSection() {
+    const { openAuthModal } = useUIStore()
+    const { user } = useAuthStore()
+    const router = useRouter()
+
+    const handleFreePlan = () => {
+        if (user) {
+            router.push('/mainboard')
+        } else {
+            openAuthModal('register')
+        }
+    }
+
+    const handleProPlan = () => {
+        alert("¡Estamos trabajando en el Plan Pro! Estará disponible muy pronto con todas las funciones avanzadas.")
+    }
+
     return (
         <section id="pricing" className="py-24 bg-background">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,8 +57,12 @@ export default function PricingSection() {
                                 </li>
                             ))}
                         </ul>
-                        <Button variant="outline" className="w-full border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-full">
-                            Comenzar Gratis
+                        <Button 
+                            variant="outline" 
+                            className="w-full border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-full"
+                            onClick={handleFreePlan}
+                        >
+                            {user ? "Ir al Dashboard" : "Comenzar Gratis"}
                         </Button>
                     </div>
 
@@ -59,7 +84,7 @@ export default function PricingSection() {
                                 "Todo lo del plan Básico",
                                 "Categorías de presupuesto ilimitadas",
                                 "InverScan: Análisis avanzado de acciones",
-                                "AIPA: Asesor Financiero IA integrado",
+                                "LIA: Asesora Financiera IA integrada",
                                 "Alertas inteligentes de portfolio",
                                 "Sincronización en tiempo real"
                             ].map((feature, idx) => (
@@ -69,8 +94,11 @@ export default function PricingSection() {
                                 </li>
                             ))}
                         </ul>
-                        <Button className="w-full bg-yellow-600 hover:bg-yellow-700 text-white rounded-full" disabled>
-                            Muy Pronto
+                        <Button 
+                            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white rounded-full"
+                            onClick={handleProPlan}
+                        >
+                            Saber más
                         </Button>
                     </div>
 

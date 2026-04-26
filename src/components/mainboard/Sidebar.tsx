@@ -9,23 +9,30 @@ import {
     Wallet,
     Target,
     Calculator,
+    Bell,
     ShieldAlert,
     Menu,
     X,
     TrendingUp,
     DollarSign,
-    Landmark
+    Landmark,
+    Settings,
+    Trash2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 
 export function Sidebar() {
     const pathname = usePathname()
-    const { user } = useAuthStore()
+    const router = useRouter()
+    const { user, token, logout } = useAuthStore()
     const [isOpen, setIsOpen] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
 
     const t = useTranslations('sidebar')
+    const tc = useTranslations('common')
 
     // Using basic Next.js routing, locale is in pathname. Let's extract it.
     // e.g. /es/mainboard -> locale is 'es'
@@ -38,10 +45,37 @@ export function Sidebar() {
         { name: t('portfolio'), href: `${basePath}/portfolio`, icon: Briefcase },
         { name: t('budget'), href: `${basePath}/budget`, icon: Wallet },
         { name: t('goals'), href: `${basePath}/goals`, icon: Target },
+        { name: t('alerts'), href: `${basePath}/alerts`, icon: Bell },
         { name: t('tools'), href: `${basePath}/tools`, icon: Calculator },
     ]
 
     const toggleSidebar = () => setIsOpen(!isOpen)
+
+    const handleDeleteAccount = async () => {
+        if (!confirm(tc('deleteConfirm'))) return
+
+        setIsDeleting(true)
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/me', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+
+            if (response.ok) {
+                logout()
+                router.push(`/${locale}`)
+            } else {
+                alert('Error deleting account')
+            }
+        } catch (error) {
+            console.error('Error:', error)
+            alert('Error deleting account')
+        } finally {
+            setIsDeleting(false)
+        }
+    }
 
     const SidebarContent = () => (
         <div className="flex h-full flex-col bg-card border-r border-border">
@@ -52,8 +86,9 @@ export function Sidebar() {
                 <span className="text-lg font-bold tracking-tight">Inversión Libre</span>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-4">
-                <nav className="space-y-1 px-3">
+            <div className="flex-1 overflow-y-auto py-4 flex flex-col justify-between">
+                <div>
+                    <nav className="space-y-1 px-3">
                     {navItems.map((item) => {
                         const isActive = pathname === item.href || pathname.startsWith(item.href + '/') && item.href !== basePath
 
@@ -102,6 +137,22 @@ export function Sidebar() {
                         </nav>
                     </div>
                 )}
+                </div>
+
+                {/* Settings & Danger Zone */}
+                <div className="px-3 py-4 border-t border-border mt-auto">
+                    <div className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                        {t('settings')}
+                    </div>
+                    <button
+                        onClick={handleDeleteAccount}
+                        disabled={isDeleting}
+                        className="w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-md text-red-500 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                    >
+                        <Trash2 className="mr-3 flex-shrink-0 h-5 w-5" />
+                        {isDeleting ? tc('loading') : t('deleteAccount')}
+                    </button>
+                </div>
             </div>
         </div>
     )

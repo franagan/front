@@ -32,6 +32,13 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
         }
     }, [isAuthenticated, isOpen, onClose, router]);
 
+    // Sync active tab with prop when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            setActiveTab(defaultTab)
+        }
+    }, [isOpen, defaultTab])
+
     // Login Form State
     const [loginData, setLoginData] = useState({
         email: '',

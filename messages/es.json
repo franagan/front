@@ -17,9 +17,12 @@
         "portfolio": "Portfolio",
         "budget": "Gastos-Presupuestos",
         "goals": "Objetivos",
+        "alerts": "Alertas",
         "tools": "Calculadoras",
         "admin": "Administración",
-        "adminPanel": "Panel Admin"
+        "adminPanel": "Panel Admin",
+        "settings": "Ajustes",
+        "deleteAccount": "Eliminar Cuenta"
     },
     "home": {
         "hero": {
@@ -413,6 +416,7 @@
         "save": "Guardar",
         "cancel": "Cancelar",
         "delete": "Eliminar",
+        "deleteConfirm": "¿Estás seguro? Esta acción es irreversible.",
         "edit": "Editar",
         "add": "Añadir",
         "close": "Cerrar",

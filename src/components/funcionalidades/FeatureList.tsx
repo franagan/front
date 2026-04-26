@@ -227,10 +227,10 @@ export default function FeatureList() {
                             Inteligencia Artificial
                         </h2>
                         <h3 className="text-3xl font-extrabold text-foreground tracking-tight sm:text-4xl mb-6">
-                            AIPA: Tu Asesor Financiero Personal
+                            LIA: Tu Asesora Financiera Personal
                         </h3>
                         <p className="text-lg text-muted-foreground mb-6">
-                            Interactúa con nuestra Inteligencia Artificial basada en GPT. AIPA analiza tus datos financieros reales, tu portfolio y tus hábitos de gasto para darte consejos 100% personalizados.
+                            Interactúa con nuestra Inteligencia Artificial basada en GPT. LIA analiza tus datos financieros reales, tu portfolio y tus hábitos de gasto para darte consejos 100% personalizados.
                         </p>
                         <ul className="space-y-4 mb-8">
                             {[
